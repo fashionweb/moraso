@@ -1,0 +1,158 @@
+var dashboard = Ext.getCmp('dashboard');
+
+var bookingsystemStore = new Ext.data.JsonStore({
+		        autoDestroy: true,
+		        url: '<?php echo $this->url(array('paction' => 'store')); ?>',
+		        root: 'data',
+		        fields: [{
+		            name: 'id_request',
+                            type: 'int'
+		        }, {
+		            name: 'date_from',
+                            type: 'date',
+                            dateFormat: 'Y-m-d'
+		        }, {
+		            name: 'date_until',
+                            type: 'date',
+                            dateFormat: 'Y-m-d'
+		        }, {
+		            name: 'status',
+                            type: 'int'
+		        }, {
+		            name: 'requestor'
+		        }, {
+		            name: 'people',
+                            type: 'int'
+		        }]
+		    });
+                    
+var editRequest = function(id_request) {
+    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'bookingsystem', 'paction' => 'index'), 'plugin'); ?>']);
+    
+    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'bookingsystem', 'paction' => 'edit'), 'plugin'); ?>'], null, {
+        id_request: id_request
+    });
+}
+
+function renderStatus(value, p, record) {
+    if (value == 1) {
+        return 'angefragt';
+    }
+    
+    if (value == 2) {
+        return 'gebucht';
+    }
+    
+    if (value == 3) {
+        return 'abgelehnt';
+    }
+}
+
+var bookingsystem = new Ext.grid.GridPanel({
+    id: 'bookingsystem',
+    title: 'Bookingsystem',
+    store: bookingsystemStore,
+    sortInfo: {
+        field: 'created',
+        direction: 'ASC'
+    },
+    columns: [
+        {dataIndex: 'requestor', header: '<?php echo Aitsu_Translate :: translate('Requestor'); ?>', menuDisabled: true, sortable: true},
+        {dataIndex: 'date_from', header: '<?php echo Aitsu_Translate :: translate('From'); ?>', menuDisabled: true, width: 30, sortable: true, renderer: Ext.util.Format.dateRenderer('d.m.Y')},
+        {dataIndex: 'date_until', header: '<?php echo Aitsu_Translate :: translate('Until'); ?>', menuDisabled: true, width: 30, sortable: true, renderer: Ext.util.Format.dateRenderer('d.m.Y')},
+        {dataIndex: 'status', header: '<?php echo Aitsu_Translate :: translate('Status'); ?>', menuDisabled: true, width: 40, sortable: true, renderer: renderStatus},
+        {dataIndex: 'people', header: '<?php echo Aitsu_Translate::translate('People'); ?>', sortable: true, menuDisabled: true}
+    ],
+    viewConfig: {
+        forceFit: true,
+        autoFill: true
+    },
+	listeners: {
+		render: {
+			fn: function(){
+				this.getStore().load();
+			}
+		},
+            celldblclick: function(grid, rowIndex) {
+			editRequest(this.getStore().getAt(rowIndex).get('id_request'));
+		},
+		rowcontextmenu: function(grid, rowIndex, event) {
+                
+                    var record = this.getStore().getAt(rowIndex);
+                
+                    var menu = new Ext.menu.Menu();
+			
+                    menu.addItem({
+                        text: '<?php echo $this->translate('edit Request'); ?>',
+                        iconCls: 'edit',
+                        handler: function() {
+                            editRequest(record.get('id_request'));
+                        }
+                    });
+                    
+                    menu.addItem({
+                        text: 'Status',
+                        menu: {
+                            items: [{
+                                text: 'angefragt',
+                                handler: function() {
+                                    setStatus(grid, record.get('id_request'), 1)
+                                }
+                            }, {
+                                text: 'gebucht',
+                                handler: function() {
+                                    setStatus(grid, record.get('id_request'), 2)
+                                }
+                            }, {
+                                text: 'abgelehnt',
+                                handler: function() {
+                                    setStatus(grid, record.get('id_request'), 3)
+                                }
+                            }]
+                        }
+                    });
+						
+                    menu.showAt(event.getXY());
+		}
+	},
+	tbar: {
+            items: [
+                {
+                    tooltip: '<?php echo Aitsu_Translate :: translate('Refresh'); ?>',
+                    iconCls: 'tb-refresh',
+                    handler: function(b, e) {
+                        Ext.getCmp('bookingsystem').getStore().reload();
+                    }
+                }
+	    ]
+	}
+});
+
+var setStatus = function(grid, id_request, status) {
+    Ext.Ajax.request({
+        url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'bookingsystem', 'paction' => 'status'), 'plugin'); ?>',
+        success: function(response, opts) {
+        var rsp = Ext.decode(response.responseText);
+            if (rsp.success) {
+                Ext.aitsu.msg('<?php echo Aitsu_Translate::translate('changed status'); ?>', '<?php echo Aitsu_Translate::translate('The status of the booking has been changed.'); ?>');
+                grid.getStore().load(); 
+            }
+        },
+        params: {
+            id_request: id_request,
+            status: status
+        }
+    });
+}
+
+dashboard.add({
+	columnWidth: 1/3,
+	baseCls:'x-plain',
+	bodyStyle:'padding:6px 4px 0 4px',
+	items: {
+		unstyled: false,
+		height: 370,
+		layout: 'fit',
+		items: bookingsystem
+	}
+});

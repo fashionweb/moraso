@@ -1,0 +1,48 @@
+<form method="post" action="<?php echo $this->currentUrl; ?>" enctype="multipart/form-data">
+
+    <fieldset>
+        <legend>Kundendaten</legend>
+        
+        <input type="hidden" name="request" value="true" />
+
+        <label for="input_requestor_last_name">Name</label>
+        <input type="text" id="input_requestor_last_name" name="last_name" />
+
+        <label for="input_requestor_first_name">Vorname</label>
+        <input type="text" id="input_requestor_first_name" name="first_name" />
+
+        <label for="input_requestor_road">Straße</label>
+        <input type="text" id="input_requestor_road" name="road" />
+
+        <label for="input_requestor_house_number">Hausnnummer</label>
+        <input type="text" id="input_requestor_house_number" name="house_number" />
+
+        <label for="input_requestor_postal_code">PLZ</label>
+        <input type="text" id="input_requestor_postal_code" name="postal_code" />
+
+        <label for="input_requestor_city">Ort</label>
+        <input type="text" id="input_requestor_city" name="city" />
+
+        <label for="input_requestor_phone">Telefon</label>
+        <input type="text" id="input_requestor_phone" name="phone" />
+
+        <label for="input_requestor_email">Email</label>
+        <input type="text" id="input_requestor_email" name="email" />
+        
+        <label for="input_from">From</label>
+        <input type="date" class="datepicker" id="input_from" name="from" />
+        
+        <label for="input_until">Until</label>
+        <input type="date" class="datepicker" id="input_until" name="until" />
+        
+        <label for="input_people">Personenanzahl</label>
+        <select id="input_people" name="people">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+        </select>
+    </fieldset>
+    
+    <input type="submit" value="eintragen" />
+</form>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">  
+    <table name="bookings" engine="InnoDB" since="">
+        <field name="id_request" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="id_requestor" type="int(10) unsigned" default="null" />
+        <field name="ts_request" type="timestamp" default="CURRENT_TIMESTAMP" />
+        <field name="status" type="enum('1', '2', '3')" default="1" />
+        <field name="date_from" type="date" default="null" nullable="true" />
+        <field name="date_until" type="date" default="null" nullable="true" />
+        <field name="people" type="enum('1', '2', '3', '4')" default="1" />
+    </table>
+    
+    <table name="bookings_requestor" engine="InnoDB" since="">
+        <field name="id_requestor" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="last_name" type="varchar(255)" />
+        <field name="first_name" type="varchar(255)" />
+        <field name="road" type="varchar(255)" />
+        <field name="house_number" type="varchar(255)" />
+        <field name="postal_code" type="varchar(255)" />
+        <field name="city" type="varchar(255)" />
+        <field name="phone" type="varchar(255)" />
+        <field name="email" type="varchar(255)" />
+    </table>
+</database>

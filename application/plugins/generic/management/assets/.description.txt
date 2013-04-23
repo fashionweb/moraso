@@ -1,0 +1,3 @@
+Assets
+View and manage assets.
+tm-terminal

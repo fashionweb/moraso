@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * @author Christian Kehres <c.kehres@webtischlerei.de>
+ * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
+ */
+class Fashionweb_Html_Helper_Navigation {
+
+    public static function getHtml(array $nav, array $ulIds = array(), array $ulClasses = array(), array $options = array()) {
+
+        $self = new self();
+
+        $optionDefaults = array(
+            1 => array(
+                'noLink' => false,
+                'liClassIfIsActive' => 'active',
+                'liClassIfIsCurrent' => 'isCurrent',
+                'liClassIfIsParent' => 'isParent',
+                'liClassIfHasChildren' => 'hasChildren'
+            ),
+            2 => array(
+                'noLink' => false,
+                'liClassIfIsActive' => 'active',
+                'liClassIfIsCurrent' => 'isCurrent',
+                'liClassIfIsParent' => 'isParent',
+                'liClassIfHasChildren' => 'hasChildren'
+            ),
+            3 => array(
+                'noLink' => false,
+                'liClassIfIsActive' => 'active',
+                'liClassIfIsCurrent' => 'isCurrent',
+                'liClassIfIsParent' => 'isParent',
+                'liClassIfHasChildren' => 'hasChildren'
+            )
+        );
+
+        $options = $self->_array_merge_custom($optionDefaults, $options);
+
+        return $self->_createUl($nav, $ulIds, $ulClasses, $options);
+    }
+
+    private function _array_merge_custom() {
+
+        $array = array();
+        $arguments = func_get_args();
+
+        foreach ($arguments as $args) {
+            foreach ($args as $key => $value) {
+                foreach ($value as $key_s => $value_s) {
+                    $array[$key][$key_s] = $value_s;
+                }
+            }
+        }
+
+        return $array;
+    }
+
+    private function _createUl($nav, $ulIds = null, $ulClasses = null, $options = null, $level = 1) {
+
+        $ul = '<ul';
+
+        if (isset($ulIds[$level]) && !empty($ulIds[$level])) {
+            $ul.= ' id="' . implode(' ', $ulIds[$level]) . '"';
+        }
+
+        if (isset($ulClasses[$level]) && !empty($ulClasses[$level])) {
+            $ul.= ' class="' . implode(' ', $ulClasses[$level]) . '"';
+        }
+
+        $ul.= '>';
+
+        foreach ($nav as $row) {
+            $ul.= $this->_createLi($row, $ulIds, $ulClasses, $options, $level);
+        }
+
+        $ul.= '</ul>';
+
+        return $ul;
+    }
+
+    private function _createLi($row, $ulIds, $ulClasses, $options, $level) {
+
+        $liClasses = array();
+
+        if ($row['isCurrent'] || $row['isParent']) {
+            $liClasses[] = $options[$level]['liClassIfActive'];
+
+            if ($row['isCurrent']) {
+                $liClasses[] = $options[$level]['liClassIfIsCurrent'];
+            }
+
+            if ($row['isParent']) {
+                $liClasses[] = $options[$level]['liClassIfIsParent'];
+            }
+        }
+
+        if (isset($row['hasChildren']) && $row['hasChildren']) {
+            $liClasses[] = $options[$level]['liClassIfHasChildren'];
+        }
+
+        $li = '<li';
+
+        if (!empty($liClasses)) {
+            $li.= ' class="' . implode(' ', $liClasses) . '"';
+        }
+
+        $li.= '>';
+
+        if (isset($options[$level]['noLink']) && !empty($options[$level]['noLink'])) {
+            $li.= $row['name'];
+        } else {
+            $li.= '<a href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+        }
+
+        if (isset($row['hasChildren']) && $row['hasChildren']) {
+            $li.= $this->_createUl($row['children'], $ulIds, $ulClasses, $options, $level + 1);
+        }
+
+        $li.= '</li>';
+
+        return $li;
+    }
+
+}

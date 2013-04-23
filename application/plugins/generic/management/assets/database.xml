@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">  
+    <table name="assets" engine="InnoDB" since="2.4.4-8">
+        <field name="id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="idclient" type="int(10) unsigned" default="null"> 
+            <constraint table="clients" column="idclient" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="headline" type="varchar(255)" />
+        <field name="subheadline" type="varchar(255)" />
+        <field name="text_1" type="text" />
+        <field name="text_2" type="text" />
+        <field name="created" type="timestamp" default="0000-00-00 00:00:00"/>
+        <field name="lastmodified" type="timestamp on update current_timestamp" default="0000-00-00 00:00:00" />
+        <field name="active" type="int(1) unsigned" default="0" />
+    </table>
+    
+    <table name="assets_have_media" engine="InnoDB" since="2.4.4-8">
+        <field name="id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="idasset" type="int(10) unsigned" default="null"> 
+            <constraint table="assets" column="id" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="mediaid" type="int(10) unsigned" default="null">
+            <constraint table="media" column="mediaid" onupdate="restrict" ondelete="cascade" />
+        </field>
+    </table>
+</database>

@@ -1,0 +1,14 @@
+.tm-asset {
+    background-image: url(../images/icons/book_open.png) !important; 
+    background-repeat: no-repeat;
+}
+
+.tm-events {
+    background-image: url(../images/icons/calendar.png) !important; 
+    background-repeat: no-repeat;
+}
+
+.tm-quotes {
+    background-image: url(../images/icons/script.png) !important; 
+    background-repeat: no-repeat;
+}

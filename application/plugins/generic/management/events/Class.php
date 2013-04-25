@@ -23,10 +23,6 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
         ));
     }
 
-    public function overviewAction() {
-        
-    }
-
     public function editAction() {
 
         $idevent = $this->getRequest()->getParam('idevent');
@@ -71,7 +67,7 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
         $form->setOptions('active', $activeCollection);
 
         $medias = Fashionweb_Events::getMedia();
-        
+
         $mediaCollection = array();
         foreach ($medias as $media) {
             $mediaCollection[] = (object) array(
@@ -82,20 +78,20 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
         $form->setOptions('media_1', $mediaCollection);
         $form->setOptions('media_2', $mediaCollection);
         $form->setOptions('media_3', $mediaCollection);
-        
+
         if (!empty($idevent)) {
             $data = Fashionweb_Events::getEvent($idevent);
 
             $form->setValues($data);
+
+            $organizerInfo = Fashionweb_Events::getOrganizerInfo($data['idorganizer']);
+
+            $form->setValue('organizer_name', $organizerInfo['name']);
+            $form->setValue('organizer_phone', $organizerInfo['phone']);
+            $form->setValue('organizer_email', $organizerInfo['email']);
+            $form->setValue('organizer_homepage', $organizerInfo['homepage']);
         }
-
-        $organizerInfo = Fashionweb_Events::getOrganizerInfo($data['idorganizer']);
-
-        $form->setValue('organizer_name', $organizerInfo['name']);
-        $form->setValue('organizer_phone', $organizerInfo['phone']);
-        $form->setValue('organizer_email', $organizerInfo['email']);
-        $form->setValue('organizer_homepage', $organizerInfo['homepage']);
-
+        
         if ($this->getRequest()->getParam('loader')) {
             $this->view->form = $form;
             header("Content-type: text/javascript");

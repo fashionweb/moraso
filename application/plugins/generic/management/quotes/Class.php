@@ -23,10 +23,6 @@ class QuotesPluginController extends Aitsu_Adm_Plugin_Controller {
         ));
     }
 
-    public function overviewAction() {
-        
-    }
-
     public function editAction() {
 
         $id = $this->getRequest()->getParam('id');

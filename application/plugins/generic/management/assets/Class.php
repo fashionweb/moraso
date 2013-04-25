@@ -2,7 +2,7 @@
 
 /**
  * @author Christian Kehres <c.kehres@webtischlerei.de>
- * @copyright (c) 2012, webtischlerei <http://www.webtischlerei.de>
+ * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
 class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
@@ -18,21 +18,63 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
     public function storeAction() {
 
-        $data = Aitsu_Db::fetchAll('' .
-                        'select ' .
-                        '   * ' .
-                        'from ' .
-                        '   _assets ' .
-                        'where ' .
-                        '   idclient =:idclient ' .
-                        'order by ' .
-                        '   created desc', array(
-                    ':idclient' => Aitsu_Registry :: get()->session->currentClient
-        ));
-
         $this->_helper->json((object) array(
-                    'data' => $data
+                    'data' => Fashionweb_Assets::getAssets()
         ));
+    }
+
+    public function configAction() {
+
+        $this->_helper->layout->disableLayout();
+
+        $form = Aitsu_Forms::factory('assetsPluginConfig', APPLICATION_PATH . '/plugins/generic/management/assets/forms/config.ini');
+        $form->title = Aitsu_Translate::translate('Config Assets-Plugin');
+        $form->url = $this->view->url(array('paction' => 'config'), 'plugin');
+
+        $form->setValue('assets_media_source', Moraso_Config::get('assets.media.source'));
+
+        if ($this->getRequest()->getParam('loader')) {
+            $this->view->form = $form;
+            header("Content-type: text/javascript");
+            return;
+        }
+
+        try {
+            if ($form->isValid()) {
+
+                $data = $form->getValues();
+
+                $dataset = array(
+                    'id' => Moraso_Db::fetchOne('select id from _moraso_config where identifier =:identifier', array(':identifier' => 'assets.media.source')),
+                    'config' => Aitsu_Persistence_Clients::factory(Aitsu_Registry::get()->session->currentClient)->load()->config,
+                    'env' => 'default',
+                    'identifier' => 'assets.media.source',
+                    'value' => str_replace('idart ', '', $data['assets_media_source'])
+                );
+
+                if (empty($dataset['id'])) {
+                    unset($dataset['id']);
+                }
+
+                Moraso_Db::put('_moraso_config', 'id', $dataset);
+
+                $this->_helper->json((object) array(
+                            'success' => true,
+                            'data' => (object) $dataset
+                ));
+            } else {
+                $this->_helper->json((object) array(
+                            'success' => false,
+                            'errors' => $form->getErrors()
+                ));
+            }
+        } catch (Exception $e) {
+            $this->_helper->json((object) array(
+                        'success' => false,
+                        'exception' => true,
+                        'message' => $e->getMessage()
+            ));
+        }
     }
 
     public function editAction() {
@@ -41,35 +83,12 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('event', APPLICATION_PATH . '/plugins/generic/management/assets/forms/edit.ini');
-        $form->title = Aitsu_Translate :: translate('Edit asset');
+        $form = Aitsu_Forms::factory('assetEdit', APPLICATION_PATH . '/plugins/generic/management/assets/forms/edit.ini');
+        $form->title = Aitsu_Translate::translate('Edit asset');
         $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
 
         /* media */
-        $medias = Aitsu_Db :: fetchAll('' .
-                        'select ' .
-                        '   media.mediaid as mediaid, ' .
-                        '   description.name as name ' .
-                        'from _media media ' .
-                        'left join ' .
-                        '   _media_description description on media.mediaid = description.mediaid and description.idlang = :idlang ' .
-                        'where ' .
-                        '	(media.idart = :idart or media.idart is null)' .
-                        '	and media.deleted is null ' .
-                        '	and media.mediaid in (' .
-                        '		select ' .
-                        '			max(media.mediaid) ' .
-                        '		from _media media ' .
-                        '		where ' .
-                        '			(idart = :idart or idart is null)' .
-                        '		group by' .
-                        '			filename ' .
-                        '	) ' .
-                        'order by ' .
-                        '	description.name desc', array(
-                    ':idart' => Aitsu_Config::get('assets.media.source'),
-                    ':idlang' => Aitsu_Registry :: get()->session->currentLanguage
-        ));
+        $medias = Fashionweb_Events::getMedia();
 
         $mediaCollection = array();
         $mediaCollection[] = (object) array(
@@ -100,15 +119,7 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
         /* get Values */
         if (!empty($id)) {
-            $data = Aitsu_Db::fetchRow('' .
-                            'select ' .
-                            '   * ' .
-                            'from ' .
-                            '   _assets ' .
-                            'where ' .
-                            '   id =:id', array(
-                        ':id' => $id
-            ));
+            $data = Fashionweb_Assets::getAsset($id);
 
             $data['media_1'] = Aitsu_Db::fetchOne('' .
                             'select ' .
@@ -166,8 +177,6 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
                 $data = $form->getValues();
 
-                trigger_error(print_r($data, true));
-                
                 $now = date('Y-m-d H:i:s');
 
                 if (empty($data['id'])) {
@@ -175,7 +184,7 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
 
                     $data['created'] = $now;
                     $data['lastmodified'] = $now;
-                    $data['idclient'] = Aitsu_Registry :: get()->session->currentClient;
+                    $data['idclient'] = Aitsu_Registry::get()->session->currentClient;
                 }
 
                 $id = Aitsu_Db::put('_assets', 'id', $data);
@@ -236,13 +245,7 @@ class AssetsPluginController extends Aitsu_Adm_Plugin_Controller {
         $id = $this->getRequest()->getParam('id');
 
         try {
-            Aitsu_Db::query('' .
-                    'delete from ' .
-                    '   _assets ' .
-                    'where ' .
-                    '   id =:id', array(
-                ':id' => $id
-            ));
+            Fashionweb_Assets::deleteAsset($id);
 
             $this->_helper->json((object) array(
                         'success' => true

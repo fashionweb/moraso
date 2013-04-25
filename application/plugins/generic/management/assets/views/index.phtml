@@ -70,6 +70,12 @@ var assetsGrid = new Ext.grid.GridPanel({
 	    handler: function(b, e) {
                 Ext.aitsu.load(['<?php echo $this->url(array('paction' => 'edit')); ?>']);
             }
+        }, {
+            tooltip: '<?php echo Aitsu_Translate :: translate('Config Assets-Plugin'); ?>',
+	    iconCls: 'edit',
+	    handler: function(b, e) {
+                Ext.aitsu.load(['<?php echo $this->url(array('paction' => 'config')); ?>']);
+            }
         }]
     },
     listeners: {

@@ -69,6 +69,10 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
         $medias = Fashionweb_Events::getMedia();
 
         $mediaCollection = array();
+        $mediaCollection[] = (object) array(
+                    'name' => '--- no media selected ---',
+                    'value' => 0
+        );
         foreach ($medias as $media) {
             $mediaCollection[] = (object) array(
                         'name' => $media['name'],
@@ -91,7 +95,7 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
             $form->setValue('organizer_email', $organizerInfo['email']);
             $form->setValue('organizer_homepage', $organizerInfo['homepage']);
         }
-        
+
         if ($this->getRequest()->getParam('loader')) {
             $this->view->form = $form;
             header("Content-type: text/javascript");

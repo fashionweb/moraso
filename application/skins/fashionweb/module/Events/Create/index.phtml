@@ -1,0 +1,48 @@
+<form id="create_event"method="post" action="<?php echo $this->currentUrl; ?>" enctype="multipart/form-data">
+
+    <fieldset>
+        <legend>Kundendaten</legend>      
+        <input type="hidden" name="create_event" value="true" />
+        
+        <label for="input_organizer_name">Name</label>
+        <input type="text" id="input_organizer_name" name="name" />
+
+        <label for="input_organizer_phone">Telefon</label>
+        <input type="text" id="input_organizer_phone" name="phone" />
+
+        <label for="input_organizer_email">Email</label>
+        <input type="text" id="input_organizer_email" name="email" />
+        
+        <label for="input_organizer_homepage">Homepage</label>
+        <input type="text" id="input_organizer_homepage" name="homepage" />
+    </fieldset>
+
+    <fieldset>
+        <legend>Veranstaltung</legend>
+
+        <select id="input_category" name="category">
+            <?php foreach ($this->categories as $category) : ?>
+                <option value="<?php echo $category['idcategory']; ?>"><?php echo $category['name']; ?></option>
+            <?php endforeach; ?>
+        </select>
+
+        <label for="input_title">Title</label>
+        <input type="text" id="input_title" name="title" />
+
+        <label for="input_text">Text</label>
+        <textarea id="input_text" name="text"></textarea>
+        
+        <label for="input_date_start">Datum-Von</label>
+        <input type="text" id="input_date_start" name="date_start" />
+        
+        <label for="input_date_end">Datum-Bis</label>
+        <input type="text" id="input_date_end" name="date_end" />
+        
+        <label for="input_time_start">Zeit-Ab</label>
+        <input type="text" id="input_time_start" name="time_start" />
+        
+        <label for="input_time_end">Zeit-Bis</label>
+        <input type="text" id="input_time_end" name="time_end" />
+    </fieldset>
+    <input type="submit" value="melden" />
+</form>

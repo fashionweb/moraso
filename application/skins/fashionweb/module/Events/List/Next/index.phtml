@@ -1,0 +1,40 @@
+<div id="next_events">
+    <h2>die nächsten Veranstaltungen</h2>
+    <?php foreach ($this->events as $event) : $event = (object) $event; ?>
+        <div class="event_item">
+            <h3><?php echo $event->category_name; ?></h3>
+            <h4><?php echo $event->title; ?></h4>
+
+            <p><?php echo $event->text; ?><br />
+                <br />
+                <?php echo $event->name; ?><br />
+                <?php echo $event->phone; ?><br />
+                <a href="mailto:<?php echo $event->email; ?>"><?php echo $event->email; ?></a><br />
+                <a href="<?php echo $event->homepage; ?>"><?php echo $event->homepage; ?></a>
+            </p>
+
+            <p>
+                <?php if ($event->startdate == $event->enddate) : ?>
+                    am <?php echo $event->startdate; ?>
+                <?php else : ?>
+                    vom <?php echo $event->startdate; ?> bis <?php echo $event->enddate; ?>
+                <?php endif; ?>
+            </p>
+
+            <p>
+                <?php if ($event->starttime == $event->endtime) : ?>
+                    <?php if ($event->startdate == $event->enddate) : ?>
+                        ab <?php echo $event->starttime; ?>
+                    <?php else : ?>
+                        von <?php echo $event->starttime; ?> bis <?php echo $event->endtime; ?>
+                    <?php endif; ?>
+                <?php else : ?>
+                    von <?php echo $event->starttime; ?> bis <?php echo $event->endtime; ?>
+                <?php endif; ?>
+            </p>
+
+        </div>
+    <?php endforeach; ?>
+    
+    <a href="{ref:idart-<?php echo $this->overview_idart; ?>}">mehr Veranstaltungen</a>
+</div>

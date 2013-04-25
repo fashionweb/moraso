@@ -18,10 +18,8 @@ class QuotesPluginController extends Aitsu_Adm_Plugin_Controller {
 
     public function storeAction() {
 
-        $data = Fashionweb_Quote::getQuotes();
-
         $this->_helper->json((object) array(
-                    'data' => $data
+                    'data' => Fashionweb_Quote::getQuotes()
         ));
     }
 

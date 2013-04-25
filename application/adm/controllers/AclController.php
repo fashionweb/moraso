@@ -286,7 +286,7 @@ class AclController extends Zend_Controller_Action {
 
         $id = $this->getRequest()->getParam('roleid');
 
-        $form = Moraso_Forms :: factory('editrole', APPLICATION_PATH . '/adm/forms/acl/role.ini');
+        $form = Aitsu_Forms :: factory('editrole', APPLICATION_PATH . '/adm/forms/acl/role.ini');
         $form->title = Aitsu_Translate :: translate('Edit role');
         $form->url = $this->view->url();
 
@@ -297,6 +297,9 @@ class AclController extends Zend_Controller_Action {
                         'name' => $value
             );
         }     
+        
+        trigger_error(print_r($privs, true));
+        
         $form->setOptions('privileges', $privs);
 
         $options = array();
@@ -308,23 +311,6 @@ class AclController extends Zend_Controller_Action {
                 );
             }
         }
-        $form->createField(new Zend_Config(array(
-                    'group' => array(
-                        '2' => array(
-                            'field' => array(
-                                'plugins' => array(
-                                    'type' => 'checkboxgroup',
-                                    'label' => 'Plugins',
-                                    'extjs' => array(
-                                        'columns' => 2,
-                                        'hideLabel' => false
-                                    ),
-                                    'option' => $options
-                                )
-                            )
-                        )
-                    )
-                )));
 
         $clients = array();
         foreach (Aitsu_Persistence_Clients :: getAsArray() as $key => $value) {

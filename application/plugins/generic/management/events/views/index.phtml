@@ -1,0 +1,34 @@
+var center = Ext.getCmp('viewport-center');
+center.removeAll();
+
+var eventsPluginTabs = new Ext.TabPanel({
+    id: 'events-plugin-tabs',
+    resizeTabs: false,
+    minTabWidth: 115,
+    tabWidth:135,
+    enableTabScroll:true,
+    defaults: {
+        autoScroll:true
+    },
+    tabPosition: 'top'
+});
+
+center.add(eventsPluginTabs);
+	
+Ext.getCmp('viewport').doLayout();
+
+Ext.getCmp('events-plugin-tabs').add({
+    title: '<?php echo Aitsu_Translate :: translate('Overview'); ?>',
+    layout: 'border',
+    items: [{
+        region: 'center',
+        id: 'events-plugin-center',
+        split: true,
+        layout: 'fit'
+    }]
+});
+         
+Ext.aitsu.load(['<?php echo $this->url(array('paction' => 'overview')); ?>'], function() {
+    eventsPluginTabs.setActiveTab(0);
+    eventsPluginTabs.doLayout();
+});

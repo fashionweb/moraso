@@ -1,0 +1,3 @@
+Events
+View and manage events.
+tm-terminal

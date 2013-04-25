@@ -8,7 +8,7 @@
 
 class Aitsu_Forms_Renderer_ExtJs {
 
-	public static function render(Aitsu_Forms $form) {
+	public static function render($form) {
 
 		$out = 'new Ext.FormPanel({';
 

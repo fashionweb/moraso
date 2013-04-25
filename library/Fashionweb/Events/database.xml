@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">  
+    <table name="events" engine="InnoDB" since="">
+        <field name="idevent" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="idclient" type="int(10) unsigned" default="null"> 
+            <constraint table="clients" column="idclient" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="idorganizer" type="int(10) unsigned" default="null"> 
+            <constraint table="events_organizer" column="idorganizer" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="idcategory" type="int(10) unsigned" default="null">
+            <constraint table="events_categories" column="idcategory" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="title" type="varchar(255)" />
+        <field name="text" type="text" />
+        <field name="created" type="timestamp" default="0000-00-00 00:00:00"/>
+        <field name="lastmodified" type="timestamp on update current_timestamp" default="0000-00-00 00:00:00" />
+        <field name="active" type="int(1) unsigned" default="0" />
+        <field name="starttime" type="timestamp" default="0000-00-00 00:00:00" />
+        <field name="endtime" type="timestamp" default="0000-00-00 00:00:00" />
+    </table>
+           
+    <table name="events_organizer" engine="InnoDB" since="">
+        <field name="idorganizer" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="name" type="varchar(255)" />
+        <field name="phone" type="varchar(255)" />
+        <field name="email" type="varchar(255)" />
+        <field name="homepage" type="varchar(255)" />
+    </table>
+           
+    <table name="events_has_media" engine="InnoDB" since="2.4.4-8">
+        <field name="id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="idevent" type="int(10) unsigned" default="null"> 
+            <constraint table="events" column="idevent" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="mediaid" type="int(10) unsigned" default="null">
+            <constraint table="media" column="mediaid" onupdate="restrict" ondelete="cascade" />
+        </field>
+    </table>
+
+    <table name="events_categories" engine="InnoDB" since="">
+        <field name="idcategory" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="name" type="varchar(255)" />
+        <index columns="name" name="name" type="unique"/>
+        <dataset use="ifempty">
+            <record>
+                <value attribute="idcategory">1</value>
+                <value attribute="name">Kategorie A</value>
+            </record>
+            <record>
+                <value attribute="idcategory">2</value>
+                <value attribute="name">Kategorie B</value>
+            </record>
+            <record>
+                <value attribute="idcategory">3</value>
+                <value attribute="name">Kategorie C</value>
+            </record>
+        </dataset>
+    </table>
+</database>

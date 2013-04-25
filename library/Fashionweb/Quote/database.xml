@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">  
+    <table name="quotes" engine="InnoDB" since="">
+        <field name="id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="author" type="varchar(255)" />
+        <field name="quote" type="text" />
+        <field name="class" type="varchar(255)" />
+    </table>
+</database>

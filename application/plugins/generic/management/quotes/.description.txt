@@ -1,0 +1,3 @@
+Quotes
+View and manage quotes.
+tm-terminal

@@ -17,7 +17,23 @@ class Skin_Module_Events_List_Next_Class extends Moraso_Module_Abstract {
 
         $view->overview_idart = (empty($this->_params->overview_idart) ? 0 : $this->_params->overview_idart);
 
-        $view->events = Fashionweb_Events::getNextEvents($limit);
+        $events = Fashionweb_Events::getNextEvents($limit);
+
+        foreach ($events as $key => $event) {
+
+            $eventMedia = Fashionweb_Events::getEventMedia($event['idevent']);
+
+            $data = array();
+            foreach ($eventMedia as $id) {
+                $data[] = Fashionweb_Events::getMediaInfo($id);
+            }
+
+            if (!empty($data)) {
+                $events[$key]['media'] = $data;
+            }
+        }
+
+        $view->events = $events;
 
         return $view->render($template . '.phtml');
     }

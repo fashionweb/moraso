@@ -13,6 +13,14 @@
                 <a href="<?php echo $event->homepage; ?>"><?php echo $event->homepage; ?></a>
             </p>
 
+            <?php if (isset($event->media)) : ?>
+                <ul class="file_list">
+                    <?php foreach ($event->media as $media) : ?>
+                        <li><a href="/file/download/<?php echo $media['idart']; ?>/<?php echo $media['filename']; ?>"><?php echo $media['name']; ?></a></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php endif; ?>
+
             <p>
                 <?php if ($event->startdate == $event->enddate) : ?>
                     am <?php echo $event->startdate; ?>

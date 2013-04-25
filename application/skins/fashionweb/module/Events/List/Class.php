@@ -62,8 +62,23 @@ class Skin_Module_Events_List_Class extends Moraso_Module_Abstract {
             $whereList[] = '(day(event.starttime) =' . $view->filter->day .' or day(event.endtime) =' . $view->filter->day .') ';
         }
 
+        $events = Fashionweb_Events::getFilteredEvents($whereList);
         
-        $view->events = Fashionweb_Events::getFilteredEvents($whereList);
+        foreach ($events as $key => $event) {
+
+            $eventMedia = Fashionweb_Events::getEventMedia($event['idevent']);
+
+            $data = array();
+            foreach ($eventMedia as $id) {
+                $data[] = Fashionweb_Events::getMediaInfo($id);
+            }
+
+            if (!empty($data)) {
+                $events[$key]['media'] = $data;
+            }
+        }
+        
+        $view->events = $events;
 
         return $view->render('index.phtml');
     }

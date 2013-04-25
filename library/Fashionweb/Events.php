@@ -297,4 +297,35 @@ class Fashionweb_Events {
         ));
     }
 
+    public static function getEventMedia($id) {
+
+        return Moraso_Db::fetchCol('' .
+                        'select ' .
+                        '   mediaid ' .
+                        'from ' .
+                        '   _events_has_media ' .
+                        'where ' .
+                        '   idevent =:idevent', array(
+                    ':idevent' => $id
+        ));
+    }
+
+    public static function getMediaInfo($id) {
+
+        return Moraso_Db::fetchRow('' .
+                        'select ' .
+                        '   media.idart as idart, ' .
+                        '   media.filename as filename, ' .
+                        '   description.name as name ' .
+                        'from ' .
+                        '   _media as media ' .
+                        'left join ' .
+                        '   _media_description as description on media.mediaid = description.mediaid and description.idlang = :idlang ' .
+                        'where ' .
+                        '   media.mediaid =:mediaid', array(
+                    ':mediaid' => $id,
+                    ':idlang' => Aitsu_Registry::get()->env->idlang
+        ));
+    }
+
 }

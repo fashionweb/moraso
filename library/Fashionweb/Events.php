@@ -29,6 +29,30 @@ class Fashionweb_Events {
         ));
     }
 
+    public static function getInactiveEvents() {
+
+        return Moraso_Db::fetchAll('' .
+                        'select ' .
+                        '   event.idevent, ' .
+                        '   event.title, ' .
+                        '   event.text, ' .
+                        '   event.starttime, ' .
+                        '   event.endtime, ' .
+                        '   organizer.name as organizer ' .
+                        'from ' .
+                        '   _events as event ' .
+                        'left join ' .
+                        '   _events_organizer as organizer on organizer.idorganizer = event.idorganizer ' .
+                        'where ' .
+                        '   event.idclient =:idclient ' .
+                        'and ' .
+                        '   event.active = 0 ' .
+                        'order by ' .
+                        '   event.created desc', array(
+                    ':idclient' => Aitsu_Registry :: get()->session->currentClient
+        ));
+    }
+
     public static function getEvent($id) {
 
         $data = Moraso_Db::fetchRow('' .

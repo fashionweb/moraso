@@ -1,0 +1,175 @@
+var dashboard = Ext.getCmp('dashboard');
+
+var store = new Ext.data.JsonStore({
+		        autoDestroy: true,
+		        url: '<?php echo $this->url(array('paction' => 'store')); ?>',
+		        root: 'data',
+		        fields: [{
+		            name: 'id',
+                            type: 'int'
+		        }, {
+		            name: 'headline'
+		        }, {
+		            name: 'subheadline'
+		        }, {
+		            name: 'text_1'
+		        }]
+		    });
+                    
+var assetExpander = new Ext.ux.grid.RowExpander({
+    tpl : new Ext.Template(
+        '<pre style="padding:10px;">{text_1}</pre>'
+    )
+});
+
+var editAsset = function(id) {
+    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'index'), 'plugin'); ?>']);
+    
+    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'edit'), 'plugin'); ?>'], null, {
+        id: id
+    });
+}
+
+var assets = new Ext.grid.GridPanel({
+    id: 'assets',
+    title: 'Assets',
+    store: store,
+    sortInfo: {
+        field: 'created',
+        direction: 'ASC'
+    },
+    columns: [
+    	assetExpander,
+        {dataIndex: 'headline', header: '<?php echo Aitsu_Translate :: translate('Headline'); ?>', menuDisabled: true, sortable: true}
+    ],
+    viewConfig: {
+        forceFit: true,
+        autoFill: true
+    },
+	listeners: {
+		render: {
+			fn: function(){
+				this.getStore().load();
+			}
+		},
+            celldblclick: function(grid, rowIndex) {
+			editAsset(this.getStore().getAt(rowIndex).get('id'));
+		},
+		rowcontextmenu: function(grid, rowIndex, asset) {
+                
+                    var record = this.getStore().getAt(rowIndex);
+                
+                    var menu = new Ext.menu.Menu();
+			
+                    menu.addItem({
+                        text: '<?php echo $this->translate('edit Asset'); ?>',
+                        iconCls: 'edit',
+                        handler: function() {
+                            editAsset(record.get('id'));
+                        }
+                    });
+                    
+                    menu.addItem({
+                        text: '<?php echo $this->translate('activate Asset'); ?>',
+                        iconCls: 'cm-setonline',
+                        handler: function() {
+                            Ext.MessageBox.show({
+                            title: '<?php echo $this->translate('Activate asset'); ?>',
+                            msg: '<?php echo $this->translate('Are you sure to activate the selected asset?'); ?>',
+                            buttons: Ext.MessageBox.YESNO,
+                            fn: function(result) {
+                                if (result == 'yes') {
+                                    Ext.Ajax.request({
+                                        url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'activate'), 'plugin'); ?>',
+                                        success: function(response, opts) {
+                                            var rsp = Ext.decode(response.responseText);
+                                            if (rsp.success) {
+                                                Ext.aitsu.msg('<?php echo Aitsu_Translate :: translate('Asset activated'); ?>', '<?php echo Aitsu_Translate :: translate('The selected asset has been activated.'); ?>');
+                                                grid.getStore().load(); 
+                                            }
+                                        },
+                                        params: {
+                                            id: record.get('id')
+                                        }
+                                    });					 			
+                                }
+                            }
+                        });			 			         
+                    }
+                });
+                
+                menu.addItem({
+                        text: '<?php echo $this->translate('deactivate Asset'); ?>',
+                        iconCls: 'cm-setoffline',
+                        handler: function() {
+                            Ext.MessageBox.show({
+                            title: '<?php echo $this->translate('Deactivate asset'); ?>',
+                            msg: '<?php echo $this->translate('Are you sure to deactivate the selected asset?'); ?>',
+                            buttons: Ext.MessageBox.YESNO,
+                            fn: function(result) {
+                                if (result == 'yes') {
+                                    Ext.Ajax.request({
+                                        url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'deactivate'), 'plugin'); ?>',
+                                        success: function(response, opts) {
+                                            var rsp = Ext.decode(response.responseText);
+                                            if (rsp.success) {
+                                                Ext.aitsu.msg('<?php echo Aitsu_Translate :: translate('Asset deactivated'); ?>', '<?php echo Aitsu_Translate :: translate('The selected asset has been deactivated.'); ?>');
+                                                grid.getStore().load(); 
+                                            }
+                                        },
+                                        params: {
+                                            id: record.get('id')
+                                        }
+                                    });					 			
+                                }
+                            }
+                        });			 			         
+                    }
+                });
+                    
+                    menu.addItem({
+                        text: '<?php echo $this->translate('delete Asset'); ?>',
+                        iconCls: 'delete',
+                        handler: function() {
+                            Ext.MessageBox.show({
+                        title: '<?php echo $this->translate('Delete asset'); ?>',
+                        msg: '<?php echo $this->translate('Are you sure to delete the selected asset?'); ?>',
+			buttons: Ext.MessageBox.YESNO,
+			fn: function(result) {
+                            if (result == 'yes') {
+                                Ext.Ajax.request({
+                                    url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'delete'), 'plugin'); ?>',
+				    success: function(response, opts) {
+                                        var rsp = Ext.decode(response.responseText);
+				        if (rsp.success) {
+                                            Ext.aitsu.msg('<?php echo Aitsu_Translate :: translate('Asset removed'); ?>', '<?php echo Aitsu_Translate :: translate('The selected asset has been removed.'); ?>');
+                                             grid.getStore().load(); 
+				        }
+				    },
+				    params: {
+                                        id: record.get('id')
+                                    }
+				});					 			
+                            }
+                        }
+                    });	
+                        }
+                    });
+						
+                    menu.showAt(asset.getXY());
+		}
+	},
+	plugins: assetExpander
+});
+
+dashboard.add({
+	columnWidth: 1/3,
+	baseCls:'x-plain',
+	bodyStyle:'padding:6px 4px 0 4px',
+	items: {
+		unstyled: false,
+		height: 370,
+		layout: 'fit',
+		items: assets
+	}
+});

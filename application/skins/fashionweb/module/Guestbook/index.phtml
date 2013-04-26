@@ -1,0 +1,24 @@
+<form method="post">
+    <label for="guestbook_form_name">Name</label>
+    <input type="text" name="name" id="guestbook_form_name" value="<?php echo $this->formData->name; ?>" />
+
+    <label for="guestbook_form_email">email</label>
+    <input type="text" name="email" id="guestbook_form_email" value="<?php echo $this->formData->email; ?>" />
+
+    <label for="guestbook_form_message">message</label>
+    <textarea  name="message" id="guestbook_form_message"><?php echo $this->formData->message; ?></textarea>
+
+    <input type="submit" name="create_guestbook_entry" value="eintragen" />
+</form>
+
+<?php foreach ($this->entries as $entry) : $entry = (object) $entry; ?>
+    Datum: <?php echo date("d.m.Y", strtotime($entry->created)); ?><br />
+    Name: <?php echo $entry->name; ?><br />
+    Message: <?php echo nl2br($entry->message); ?><br />
+    <?php if (!empty($entry->comment)) : ?>
+        <strong>Kommentar</strong><br />
+        <?php echo nl2br($entry->comment); ?>
+    <?php endif; ?>
+
+    <hr/>
+<?php endforeach; ?>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">  
+    <table name="guestbook" engine="InnoDB" since="guestbook 1.0">
+        <field name="id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
+        <field name="idclient" type="int(10) unsigned" default="null"> 
+            <constraint table="clients" column="idclient" onupdate="restrict" ondelete="cascade" />
+        </field>
+        <field name="name" type="varchar(255)" />
+        <field name="email" type="varchar(255)" />
+        <field name="message" type="text" />
+        <field name="comment" type="text" />
+        <field name="created" type="timestamp" default="0000-00-00 00:00:00"/>
+        <field name="active" type="int(1) unsigned" default="0" />
+    </table>
+</database>

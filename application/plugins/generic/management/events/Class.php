@@ -23,6 +23,60 @@ class EventsPluginController extends Aitsu_Adm_Plugin_Controller {
         ));
     }
 
+    public function configAction() {
+
+        $this->_helper->layout->disableLayout();
+
+        $form = Aitsu_Forms::factory('eventsPluginConfig', APPLICATION_PATH . '/plugins/generic/management/events/forms/config.ini');
+        $form->title = Aitsu_Translate::translate('Config Events-Plugin');
+        $form->url = $this->view->url(array('paction' => 'config'), 'plugin');
+
+        $form->setValue('events_media_source', Moraso_Config::get('events.media.source'));
+
+        if ($this->getRequest()->getParam('loader')) {
+            $this->view->form = $form;
+            header("Content-type: text/javascript");
+            return;
+        }
+
+        try {
+            if ($form->isValid()) {
+
+                $data = $form->getValues();
+
+                $dataset = array(
+                    'id' => Moraso_Db::fetchOne('select id from _moraso_config where identifier =:identifier', array(':identifier' => 'events.media.source')),
+                    'config' => Aitsu_Persistence_Clients::factory(Aitsu_Registry::get()->session->currentClient)->load()->config,
+                    'env' => 'default',
+                    'identifier' => 'events.media.source',
+                    'value' => str_replace('idart ', '', $data['events_media_source'])
+                );
+
+                if (empty($dataset['id'])) {
+                    unset($dataset['id']);
+                }
+
+                Moraso_Db::put('_moraso_config', 'id', $dataset);
+
+                $this->_helper->json((object) array(
+                            'success' => true,
+                            'data' => (object) $dataset
+                ));
+            } else {
+                $this->_helper->json((object) array(
+                            'success' => false,
+                            'errors' => $form->getErrors()
+                ));
+            }
+        } catch (Exception $e) {
+            $this->_helper->json((object) array(
+                        'success' => false,
+                        'exception' => true,
+                        'message' => $e->getMessage()
+            ));
+        }
+    }
+    
     public function editAction() {
 
         $idevent = $this->getRequest()->getParam('idevent');

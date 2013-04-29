@@ -16,7 +16,14 @@ class Skin_Module_Bookingsystem_Calendar_Json_Class extends Moraso_Module_Abstra
         $reservedDays = array();
 
         foreach ($bookings as $booking) {
-            $title = Aitsu_Adm_User::getInstance() ? $booking['requestor'] : $_POST['booking_status'];
+
+            if ($booking['status'] == 1) {
+                $booking['status'] = 'angefragt';
+            } elseif ($booking['status'] == 2) {
+                $booking['status'] = 'reserviert';
+            }
+
+            $title = Aitsu_Adm_User::getInstance() ? $booking['status'] . ': ' . $booking['requestor'] : $booking['status'];
 
             $reservedDays[] = array(
                 'id' => $booking['id_request'],

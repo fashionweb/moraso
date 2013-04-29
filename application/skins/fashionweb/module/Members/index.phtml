@@ -1,0 +1,24 @@
+<table id="membersList">
+    <thead>
+        <tr>
+            <th>Spielerlizenz</th>
+            <th>Vorname</th>
+            <th>Nachname</th>
+            <th>Ort</th>
+            <th>Handy</th>
+        </tr>
+    </thead>
+    <tbody>
+<?php foreach ($this->members as $member) : ?>
+        <tr class="<?php echo $member['id']; ?>">
+            <td><?php echo $member['vorname']; ?></td>
+            <td><?php echo $member['nachname']; ?></td>
+            <td><?php echo $member['players_license']; ?></td>
+            <td><?php echo $member['ort']; ?></td>
+            <td><?php echo $member['telephone_mobile']; ?></td>
+        </tr>
+<?php endforeach; ?>
+    </tbody>
+</table>
+
+<a href="#" id="exportMembersListAsCsv">CSV export</a>

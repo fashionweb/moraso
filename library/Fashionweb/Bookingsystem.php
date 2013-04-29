@@ -214,7 +214,7 @@ class Fashionweb_Bookingsystem {
         $mail->setSubject($subject);
         $mail->setBodyHtml($emailmessageRequestor);
         $mail->send($transport);
-
+        
         if (isset($emailmessage) && !empty($emailmessage)) {
             $mail = new Zend_Mail('UTF-8');
             $mail->setFrom(Moraso_Config::get('email.config.sender.mail'), Moraso_Config::get('email.config.sender.name'));

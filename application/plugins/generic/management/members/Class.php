@@ -6,6 +6,8 @@
  */
 class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
 
+    const EAV_SET = 'plugin_generic_management_members';
+
     public function init() {
 
         $this->_helper->layout->disableLayout();
@@ -18,15 +20,11 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
 
     public function storeAction() {
 
-        $data = Moraso_Eav::getAllData('plugin_generic_management_members');
+        $data = Moraso_Eav::getAllData(EAV_SET);
 
         $this->_helper->json((object) array(
                     'data' => $data
         ));
-    }
-
-    public function overviewAction() {
-        
     }
 
     public function editAction() {
@@ -36,11 +34,11 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
         $this->_helper->layout->disableLayout();
 
         $form = Aitsu_Forms::factory('members', APPLICATION_PATH . '/plugins/generic/management/members/forms/edit.ini');
-        $form->title = Aitsu_Translate :: translate('Edit Members');
+        $form->title = Aitsu_Translate::translate('Edit Members');
         $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
 
         if (!empty($id)) {
-            $data = Moraso_Eav::getEntityData('plugin_generic_management_members', $id);
+            $data = Moraso_Eav::getEntityData(EAV_SET, $id);
 
             $form->setValue('id', $id);
             $form->setValues($data);
@@ -61,7 +59,7 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
                     $data['id'] = Moraso_Eav::createEntity();
                 }
 
-                Moraso_Eav::setValues('plugin_generic_management_members', $data);
+                Moraso_Eav::setValues(EAV_SET, $data);
 
                 $this->_helper->json((object) array(
                             'success' => true,

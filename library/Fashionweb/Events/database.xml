@@ -18,6 +18,8 @@
         <field name="active" type="int(1) unsigned" default="0" />
         <field name="starttime" type="timestamp" default="0000-00-00 00:00:00" />
         <field name="endtime" type="timestamp" default="0000-00-00 00:00:00" />
+        <field name="place" type="varchar(255)" />
+        <field name="place_details" type="text" />
     </table>
            
     <table name="events_organizer" engine="InnoDB" since="">

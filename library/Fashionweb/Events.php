@@ -16,6 +16,8 @@ class Fashionweb_Events {
                         '   event.created, ' .
                         '   event.starttime, ' .
                         '   event.endtime, ' .
+                        '   event.place, ' .
+                        '   event.place_details, ' .
                         '   organizer.name as organizer ' .
                         'from ' .
                         '   _events as event ' .
@@ -38,6 +40,8 @@ class Fashionweb_Events {
                         '   event.text, ' .
                         '   event.starttime, ' .
                         '   event.endtime, ' .
+                        '   event.place, ' .
+                        '   event.place_details, ' .
                         '   organizer.name as organizer ' .
                         'from ' .
                         '   _events as event ' .
@@ -236,6 +240,8 @@ class Fashionweb_Events {
                         '   event.idevent, ' .
                         '   event.title, ' .
                         '   event.text, ' .
+                        '   event.place, ' .
+                        '   event.place_details, ' .
                         '   category.name as category_name, ' .
                         '   date_format(event.starttime, "%d.%m.%Y") as startdate, ' .
                         '   date_format(event.starttime, "%H:%i") as starttime, ' .
@@ -268,6 +274,8 @@ class Fashionweb_Events {
                         '   event.idevent, ' .
                         '   event.title, ' .
                         '   event.text, ' .
+                        '   event.place, ' .
+                        '   event.place_details, ' .
                         '   category.name as category_name, ' .
                         '   date_format(event.starttime, "%d.%m.%Y") as startdate, ' .
                         '   date_format(event.starttime, "%H:%i") as starttime, ' .

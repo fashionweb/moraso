@@ -219,7 +219,6 @@ class Fashionweb_Bookingsystem {
             $mail = new Zend_Mail('UTF-8');
             $mail->setFrom(Moraso_Config::get('email.config.sender.mail'), Moraso_Config::get('email.config.sender.name'));
             $mail->addTo(Moraso_Config::get('email.config.receiver.mail'), Moraso_Config::get('email.config.receiver.name'));
-            $mail->addHeader('reply-to', $request['email']);
             $mail->setReplyTo($request['email'], '' . $request['last_name'] . ', ' . $request['first_name'] . '');
             $mail->setSubject($subject);
             $mail->setBodyHtml($emailmessage);

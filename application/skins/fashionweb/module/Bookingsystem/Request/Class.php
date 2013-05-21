@@ -41,16 +41,14 @@ class Skin_Module_Bookingsystem_Request_Class extends Moraso_Module_Abstract {
         $view->currentUrl = Aitsu_Util::getCurrentUrl();
 
         if (isset($_POST['request'])) {
-
             $data = $_POST;
 
             $data['date_from'] = date('Y-m-d', strtotime($data['from']));
             $data['date_until'] = date('Y-m-d', strtotime($data['until']));
             
             $data['id_request'] = Fashionweb_Bookingsystem::setRequest($data);
-
-            print_r($data);
-// mail zusammenbauen
+            
+            return $view->render('success.phtml');
         }
 
         return $view->render('index.phtml');

@@ -18,6 +18,7 @@
         <field name="house_number" type="varchar(255)" />
         <field name="postal_code" type="varchar(255)" />
         <field name="city" type="varchar(255)" />
+        <field name="country" type="varchar(255)" />
         <field name="phone" type="varchar(255)" />
         <field name="email" type="varchar(255)" />
     </table>

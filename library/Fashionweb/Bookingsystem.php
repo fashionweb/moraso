@@ -137,6 +137,7 @@ class Fashionweb_Bookingsystem {
             $emailmessageRequestor.= '<strong>' . $request['last_name'] . ', ' . $request['first_name'] . '</strong><br />';
             $emailmessageRequestor.= $request['road'] . ' ' . $request['house_number'] . '<br />';
             $emailmessageRequestor.= $request['postal_code'] . ' ' . $request['city'] . '<br />';
+            $emailmessageRequestor.= $request['country'] . '<br />';
             $emailmessageRequestor.= '<br />';
             $emailmessageRequestor.= 'Telefon: ' . $request['phone'] . '<br />';
             $emailmessageRequestor.= $request['email'] . '<br />';
@@ -155,6 +156,7 @@ class Fashionweb_Bookingsystem {
             $emailmessage.= '<strong>' . $request['last_name'] . ', ' . $request['first_name'] . '</strong><br />';
             $emailmessage.= $request['road'] . ' ' . $request['house_number'] . '<br />';
             $emailmessage.= $request['postal_code'] . ' ' . $request['city'] . '<br />';
+            $emailmessageRequestor.= $request['country'] . '<br />';
             $emailmessage.= '<br />';
             $emailmessage.= 'Telefon: ' . $request['phone'] . '<br />';
             $emailmessage.= $request['email'] . '<br />';
@@ -173,6 +175,7 @@ class Fashionweb_Bookingsystem {
             $emailmessageRequestor.= '<strong>' . $request['last_name'] . ', ' . $request['first_name'] . '</strong><br />';
             $emailmessageRequestor.= $request['road'] . ' ' . $request['house_number'] . '<br />';
             $emailmessageRequestor.= $request['postal_code'] . ' ' . $request['city'] . '<br />';
+            $emailmessageRequestor.= $request['country'] . '<br />';
             $emailmessageRequestor.= '<br />';
             $emailmessageRequestor.= 'Telefon: ' . $request['phone'] . '<br />';
             $emailmessageRequestor.= $request['email'] . '<br />';
@@ -191,6 +194,7 @@ class Fashionweb_Bookingsystem {
             $emailmessageRequestor.= '<strong>' . $request['last_name'] . ', ' . $request['first_name'] . '</strong><br />';
             $emailmessageRequestor.= $request['road'] . ' ' . $request['house_number'] . '<br />';
             $emailmessageRequestor.= $request['postal_code'] . ' ' . $request['city'] . '<br />';
+            $emailmessageRequestor.= $request['country'] . '<br />';
             $emailmessageRequestor.= '<br />';
             $emailmessageRequestor.= 'Telefon: ' . $request['phone'] . '<br />';
             $emailmessageRequestor.= $request['email'] . '<br />';

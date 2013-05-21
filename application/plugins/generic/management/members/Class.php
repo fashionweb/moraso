@@ -20,7 +20,7 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
 
     public function storeAction() {
 
-        $data = Moraso_Eav::getAllData(EAV_SET);
+        $data = Moraso_Eav::get(EAV_SET);
 
         $this->_helper->json((object) array(
                     'data' => $data
@@ -38,7 +38,7 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
         $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
 
         if (!empty($id)) {
-            $data = Moraso_Eav::getEntityData(EAV_SET, $id);
+            $data = Moraso_Eav::get(EAV_SET, $id);
 
             $form->setValue('id', $id);
             $form->setValues($data);
@@ -55,11 +55,7 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
 
                 $data = $form->getValues();
 
-                if (empty($data['id'])) {
-                    $data['id'] = Moraso_Eav::createEntity();
-                }
-
-                Moraso_Eav::setValues(EAV_SET, $data);
+                Moraso_Eav::set(EAV_SET, $data);
 
                 $this->_helper->json((object) array(
                             'success' => true,
@@ -85,7 +81,7 @@ class MembersPluginController extends Aitsu_Adm_Plugin_Controller {
         $id = $this->getRequest()->getParam('id');
 
         try {
-            Moraso_Eav::deleteEntity($id);
+            Moraso_Eav::delete($id);
 
             $this->_helper->json((object) array(
                         'success' => true

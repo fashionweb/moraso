@@ -14,6 +14,8 @@ $("#input_from").datepicker({
     dayNames: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
     dayNamesShort: ["Son", "Mon", "Din", "Mit", "Don", "Fra", "Sam"],
     dayNamesMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+    monthNames: ["Januar", "Februar", ";ärz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+    monthNamesShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sept", "Okt", "Nov", "Dez"],
     firstDay: 1,
     dateFormat: "dd.mm.yy",
     constrainInput: true,
@@ -28,6 +30,8 @@ $("#input_until").datepicker({
     dayNames: ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"],
     dayNamesShort: ["Son", "Mon", "Din", "Mit", "Don", "Fra", "Sam"],
     dayNamesMin: ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"],
+    monthNames: ["Januar", "Februar", ";ärz", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
+    monthNamesShort: ["Jan", "Feb", "Mär", "Apr", "Mai", "Jun", "Jul", "Aug", "Sept", "Okt", "Nov", "Dez"],
     firstDay: 1,
     dateFormat: "dd.mm.yy",
     constrainInput: true,
@@ -37,4 +41,6 @@ $("#input_until").datepicker({
         $("#input_from").datepicker("option", "maxDate", selected);
     }
 });
+
+
 

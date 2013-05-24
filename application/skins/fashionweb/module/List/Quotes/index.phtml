@@ -1,0 +1,9 @@
+<!-- Standard -->
+<ul id="quotes" class="<?php echo $this->class; ?>">
+    <?php foreach ($this->qutoes as $quote) : ?>
+        <li class="<?php echo $quote->class; ?>">
+            <span class="author"><?php echo $quote->author; ?></span>
+            <span class="quote"><?php echo $quote->quote; ?></span>
+        </li>
+    <?php endforeach; ?>
+</ul>

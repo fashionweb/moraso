@@ -1,6 +1,6 @@
 <!-- Standard -->
 <ul id="quotes" class="<?php echo $this->class; ?>">
-    <?php foreach ($this->qutoes as $quote) : ?>
+    <?php foreach ($this->quotes as $quote) : $quote = (object) $quote; ?>
         <li class="<?php echo $quote->class; ?>">
             <span class="author"><?php echo $quote->author; ?></span>
             <span class="quote"><?php echo $quote->quote; ?></span>

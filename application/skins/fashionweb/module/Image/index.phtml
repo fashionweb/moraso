@@ -6,6 +6,16 @@
     $this->attributes->alt = $image->subline;
 
     echo Moraso_Html_Helper_Image::getHtml($image->idart, $image->filename, $this->width, $this->height, $this->render, $this->attributes);
+
+    $tags = Aitsu_Persistence_File::factory($image->mediaid)->getTags();
+
+    if (!empty($tags)) {
+        echo '<ul>';
+        foreach ($tags as $tag) {
+            echo '<li>' . $tag['tag'] . ': ' . $tag['value'] . '</li>';
+        }
+        echo '</ul>';
+    }
     ?>
 <?php endforeach; ?>
 

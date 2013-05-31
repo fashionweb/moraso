@@ -16,21 +16,27 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfIsActive' => 'active',
                 'liClassIfIsCurrent' => 'isCurrent',
                 'liClassIfIsParent' => 'isParent',
-                'liClassIfHasChildren' => 'hasChildren'
+                'liClassIfHasChildren' => 'hasChildren',
+                'liClassIfIsLast' => 'last',
+                'divider' => false
             ),
             2 => array(
                 'noLink' => false,
                 'liClassIfIsActive' => 'active',
                 'liClassIfIsCurrent' => 'isCurrent',
                 'liClassIfIsParent' => 'isParent',
-                'liClassIfHasChildren' => 'hasChildren'
+                'liClassIfHasChildren' => 'hasChildren',
+                'liClassIfIsLast' => 'last',
+                'divider' => false
             ),
             3 => array(
                 'noLink' => false,
                 'liClassIfIsActive' => 'active',
                 'liClassIfIsCurrent' => 'isCurrent',
                 'liClassIfIsParent' => 'isParent',
-                'liClassIfHasChildren' => 'hasChildren'
+                'liClassIfHasChildren' => 'hasChildren',
+                'liClassIfIsLast' => 'last',
+                'divider' => false
             )
         );
 
@@ -69,8 +75,12 @@ class Fashionweb_Html_Helper_Navigation {
 
         $ul.= '>';
 
+        $cntLIs = count($nav);
+        $i = 0;
         foreach ($nav as $row) {
-            $ul.= $this->_createLi($row, $ulIds, $ulClasses, $options, $level);
+            $i++;
+
+            $ul.= $this->_createLi($row, $ulIds, $ulClasses, $options, $level, $i == $cntLIs ? true : false);
         }
 
         $ul.= '</ul>';
@@ -78,7 +88,7 @@ class Fashionweb_Html_Helper_Navigation {
         return $ul;
     }
 
-    private function _createLi($row, $ulIds, $ulClasses, $options, $level) {
+    private function _createLi($row, $ulIds, $ulClasses, $options, $level, $isLast) {
 
         $liClasses = array();
 
@@ -92,6 +102,10 @@ class Fashionweb_Html_Helper_Navigation {
             if ($row['isParent']) {
                 $liClasses[] = $options[$level]['liClassIfIsParent'];
             }
+        }
+
+        if ($isLast) {
+            $liClasses[] = $options[$level]['liClassIfIsLast'];
         }
 
         if (isset($row['hasChildren']) && $row['hasChildren']) {
@@ -117,6 +131,10 @@ class Fashionweb_Html_Helper_Navigation {
         }
 
         $li.= '</li>';
+
+        if ($options[$level]['divider'] && !empty($options[$level]['divider']) && !$isLast) {
+            $li.= $options[$level]['divider'];
+        }
 
         return $li;
     }

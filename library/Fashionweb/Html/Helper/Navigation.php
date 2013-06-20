@@ -18,6 +18,7 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfIsParent' => 'isParent',
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
+                'liClassIfIsFirst' => 'first',
                 'divider' => false
             ),
             2 => array(
@@ -27,6 +28,7 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfIsParent' => 'isParent',
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
+                'liClassIfIsFirst' => 'first',
                 'divider' => false
             ),
             3 => array(
@@ -36,6 +38,7 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfIsParent' => 'isParent',
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
+                'liClassIfIsFirst' => 'first',
                 'divider' => false
             )
         );
@@ -80,7 +83,7 @@ class Fashionweb_Html_Helper_Navigation {
         foreach ($nav as $row) {
             $i++;
 
-            $ul.= $this->_createLi($row, $ulIds, $ulClasses, $options, $level, $i == $cntLIs ? true : false);
+            $ul.= $this->_createLi($row, $ulIds, $ulClasses, $options, $level, $i == $cntLIs ? true : false, $i == 1 ? true : false);
         }
 
         $ul.= '</ul>';
@@ -88,7 +91,7 @@ class Fashionweb_Html_Helper_Navigation {
         return $ul;
     }
 
-    private function _createLi($row, $ulIds, $ulClasses, $options, $level, $isLast) {
+    private function _createLi($row, $ulIds, $ulClasses, $options, $level, $isLast, $isFirst) {
 
         $liClasses = array();
 
@@ -106,6 +109,10 @@ class Fashionweb_Html_Helper_Navigation {
 
         if ($isLast) {
             $liClasses[] = $options[$level]['liClassIfIsLast'];
+        }
+        
+        if ($isFirst) {
+            $liClasses[] = $options[$level]['liClassIfIsFirst'];
         }
 
         if (isset($row['hasChildren']) && $row['hasChildren']) {

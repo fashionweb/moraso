@@ -2,7 +2,6 @@
 <?php
 $images = array();
 foreach ($this->selectedImages as $image) {
-    
     $image = Moraso_Html_Helper_Image::getPath($image->idart, $image->filename, $this->width, $this->height, $this->render);
     $article_title = $image->subline;
     $article_url = '{ref:idart-' . $image->idart . '}';
@@ -13,5 +12,5 @@ foreach ($this->selectedImages as $image) {
 ?>
 
 <script type='text/javascript'>
-    var supersized_slides = [{<?php implode('},[', $images); ?>}];
+    var supersized_slides = [{<?php implode('},{', $images); ?>}];
 </script>

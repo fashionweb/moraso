@@ -1,16 +1,21 @@
 <!-- Javascript -->
-<?php
-$images = array();
-foreach ($this->selectedImages as $image) {
-    $image = Moraso_Html_Helper_Image::getPath($image->idart, $image->filename, $this->width, $this->height, $this->render);
-    $article_title = $image->subline;
-    $article_url = '{ref:idart-' . $image->idart . '}';
-    $article_text = $image->description;
+<?php if (count($this->selectedImages) > 0) : ?>
+    <?php if (Aitsu_Application_Status::isEdit()) : ?>
+        <span>Image-Modul mit JavaScript Ausgabe bearbeiten</span>
+    <?php endif; ?>
+    <?php
+    $images = array();
+    foreach ($this->selectedImages as $image) {
+        $imagePath = Moraso_Html_Helper_Image::getPath($image->idart, $image->filename, $this->width, $this->height, $this->render);
+        $article_title = $image->subline;
+        $article_url = '{ref:idart-' . $image->idart . '}';
+        $article_text = $image->description;
 
-    $images[] = "image: '{$image}', article_title: '{$article_title}', article_url: '{$article_url}', article_text: '{$article_text}'";
-}
-?>
+        $images[] = "image: '{$imagePath}', article_title: '{$article_title}', article_url: '{$article_url}', article_text: '{$article_text}'";
+    }
+    ?>
 
-<script type='text/javascript'>
-    var supersized_slides = [{<?php implode('},{', $images); ?>}];
-</script>
+    <script type='text/javascript'>
+        var supersized_slides = [{<?php echo implode('},{', $images); ?>}];
+    </script>
+<?php endif; ?>

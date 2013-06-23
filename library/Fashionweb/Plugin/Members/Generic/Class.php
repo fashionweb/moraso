@@ -6,8 +6,6 @@
  */
 class Fashionweb_Plugin_Members_Generic_Controller extends Moraso_Adm_Plugin_Controller {
 
-    const EAV_SET = 'plugin_generic_management_members';
-
     public function init() {
 
         $this->_helper->layout->disableLayout();
@@ -20,7 +18,7 @@ class Fashionweb_Plugin_Members_Generic_Controller extends Moraso_Adm_Plugin_Con
 
     public function storeAction() {
 
-        $data = Moraso_Eav::get(EAV_SET);
+        $data = Moraso_Eav::get('plugin_generic_management_members');
 
         $this->_helper->json((object) array(
                     'data' => $data
@@ -33,12 +31,14 @@ class Fashionweb_Plugin_Members_Generic_Controller extends Moraso_Adm_Plugin_Con
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('members', APPLICATION_PATH . '/plugins/generic/management/members/forms/edit.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/edit.ini');
         $form->title = Aitsu_Translate::translate('Edit Members');
         $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
 
         if (!empty($id)) {
-            $data = Moraso_Eav::get(EAV_SET, $id);
+            $data = Moraso_Eav::get('plugin_generic_management_members', $id);
 
             $form->setValue('id', $id);
             $form->setValues($data);
@@ -55,7 +55,7 @@ class Fashionweb_Plugin_Members_Generic_Controller extends Moraso_Adm_Plugin_Con
 
                 $data = $form->getValues();
 
-                Moraso_Eav::set(EAV_SET, $data);
+                Moraso_Eav::set('plugin_generic_management_members', $data);
 
                 $this->_helper->json((object) array(
                             'success' => true,

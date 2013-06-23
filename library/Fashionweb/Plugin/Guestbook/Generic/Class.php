@@ -31,9 +31,11 @@ class Fashionweb_Plugin_Guestbook_Generic_Controller extends Moraso_Adm_Plugin_C
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('guestbook', APPLICATION_PATH . '/plugins/generic/management/guestbook/forms/edit.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/edit.ini');
         $form->title = Aitsu_Translate :: translate('Edit entry');
-        $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
+        $form->url = $this->view->url(array('paction' => 'edit'));
 
         $activeCollection = array();
         $activeCollection[] = (object) array(

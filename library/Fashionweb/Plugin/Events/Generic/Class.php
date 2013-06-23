@@ -27,9 +27,11 @@ class Fashionweb_Plugin_Events_Generic_Controller extends Moraso_Adm_Plugin_Cont
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('eventsPluginConfig', APPLICATION_PATH . '/plugins/generic/management/events/forms/config.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/config.ini');
         $form->title = Aitsu_Translate::translate('Config Events-Plugin');
-        $form->url = $this->view->url(array('paction' => 'config'), 'plugin');
+        $form->url = $this->view->url(array('paction' => 'config'));
 
         $form->setValue('events_media_source', Moraso_Config::get('events.media.source'));
 
@@ -83,9 +85,11 @@ class Fashionweb_Plugin_Events_Generic_Controller extends Moraso_Adm_Plugin_Cont
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('event', APPLICATION_PATH . '/plugins/generic/management/events/forms/edit.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/edit.ini');
         $form->title = Aitsu_Translate::translate('Edit event');
-        $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
+        $form->url = $this->view->url(array('paction' => 'edit'));
 
         $organizer = Fashionweb_Events::getAllOrganizer();
 

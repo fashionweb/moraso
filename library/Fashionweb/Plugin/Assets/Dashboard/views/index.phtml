@@ -23,9 +23,9 @@ var assetExpander = new Ext.ux.grid.RowExpander({
 });
 
 var editAsset = function(id) {
-    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'index'), 'plugin'); ?>']);
+    Ext.aitsu.load(['<?php echo $this->url(array('namespace' => 'fashionweb', 'area' => 'generic', 'plugin' => 'assets', 'paction' => 'index'), 'plugin'); ?>']);
     
-    Ext.aitsu.load(['<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'edit'), 'plugin'); ?>'], null, {
+    Ext.aitsu.load(['<?php echo $this->url(array('namespace' => 'fashionweb', 'area' => 'generic', 'plugin' => 'assets', 'paction' => 'edit'), 'plugin'); ?>'], null, {
         id: id
     });
 }
@@ -80,7 +80,7 @@ var assets = new Ext.grid.GridPanel({
                             fn: function(result) {
                                 if (result == 'yes') {
                                     Ext.Ajax.request({
-                                        url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'activate'), 'plugin'); ?>',
+                                        url: '<?php echo $this->url(array('namespace' => 'fashionweb', 'area' => 'generic', 'plugin' => 'assets', 'paction' => 'activate'), 'plugin'); ?>',
                                         success: function(response, opts) {
                                             var rsp = Ext.decode(response.responseText);
                                             if (rsp.success) {
@@ -109,7 +109,7 @@ var assets = new Ext.grid.GridPanel({
                             fn: function(result) {
                                 if (result == 'yes') {
                                     Ext.Ajax.request({
-                                        url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'deactivate'), 'plugin'); ?>',
+                                        url: '<?php echo $this->url(array('namespace' => 'fashionweb', 'area' => 'generic', 'plugin' => 'assets', 'paction' => 'deactivate'), 'plugin'); ?>',
                                         success: function(response, opts) {
                                             var rsp = Ext.decode(response.responseText);
                                             if (rsp.success) {
@@ -138,7 +138,7 @@ var assets = new Ext.grid.GridPanel({
 			fn: function(result) {
                             if (result == 'yes') {
                                 Ext.Ajax.request({
-                                    url: '<?php echo $this->url(array('area' => 'management', 'plugin' => 'assets', 'paction' => 'delete'), 'plugin'); ?>',
+                                    url: '<?php echo $this->url(array('namespace' => 'fashionweb', 'area' => 'generic', 'plugin' => 'assets', 'paction' => 'delete'), 'plugin'); ?>',
 				    success: function(response, opts) {
                                         var rsp = Ext.decode(response.responseText);
 				        if (rsp.success) {

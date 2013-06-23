@@ -29,9 +29,11 @@ class Fashionweb_Plugin_Quotes_Generic_Controller extends Moraso_Adm_Plugin_Cont
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('quote', APPLICATION_PATH . '/plugins/generic/management/quotes/forms/edit.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/edit.ini');
         $form->title = Aitsu_Translate :: translate('Edit quote');
-        $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
+        $form->url = $this->view->url(array('paction' => 'edit'));
 
         $classesFromConfig = Moraso_Config::get('quotes.config.classes');
 

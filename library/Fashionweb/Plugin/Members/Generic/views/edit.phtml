@@ -10,7 +10,7 @@ var formSubmit = function(formId) {
                         values = Ext.getCmp(formId).getForm().getValues();
                     
 			Ext.aitsu.msg('<?php echo Aitsu_Translate :: translate('Saved'); ?>', '<?php echo Aitsu_Translate :: translate('Form data have been saved.'); ?>');
-			Ext.getCmp('membersGrid').getStore().load();
+                        Ext.getCmp('membersGrid').getStore().load();
                         Ext.aitsu.load(['<?php echo $this->url(array('paction' => 'edit')); ?>'], null, {
                             id: values.id
                         });

@@ -31,9 +31,11 @@ class Fashionweb_Plugin_Bookingsystem_Generic_Controller extends Moraso_Adm_Plug
 
         $this->_helper->layout->disableLayout();
 
-        $form = Aitsu_Forms::factory('event', APPLICATION_PATH . '/plugins/generic/management/bookingsystem/forms/edit.ini');
+        $classExplode = explode('_', __CLASS__);
+
+        $form = Aitsu_Forms::factory(strtolower($classExplode[2]), APPLICATION_LIBPATH . '/' . $classExplode[0] . '/' . $classExplode[1] . '/' . $classExplode[2] . '/' . $classExplode[3] . '/forms/edit.ini');
         $form->title = Aitsu_Translate :: translate('Edit request');
-        $form->url = $this->view->url(array('paction' => 'edit'), 'plugin');
+        $form->url = $this->view->url(array('paction' => 'edit'));
 
         /* status */
         $statusCollection = array();

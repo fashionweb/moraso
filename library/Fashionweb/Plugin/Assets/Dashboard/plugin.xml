@@ -1,0 +1,12 @@
+<plugin>
+    <id>4fcf0b8c-b71c-465b-aa70-1a977f000001</id>
+    <name>Assets</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.assets.dashboard</identifier>
+        </privilege>
+    </privileges>
+</plugin>

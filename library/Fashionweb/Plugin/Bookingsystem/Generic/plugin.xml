@@ -1,0 +1,13 @@
+<plugin>
+    <id></id>
+    <name>Bookingsystem</name>
+    <icon>tm-terminal</icon>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.bookingsystem.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

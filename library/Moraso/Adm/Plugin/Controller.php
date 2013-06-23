@@ -22,17 +22,23 @@ abstract class Moraso_Adm_Plugin_Controller extends Zend_Controller_Action {
         
     }
 
+    public static function install($namespace, $plugin, $type) {
+
+        Moraso_Plugins::installPrivileges($namespace, $plugin, $type);
+        Moraso_Plugins::installDatabase($namespace, $plugin, $type);
+    }
+
     public static function getPosition($id, $plugin, $type = 'article') {
 
         if ($type === 'category') {
             return self::getPositionCat($id, $plugin);
         }
 
-        if (!isset(Aitsu_Article_Config::factory($id)->plugin->$plugin->article->position)) {
+        if (!isset(Aitsu_Article_Config::factory($id)->plugin->$plugin->$type->position)) {
             return 0;
         }
 
-        $position = Aitsu_Article_Config::factory($id)->plugin->$plugin->article->position;
+        $position = Aitsu_Article_Config::factory($id)->plugin->$plugin->$type->position;
 
         if (!isset($position->ifindex)) {
             return $position->default;
@@ -57,10 +63,10 @@ abstract class Moraso_Adm_Plugin_Controller extends Zend_Controller_Action {
     }
 
     protected static function getDashboardEnabled($plugin) {
+        
+        $user = Aitsu_Adm_User::getInstance();
 
-        $enabled = Moraso_Config::get('dashboard.plugin.' . $plugin . '.enabled');
-
-        return filter_var($enabled, FILTER_VALIDATE_BOOLEAN);
+        return $user->isAllowed(array('area' => 'plugin.' . strtolower($plugin) . '.dashboard')) ? true : false;
     }
 
 }

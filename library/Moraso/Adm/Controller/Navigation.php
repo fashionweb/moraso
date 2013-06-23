@@ -10,6 +10,28 @@ class Moraso_Adm_Controller_Navigation extends Zend_Controller_Plugin_Abstract {
 
         $t = Zend_Registry::get('Zend_Translate');
         try {
+
+            $plugins = $this->_getPlugins(null, array('Aitsu', 'Moraso'));
+
+            $pluginsNav = array(
+                'label' => 'Plugins',
+                'id' => 'plugins',
+                'controller' => 'plugins',
+                'action' => 'index',
+                'route' => 'default',
+                'pages' => $plugins,
+                'ac' => array(
+                    'area' => 'plugins'
+                ),
+                'icon' => 'tm-plugin'
+            );
+            
+            if (empty($plugins)) {
+                $pluginsNav['ac'] = array(
+                    'area' => 'keinZutritt'
+                );
+            }
+            
             $nav = array(
                 array(
                     'label' => $t->translate('Dashboard'),
@@ -98,17 +120,6 @@ class Moraso_Adm_Controller_Navigation extends Zend_Controller_Plugin_Abstract {
                             'icon' => 'tm-configuration'
                         ),
                         array(
-                            'label' => $t->translate('Syndication'),
-                            'id' => 'syndication',
-                            'controller' => 'syndication',
-                            'action' => 'index',
-                            'route' => 'default',
-                            'ac' => array(
-                                'area' => 'syndication'
-                            ),
-                            'icon' => 'tm-syndication'
-                        ),
-                        array(
                             'label' => $t->translate('Translations'),
                             'id' => 'translation',
                             'controller' => 'translation',
@@ -134,28 +145,16 @@ class Moraso_Adm_Controller_Navigation extends Zend_Controller_Plugin_Abstract {
                 ),
                 array(
                     'label' => 'System',
-                    'id' => uniqid(),
+                    'id' => 'system',
                     'controller' => 'plugins',
                     'action' => 'index',
                     'route' => 'default',
-                    'pages' => $this->_getCorePluginNav(),
+                    'pages' => $this->_getPlugins(array('Aitsu', 'Moraso')),
                     'ac' => array(
                         'area' => 'plugins'
                     ),
-                    'icon' => 'tm-plugin'
-                ),
-                array(
-                    'label' => 'Plugins',
-                    'id' => 'plugins',
-                    'controller' => 'plugins',
-                    'action' => 'index',
-                    'route' => 'default',
-                    'pages' => $this->_getPluginNav(),
-                    'ac' => array(
-                        'area' => 'plugins'
-                    ),
-                    'icon' => 'tm-plugin'
-                ),
+                    'icon' => 'tm-management'
+                ), $pluginsNav,
                 array(
                     'label' => $t->translate('Logout'),
                     'id' => 'logout',
@@ -172,94 +171,50 @@ class Moraso_Adm_Controller_Navigation extends Zend_Controller_Plugin_Abstract {
         }
     }
 
-    protected function _getPluginNav() {
+    protected function _getPlugins($with = array(), $without = array()) {
 
         $user = Aitsu_Adm_User::getInstance();
 
-        $dir = APPLICATION_PATH . '/plugins/generic';
+        $namespaces = Moraso_Plugins::getNamespaces();
 
-        $files = Aitsu_Util_Dir::scan(APPLICATION_PATH . '/plugins/generic', '.description.txt');
-        sort($files);
-        $baseLength = strlen(APPLICATION_PATH . '/plugins/generic/');
         $plugins = array();
-        foreach ($files as $file) {
-            $content = explode("\n", file_get_contents($file));
-            $file = substr($file, $baseLength);
-            $file = explode('/', $file);
-            if (count($file) == 2) {
-                if ($user != null && $user->isAllowed(array(
-                            'area' => 'plugin.' . $file[0]
-                        ))) {
-                    $plugins[] = array(
-                        'label' => trim($content[0]),
-                        'id' => uniqid(),
-                        'controller' => 'plugins',
-                        'action' => 'index',
-                        'params' => array(
-                            'area' => $file[0]
-                        ),
-                        'route' => 'plugins',
-                        'pages' => array(),
-                        'icon' => isset($content[2]) ? $content[2] : ''
-                    );
+        foreach ($namespaces as $namespace) {
+
+            if ((empty($without) && in_array($namespace, $with)) || (empty($with) && !in_array($namespace, $without))) {
+
+                $pluginDir = APPLICATION_LIBPATH . '/' . $namespace . '/Plugin';
+
+                $files = Aitsu_Util_Dir::scan($pluginDir, 'Class.php');
+                $baseLength = strlen($pluginDir);
+
+                foreach ($files as $plugin) {
+                    $pluginXml = realpath(dirname($plugin) . '/plugin.xml');
+                    $pluginInfo = simplexml_load_file($pluginXml);
+                    $pluginPathInfo = explode('/', substr($plugin, $baseLength + 1));
+                    $pluginType = $pluginPathInfo[1];
+                    $pluginName = $pluginPathInfo[0];
+
+                    if ($pluginType === 'Generic') {
+                        $aclAreaCheck = 'plugin.' . strtolower($pluginName) . '.generic';
+
+                        if ($user != null && $user->isAllowed(array('area' => $aclAreaCheck))) {
+                            $plugins[] = array(
+                                'label' => (string) $pluginInfo->name,
+                                'id' => uniqid(),
+                                'controller' => 'plugin',
+                                'params' => array(
+                                    'namespace' => $namespace,
+                                    'plugin' => $pluginName,
+                                    'paction' => 'index',
+                                    'area' => 'generic'
+                                ),
+                                'route' => 'plugin',
+                                'pages' => array(),
+                                'icon' => (string) $pluginInfo->icon
+                            );
+                        }
+                    }
                 }
-            } elseif (count($file) == 3) {
-                if ($user != null && $user->isAllowed(array(
-                            'area' => 'plugin.' . $file[0] . '.' . $file[1]
-                        ))) {
-                    $plugins[count($plugins) - 1]['pages'][] = array(
-                        'label' => trim($content[0]),
-                        'id' => uniqid(),
-                        'controller' => 'plugin',
-                        'action' => 'index',
-                        'params' => array(
-                            'area' => $file[0],
-                            'plugin' => $file[1],
-                            'paction' => 'index'
-                        ),
-                        'route' => 'plugin',
-                        'icon' => isset($content[2]) ? $content[2] : ''
-                    );
-                }
-            }
-        }
-
-        return $plugins;
-    }
-
-    protected function _getCorePluginNav() {
-        $user = Aitsu_Adm_User::getInstance();
-
-        $pluginDir = APPLICATION_LIBPATH . '/Moraso/Plugins';
-
-        $files = Aitsu_Util_Dir::scan($pluginDir, 'Class.php');
-        $baseLength = strlen($pluginDir);
-        $plugins = array();
-
-        foreach ($files as $plugin) {
-            $pluginXml = realpath(dirname($plugin) . '/../plugin.xml');
-            $pluginInfo = simplexml_load_file($pluginXml);
-            $pluginPathInfo = explode('/', substr($plugin, $baseLength + 1));
-            $pluginType = $pluginPathInfo[1];
-            $pluginName = $pluginPathInfo[0];
-
-            $aclAreaCheck = 'plugin.' . strtolower($pluginName) . '.' . strtolower($pluginType);
-
-            if ($user != null && $user->isAllowed(array('area' => $aclAreaCheck))) {
-                $plugins[] = array(
-                    'label' => (string) $pluginInfo->name,
-                    'id' => uniqid(),
-                    'controller' => 'morasoplugin',
-                    'action' => 'index',
-                    'params' => array(
-                        'area' => $pluginType,
-                        'plugin' => $pluginName,
-                        'paction' => 'index'
-                    ),
-                    'route' => 'morasoplugin',
-                    'pages' => array(),
-                    'icon' => (string) $pluginInfo->icon
-                );
             }
         }
 

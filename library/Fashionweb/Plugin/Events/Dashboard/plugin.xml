@@ -1,0 +1,12 @@
+<plugin>
+    <id>517a8002-1fa0-447d-977a-3798c0a8b230</id>
+    <name>Events</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.events.dashboard</identifier>
+        </privilege>
+    </privileges>
+</plugin>

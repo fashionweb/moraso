@@ -1,100 +1,35 @@
 <?php
 
-
 /**
- * @author Andreas Kummer, w3concepts AG
- * @copyright Copyright &copy; 2010, w3concepts AG
- * 
- * {@id $Id: PluginController.php 18806 2010-09-17 08:14:54Z akm $}
+ * @author Christian Kehres <c.kehres@webtischlerei.de>
+ * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-
 class PluginController extends Zend_Controller_Action {
 
-	public function indexAction() {
+    public function indexAction() {
 
-		$area = $this->getRequest()->getParam('area');
-		$plugin = $this->getRequest()->getParam('plugin');
-		$action = $this->getRequest()->getParam('paction');
-		$controller = $plugin . 'Plugin';
+        $this->_helper->viewRenderer->setNoRender(true);
+        
+        $plugin = $this->getRequest()->getParam('plugin');
+        $area = $this->getRequest()->getParam('area');
 
-		if (!Aitsu_Adm_User :: getInstance()->isAllowed(array (
-				'area' => 'plugin.' . $area . '.' . $plugin
-			))) {
-			return;
-		}
+        
+        
+        if (!Aitsu_Adm_User::getInstance()->isAllowed(array('area' => 'plugin.' . strtolower($plugin) . '.' . strtolower($area)))) {
+            return;
+        }
 
-		$this->_helper->viewRenderer->setNoRender(true);
+        $namespace = $this->getRequest()->getParam('namespace');
 
-		include_once (APPLICATION_PATH . '/plugins/generic/' . $area . '/' . $plugin . '/Class.php');
+        $pluginPath = APPLICATION_LIBPATH . '/' . ucfirst($namespace) . '/Plugin/' . ucfirst($plugin) . '/' . ucfirst($area) . '/';
 
-		$this->view->setScriptPath(array (
-			APPLICATION_PATH . '/plugins/generic/' . $area . '/' . $plugin . '/views/'
-		));
+        include_once ($pluginPath . 'Class.php');
 
-		$this->getRequest()->setControllerName($controller)->setActionName($action)->setDispatched(false);
-	}
+        $this->view->setScriptPath(array(
+            $pluginPath . 'views/'
+        ));
 
-	public function articleAction() {
+        $this->getRequest()->setControllerName($namespace . '_Plugin_' . ucfirst($plugin) . '_' . ucfirst($area) . '_')->setActionName($this->getRequest()->getParam('paction'))->setDispatched(false);
+    }
 
-		$plugin = $this->getRequest()->getParam('plugin');
-
-		if (is_object($plugin)) {
-			$plugin = $plugin->name;
-		}
-
-		$action = $this->getRequest()->getParam('paction');
-		$controller = $plugin . 'Article';
-		$this->_helper->viewRenderer->setNoRender(true);
-
-		include_once (APPLICATION_PATH . '/plugins/article/' . $plugin . '/Class.php');
-
-		$this->view->setScriptPath(array (
-			APPLICATION_PATH . '/plugins/article/' . $plugin . '/views/'
-		));
-
-		$this->getRequest()->setControllerName($controller)->setActionName($action)->setDispatched(false);
-	}
-
-	public function dashboardAction() {
-
-		$plugin = $this->getRequest()->getParam('plugin');
-
-		if (is_object($plugin)) {
-			$plugin = $plugin->name;
-		}
-
-		$action = $this->getRequest()->getParam('paction');
-		$controller = $plugin . 'Dashboard';
-		$this->_helper->viewRenderer->setNoRender(true);
-
-		include_once (APPLICATION_PATH . '/plugins/dashboard/' . $plugin . '/Class.php');
-
-		$this->view->setScriptPath(array (
-			APPLICATION_PATH . '/plugins/dashboard/' . $plugin . '/views/'
-		));
-
-		$this->getRequest()->setControllerName($controller)->setActionName($action)->setDispatched(false);
-	}
-
-	public function categoryAction() {
-
-		$plugin = $this->getRequest()->getParam('plugin');
-
-		if (is_object($plugin)) {
-			$plugin = $plugin->name;
-		}
-
-		$action = $this->getRequest()->getParam('paction');
-		$controller = $plugin . 'Category';
-		$this->_helper->viewRenderer->setNoRender(true);
-
-		include_once (APPLICATION_PATH . '/plugins/category/' . $plugin . '/Class.php');
-
-		$this->view->setScriptPath(array (
-			APPLICATION_PATH . '/plugins/category/' . $plugin . '/views/'
-		));
-
-		$this->getRequest()->setControllerName($controller)->setActionName($action)->setDispatched(false);
-	}
-	
 }

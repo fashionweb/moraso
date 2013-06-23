@@ -1,0 +1,13 @@
+<plugin>
+    <id></id>
+    <name>Configuration</name>
+    <icon>execute</icon>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.configuration.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

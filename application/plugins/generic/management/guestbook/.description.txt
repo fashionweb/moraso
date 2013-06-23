@@ -1,3 +1,0 @@
-Guestbook
-View and manage guestbook entries.
-tm-terminal

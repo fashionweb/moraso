@@ -1,0 +1,13 @@
+<plugin>
+    <id></id>
+    <name>Assets</name>
+    <icon>tm-asset</icon>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.assets.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

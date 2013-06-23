@@ -1,0 +1,13 @@
+<plugin>
+    <id></id>
+    <name>Quotes</name>
+    <icon>tm-quotes</icon>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.quotes.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

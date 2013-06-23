@@ -1,3 +1,0 @@
-Quotes
-View and manage quotes.
-tm-quotes

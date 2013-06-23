@@ -1,0 +1,12 @@
+<plugin>
+    <id>5174fb11-d8fc-46ab-bbcb-18b6c0a8b230</id>
+    <name>Bookingsystem</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.bookingsystem.dashboard</identifier>
+        </privilege>
+    </privileges>
+</plugin>

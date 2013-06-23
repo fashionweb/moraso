@@ -1,43 +1,51 @@
 <?php
 
-
 /**
- * @author Andreas Kummer, w3concepts AG
- * @copyright Copyright &copy; 2010, w3concepts AG
+ * @author Christian Kehres <c.kehres@webtischlerei.de>
+ * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-
 class IndexController extends Zend_Controller_Action {
 
-	public function init() {
-		
-		if ($this->getRequest()->getParam('ajax')) {
-			header("Content-type: text/javascript");
-			$this->_helper->layout->disableLayout();
-		}
-	}
+    public function init() {
 
-	public function indexAction() {
-	
-		$this->_loadPlugins();
-	}
-	
-	protected function _loadPlugins() {
+        if ($this->getRequest()->getParam('ajax')) {
+            header("Content-type: text/javascript");
+            $this->_helper->layout->disableLayout();
+        }
+    }
 
-		$plugins = Aitsu_Util_Dir :: scan(APPLICATION_PATH . '/plugins/dashboard', 'Class.php');
-		$this->view->plugins = array ();
-		foreach ($plugins as $plugin) {
-			$parts = explode('/', $plugin);
-			$pluginName = $parts[count($parts) - 2];
-			include_once ($plugin);
-			$controller = ucfirst($pluginName) . 'Dashboard';
-			$controllerClass = $controller . 'Controller';
-			$registry = call_user_func(array (
-				$controllerClass,
-				'register'
-			));
-			if ($registry->enabled) {
-				$this->view->plugins[] = $registry;
-			}
-		}
-	}
+    public function indexAction() {
+
+        $this->view->plugins = array();
+
+        $namespaces = Moraso_Plugins::getNamespaces();
+
+        foreach ($namespaces as $namespace) {
+            $pluginDir = APPLICATION_LIBPATH . '/' . $namespace . '/Plugin';
+
+            $plugins = Aitsu_Util_Dir::scan($pluginDir, 'Class.php');
+            $baseLength = strlen($pluginDir);
+
+            foreach ($plugins as $plugin) {
+                $pluginPathInfo = explode('/', substr($plugin, $baseLength + 1));
+
+                if ($pluginPathInfo[1] == 'Dashboard') {
+                    include_once ($plugin);
+
+                    $registry = call_user_func(array(
+                        $namespace . '_Plugin_' . $pluginPathInfo[0] . '_Dashboard_Controller',
+                        'register'
+                    ));
+
+                    if ($registry->enabled) {
+                        $this->view->plugins[] = array(
+                            'namespace' => $namespace,
+                            'name' => $pluginPathInfo[0]
+                        );
+                    }
+                }
+            }
+        }
+    }
+
 }

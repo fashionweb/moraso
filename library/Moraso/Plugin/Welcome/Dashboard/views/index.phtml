@@ -1,0 +1,34 @@
+var dashboard = Ext.getCmp('dashboard');
+
+var welcomeScreen = new Ext.Panel({
+    id: 'welcomeScreen',
+    title: 'welcome to moraso cms',
+    items: [{
+        html: "<p><?php echo $this->greeting; ?> Herr <?php echo $this->user; ?>,<br /><br />aktuell <?php echo $this->todos; ?> für Sie hinterlegt.</p>",
+        xtype: "panel",
+        bodyStyle: 'padding: 10px'
+    }],
+    bbar: {
+    <?php if (!empty($this->todos)) : ?>
+        items: [{
+            ltip: '<?php echo Aitsu_Translate::translate('Open todo list'); ?>',
+            iconCls: 'tm-todo',
+            handler: function(b, e) {
+                Ext.aitsu.load(['plugin/Aitsu/Todo/Generic'], null, {ajax: 1});
+            }
+        }]
+    <?php endif; ?>
+    }
+});
+
+dashboard.add({
+    columnWidth: 1/3,
+    baseCls: 'x-plain',
+    bodyStyle: 'padding: 6px 4px 0 4px',
+    items: {
+        unstyled: true,
+        height: 200,
+        layout: 'fit',
+        items: welcomeScreen
+    }
+});

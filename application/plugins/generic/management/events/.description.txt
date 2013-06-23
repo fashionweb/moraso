@@ -1,3 +1,0 @@
-Events
-View and manage events.
-tm-events

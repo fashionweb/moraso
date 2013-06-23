@@ -1,3 +1,0 @@
-Assets
-View and manage assets.
-tm-asset

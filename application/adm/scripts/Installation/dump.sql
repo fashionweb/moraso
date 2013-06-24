@@ -67,8 +67,8 @@ INSERT INTO `ait_acl_privilege` VALUES (138,'plugin.revisionprogression.article'
 INSERT INTO `ait_acl_privilege` VALUES (139,'plugin.todo.article');
 INSERT INTO `ait_acl_privilege` VALUES (143,'plugin.assets.dashboard');
 INSERT INTO `ait_acl_privilege` VALUES (144,'plugin.assets.generic');
-INSERT INTO `ait_acl_privilege` VALUES (145,'plugin.bokingsystem.dashboard');
-INSERT INTO `ait_acl_privilege` VALUES (146,'plugin.bokingsystem.generic');
+INSERT INTO `ait_acl_privilege` VALUES (145,'plugin.bookingsystem.dashboard');
+INSERT INTO `ait_acl_privilege` VALUES (146,'plugin.bookingsystem.generic');
 INSERT INTO `ait_acl_privilege` VALUES (147,'plugin.events.dashboard');
 INSERT INTO `ait_acl_privilege` VALUES (148,'plugin.events.generic');
 INSERT INTO `ait_acl_privilege` VALUES (149,'plugin.quotes.generic');

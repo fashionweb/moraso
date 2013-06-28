@@ -1,0 +1,21 @@
+<!-- Javascript -->
+<?php if (count($this->articles) > 0): ?>
+    <?php if (Aitsu_Application_Status::isEdit()) : ?>
+        <span>List.Articles-Modul mit JavaScript Ausgabe bearbeiten</span>
+    <?php endif; ?>
+    <?php
+    $articles = array();
+    foreach ($this->articles as $article) {
+        $imagePath = Moraso_Html_Helper_Image::getPath($article->idart, $article->mainimage, 1920, 1080, 2);
+        $article_title = $article->teasertitle;
+        $article_url = '{ref:idart-' . $article->idart . '}';
+        $article_text = $article->summary;
+
+        $articles[] = "image: '{$imagePath}', article_title: '{$article_title}', article_url: '{$article_url}', article_text: '{$article_text}'";
+    }
+    ?>
+
+    <script type='text/javascript'>
+        var supersized_slides = [{<?php echo implode('},{', $articles); ?>}];
+    </script>
+<?php endif; ?>

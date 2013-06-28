@@ -131,4 +131,10 @@
         <identifier>edit.ckeditor.shortcode.list.shortcode</identifier>
         <value>[List.Articles:INDEX]</value>
     </configuration>
+    <configuration>
+        <config>default</config>
+        <env>default</env>
+        <identifier>edit.ckeditor.type</identifier>
+        <value>fashionweb</value>
+    </configuration>
 </configurations>

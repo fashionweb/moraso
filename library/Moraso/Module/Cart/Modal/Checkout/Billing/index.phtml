@@ -10,12 +10,12 @@
             <div class="row">
                 <div class="large-12 columns">
                     <label for="same_than_delivery">
-                        <input type="checkbox" id="same_than_delivery" name="same_than_delivery" style="display: none;"<?php echo $this->data['same_than_delivery'] === 'on' ? ' CHECKED' : ''; ?>>
+                        <input type="checkbox" id="same_than_delivery" name="same_than_delivery" style="display: none;"<?php echo isset($this->data['same_than_delivery']) && $this->data['same_than_delivery'] === 'on' ? ' CHECKED' : ''; ?>>
                         <span class="custom checkbox"></span> Entspricht der Versandadresse
                     </label>
                 </div>
             </div>
-
+            
             <div class="row">
                 <div class="large-2 columns">
                     <label>Anrede</label>

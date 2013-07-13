@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Cart_Modal_Checkout_Class extends Aitsu_Module_Abstract {
+class Moraso_Module_Cart_Modal_Checkout_Class extends Moraso_Module_Abstract {
 
     protected $_allowEdit = false;
     protected $_renderOnlyAllowed = true;
@@ -27,12 +27,16 @@ class Moraso_Module_Cart_Modal_Checkout_Class extends Aitsu_Module_Abstract {
         foreach ($cartArticles as $idart => $qty) {
             $articleInfo = Aitsu_Persistence_Article::factory($idart)->load();
 
-            $price = 17.95;
+            $idartlang = Moraso_Util::getIdArtLang($idart);
+            
+            $articleProperties = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
+
+            $articlePropertyCart = (object) $articleProperties->cart;
 
             $articles[$idart] = (object) array(
                         'qty' => $qty,
                         'pagetitle' => $articleInfo->pagetitle,
-                        'price_total' => $nf->formatCurrency(bcmul($price, $qty, 2), 'EUR')
+                        'price_total' => $nf->formatCurrency(bcmul($articlePropertyCart->price->value, $qty, 2), 'EUR')
             );
         }
 

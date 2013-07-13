@@ -12,7 +12,9 @@ class Moraso_Cart_Listeners_Dispatch_Cart implements Aitsu_Event_Listener_Interf
             if (isset($_POST['action'])) {
                 $cart = Moraso_Cart::getInstance();
 
-                if ($_POST['action'] === 'addArticleToCart') {
+                if ($_POST['action'] === 'deleteArticleFromCart') {
+                    $cart->removeArticle($_POST['article_id']);
+                } elseif ($_POST['action'] === 'addArticleToCart') {
                     if (!$cart->addArticle($_POST['idart'], $_POST['qty'])) {
                         echo 'da ist was schief gelaufen!';
                         header('X-Error-Message: Artikel konnte dem Warenkorb nicht hinzugefügt werden', true, 500);

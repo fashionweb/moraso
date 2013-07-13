@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Header_Meta_Geo_Class extends Moraso_Module_Abstract {
+class Moraso_Module_HTML_Meta_Geo_Class extends Moraso_Module_Abstract {
 
     protected $_allowEdit = false;
 

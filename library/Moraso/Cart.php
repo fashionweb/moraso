@@ -85,22 +85,21 @@ class Moraso_Cart
         return $this->_cart->properties;
     }
 
-    public function getAmount($id = null)
+    public function getAmount()
     {
-        if (is_null($id)) {
-            $articles = $this->getArticles();
+        $amount = 0;
 
-            foreach ($articles as $id => $qty) {
-                $price = 17.95;
+        $articles = $this->getArticles();
 
-                $amount = $amount + bcmul($price, $qty, 2);
-            }
-        } else {
-            $price = 129.95;
-            $qty = 3;
-            $amount = bcmul($price, $qty, 2);
+        foreach ($articles as $idart => $qty) {
+            $idartlang = Moraso_Util::getIdArtLang($idart);
+
+            $articleProperties = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
+
+            $articlePropertyCart = (object) $articleProperties->cart;
+
+            $amount = bcadd($amount, bcmul($articlePropertyCart->price->value, $qty, 2), 2);
         }
-
 
         return $amount;
     }
@@ -123,6 +122,8 @@ class Moraso_Cart
                         'qty' => $qty
             ));
         }
+
+        $this->_cart->customer_id = 29;
     }
 
     public function doCheckout()
@@ -132,9 +133,121 @@ class Moraso_Cart
             'ordered' => true
         ));
 
+        $this->saveCustomerInformations();
+
+        $this->sendMail();
+
         $this->flush();
 
         return true;
+    }
+
+    public function saveCustomerInformations()
+    {
+        $delivery = $this->getProperty('delivery');
+        $billing = $this->getProperty('billing');
+
+        Moraso_Db::put('_cart_order_has_customer', 'id', array(
+            'order_id' => $this->_cart->order_id,
+            'customer_id' => $this->_cart->customer_id,
+            'delivery_title' => $delivery['title'],
+            'delivery_firstname' => $delivery['name']['first'],
+            'delivery_secondname' => $delivery['name']['middle'],
+            'delivery_lastname' => $delivery['name']['last'],
+            'delivery_street' => $delivery['street'],
+            'delivery_housenumber' => $delivery['housenumber'],
+            'delivery_postal_code' => $delivery['postal_code'],
+            'delivery_city' => $delivery['city'],
+            'delivery_telephone' => $delivery['telephone'],
+            'delivery_fax' => $delivery['fax'],
+            'delivery_email' => $delivery['email'],
+            'billing_title' => $billing['title'],
+            'billing_firstname' => $billing['name']['first'],
+            'billing_secondname' => $billing['name']['middle'],
+            'billing_lastname' => $billing['name']['last'],
+            'billing_street' => $billing['street'],
+            'billing_housenumber' => $billing['housenumber'],
+            'billing_postal_code' => $billing['postal_code'],
+            'billing_city' => $billing['city'],
+            'billing_telephone' => $billing['telephone'],
+            'billing_fax' => $billing['fax'],
+            'billing_email' => $billing['email']
+        ));
+    }
+
+    public function sendMail()
+    {        
+        $delivery = $this->getProperty('delivery');
+        $billing = $this->getProperty('billing');
+
+        $receiver = isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing;
+
+        if ($receiver['title'] === 'Herr') {
+            $anrede = 'Sehr geehrter';
+        } elseif ($receiver['title'] === 'Frau') {
+            $anrede = 'Sehr geehrte';
+        }
+
+        $emailmessage = $anrede . ' ' . $receiver['title'] . ' ' . $receiver['name']['last'] . '<br />';
+        $emailmessage.= '<br />';
+        $emailmessage.= 'vielen Dank für Ihre Bestellung.<br />';
+        $emailmessage.= '<br />';
+        $emailmessage.= 'Ihre Bestellnummer lautet ' . $this->_cart->order_id . '.<br /><br />';
+        $emailmessage.= 'Ihre Bestellung nochmals in der Übersicht:<br />';
+        
+        $nf = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
+        
+        $amount_total = 0;
+        $amount_total_tax = array();
+        $tax_total = 0;
+        
+        foreach ($this->getArticles() as $idart => $qty) {
+            $articleInfo = Aitsu_Persistence_Article::factory($idart)->load();
+
+            $idartlang = Moraso_Util::getIdArtLang($idart);
+
+            $articleProperties = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
+
+            $articlePropertyCart = (object) $articleProperties->cart;
+
+            $price_total = bcmul($articlePropertyCart->price->value, $qty, 2);
+
+            $emailmessage.= $qty . 'x ' . $articleInfo->pagetitle . ' (' . $articlePropertyCart->sku->value . ') für ' . $nf->formatCurrency($price_total, 'EUR') . '<br />';
+            
+            $amount_total = bcadd($amount_total, $price_total, 2);
+
+            $tax_class = (int) $articlePropertyCart->tax_class->value;
+
+            if (isset($amount_total_tax[$tax_class])) {
+                $amount_total_tax[$tax_class] = $amount_total_tax[$tax_class] + ($price_total - ($price_total / ((100 + $tax_class) / 100)));
+            } else {
+                $amount_total_tax[$tax_class] = $price_total - ($price_total / ((100 + $tax_class) / 100));
+            }
+        }
+        
+        foreach ($amount_total_tax as $tax_class => $tax_value) {
+            $amount_total_tax[$tax_class] = $nf->formatCurrency($tax_value, 'EUR');
+            
+            $tax_total = $tax_total + $tax_value;
+        }
+
+        $emailmessage.= '<br />';
+        $emailmessage.= 'Gesamtsumme: ' . $nf->formatCurrency($amount_total, 'EUR') . '<br />';
+        $emailmessage.= 'enthaltende MwSt.: ' . $nf->formatCurrency($tax_total, 'EUR') . '<br />';
+        
+        $transport = new Zend_Mail_Transport_Smtp(Aitsu_Config::get('email.config.host'), array(
+            'auth' => Aitsu_Config::get('email.config.auth'),
+            'username' => Aitsu_Config::get('email.config.username'),
+            'password' => Aitsu_Config::get('email.config.password')
+        ));
+        
+        $mail = new Zend_Mail('UTF-8');
+        $mail->setFrom(Aitsu_Config::get('email.config.sender.mail'), Aitsu_Config::get('email.config.sender.name'));
+        $mail->addTo($receiver['email'], $receiver['name']['first'] . ' ' . $receiver['name']['last']);
+        $mail->addBcc(Aitsu_Config::get('email.config.sender.mail'));
+        $mail->setSubject('Ihre Bestellung');
+        $mail->setBodyHtml($emailmessage);
+        $mail->send($transport);
     }
 
     public function getOrderId()
@@ -182,7 +295,7 @@ class Moraso_Cart
 
         return $paymentStrategy;
     }
-    
+
     public static function getPaymentStrategies()
     {
         $paymentStrategies = Aitsu_Util_Dir::scan(LIBRARY_PATH . '/Moraso/Cart/Payment/Strategy', '*.php');

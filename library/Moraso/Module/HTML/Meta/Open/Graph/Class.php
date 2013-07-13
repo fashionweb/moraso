@@ -30,7 +30,7 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
         $data = array(
             'og:title' => $article->pagetitle . $this->_params->title_suffix,
             'og:type' => isset($open_graph->type->value) && !empty($open_graph->type->value) ? $open_graph->type->value : 'website',
-            'og:image' => Moraso_Html_Helper_Image::getPath($idart, $article->mainimage, 1500, 1500, 2),
+            'og:image' => Moraso_Html_Helper_Image::getPath($idart, $article->mainimage, 500, 500, 2),
             'og:url' => $url,
             'og:site_name' => $this->_params->site_name,
             'og:locale' => 'de_DE'

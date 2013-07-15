@@ -179,62 +179,126 @@ class Moraso_NestedSets
      * @param type $table
      * @return type 
      * 
-     * @example Moraso_NestedSets::treesource();
-     * @example Moraso_NestedSets::treesource(17, 1);
-     * @example Moraso_NestedSets::treesource(21, 2, '_example_table');
+     * @example Moraso_NestedSets::getSet();
+     * @example Moraso_NestedSets::getSet(17, 1);
+     * @example Moraso_NestedSets::getSet(21, true, 2, '_example_table');
      */
-    public static function getSet($node = null, $level = 0, $table = '_cat')
+    public static function getSet($node = null, $active = true, $level = 0, $table = '_cat')
     {
         $primary = self::_getPrimaryKey($table);
 
         $set = array();
 
         if (!empty($node)) {
-            $set = Moraso_Db::fetchAll('' .
-                            'select ' .
-                            '   o.' . $primary . ', ' .
-                            '   o.lft, ' .
-                            '   o.rgt, ' .
-                            '   if (o.lft + 1 = o.rgt, 0, 1) as has_children, ' .
-                            '   count(p.' . $primary . ')-1 as level ' .
-                            'from ' .
-                            '   ' . $table . ' as n, ' .
-                            '   ' . $table . ' as p, ' .
-                            '   ' . $table . ' as o ' .
-                            'where ' .
-                            '   o.lft between p.lft and p.rgt ' .
-                            'and ' .
-                            '   o.lft between n.lft and n.rgt ' .
-                            'and ' .
-                            '   n.' . $primary . ' =:id ' .
-                            'group by ' .
-                            '   o.lft ' .
-                            'having ' .
-                            '   level =:level ' .
-                            'order by ' .
-                            '   o.lft asc', array(
-                        ':id' => $node,
-                        ':level' => $level + 1
-            ));
+            if ($active) {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   o.' . $primary . ', ' .
+                                '   o.lft, ' .
+                                '   o.rgt, ' .
+                                '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.created, ' .
+                                '   o.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p, ' .
+                                '   ' . $table . ' AS o ' .
+                                'WHERE ' .
+                                '   o.lft between p.lft AND p.rgt ' .
+                                'AND ' .
+                                '   o.active =:active ' .
+                                'AND ' .
+                                '   o.lft between n.lft AND n.rgt ' .
+                                'AND ' .
+                                '   n.' . $primary . ' =:id ' .
+                                'GROUP BY ' .
+                                '   o.lft ' .
+                                'HAVING ' .
+                                '   level =:level ' .
+                                'ORDER BY ' .
+                                '   o.lft ASC', array(
+                            ':id' => $node,
+                            ':level' => $level + 1,
+                            ':active' => 1
+                ));
+            } else {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   o.' . $primary . ', ' .
+                                '   o.lft, ' .
+                                '   o.rgt, ' .
+                                '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.created, ' .
+                                '   o.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p, ' .
+                                '   ' . $table . ' AS o ' .
+                                'WHERE ' .
+                                '   o.lft between p.lft AND p.rgt ' .
+                                'AND ' .
+                                '   o.lft between n.lft AND n.rgt ' .
+                                'AND ' .
+                                '   n.' . $primary . ' =:id ' .
+                                'GROUP BY ' .
+                                '   o.lft ' .
+                                'HAVING ' .
+                                '   level =:level ' .
+                                'ORDER BY ' .
+                                '   o.lft ASC', array(
+                            ':id' => $node,
+                            ':level' => $level + 1,
+                            ':active' => 1
+                ));
+            }
         } else {
-            $set = Moraso_Db::fetchAll('' .
-                            'select ' .
-                            '   n.' . $primary . ', ' .
-                            '   o.lft, ' .
-                            '   o.rgt, ' .
-                            '   if (o.lft + 1 = o.rgt, 0, 1) as has_children, ' .
-                            '   count(*)-1 as level ' .
-                            'from ' .
-                            '   ' . $table . ' as n, ' .
-                            '   ' . $table . ' as p ' .
-                            'where ' .
-                            '   n.lft between p.lft and p.rgt ' .
-                            'group by ' .
-                            '   n.' . $primary . ' ' .
-                            'having ' .
-                            '   level = 0 ' .
-                            'order by ' .
-                            '   n.lft asc');
+            if ($active) {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   n.' . $primary . ', ' .
+                                '   n.lft, ' .
+                                '   n.rgt, ' .
+                                '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(*)-1 AS level, ' .
+                                '   n.created, ' .
+                                '   n.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p ' .
+                                'WHERE ' .
+                                '   n.lft between p.lft and p.rgt ' .
+                                'AND ' .
+                                '   n.active =:active ' .
+                                'GROUP BY ' .
+                                '   n.' . $primary . ' ' .
+                                'HAVING ' .
+                                '   level = 0 ' .
+                                'ORDER BY ' .
+                                '   n.lft ASC');
+            } else {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   n.' . $primary . ', ' .
+                                '   n.lft, ' .
+                                '   n.rgt, ' .
+                                '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(*)-1 AS level, ' .
+                                '   n.created, ' .
+                                '   n.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p ' .
+                                'WHERE ' .
+                                '   n.lft between p.lft and p.rgt ' .
+                                'GROUP BY ' .
+                                '   n.' . $primary . ' ' .
+                                'HAVING ' .
+                                '   level = 0 ' .
+                                'ORDER BY ' .
+                                '   n.lft ASC');
+            }
         }
 
         return $set;

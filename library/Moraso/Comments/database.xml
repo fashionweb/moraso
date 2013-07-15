@@ -5,7 +5,7 @@
             <constraint table="nodes" column="node_id" onupdate="restrict" ondelete="cascade"/>
         </field>
         
-        <field name="verfasser" type="varchar(255)" nullable="false" default="null" />
-        <field name="nachricht" type="text" nullable="false" default="null" />
+        <field name="author" type="varchar(255)" nullable="false" default="null" />
+        <field name="comment" type="text" nullable="false" default="null" />
     </table>
 </database>

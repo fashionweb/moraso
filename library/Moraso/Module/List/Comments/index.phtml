@@ -1,23 +1,48 @@
 <!-- Standard -->
-<?php if (count($this->comments) > 0): ?>
-    <ul>        
-        <?php foreach ($this->comments as $comment_lvl_2) : ?>      
-            <li>
-                <?= $comment_lvl_2['node_id'] ?>:<?= $comment_lvl_2['comment']['verfasser'] ?>:<br /><?= $comment_lvl_2['comment']['nachricht'] ?>
-                <ul>
-                    <?php foreach ($comment_lvl_2['sub_comments'] as $comment_lvl_3) : ?>                    
-                        <li><?= $comment_lvl_3['node_id'] ?>:<?= $comment_lvl_3['comment']['verfasser'] ?>:<br /><?= $comment_lvl_3['comment']['nachricht'] ?></li>
+<script type="application/x-moraso" src="List.Comments.Form">
+    parent_node_id = <?= $this->parent_node_id ?>
+</script>
 
-                        <ul>
-                            <?php foreach ($comment_lvl_3['sub_comments'] as $comment_lvl_4) : ?>
-                                <li><?= $comment_lvl_4['node_id'] ?>:<?= $comment_lvl_4['comment']['verfasser'] ?>:<br /><?= $comment_lvl_4['comment']['nachricht'] ?></li>
-                            <?php endforeach; ?>
-                        </ul>
-                    <?php endforeach; ?>
-                </ul>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-<?php else: ?>
-    <p>keine Kommentare verfasst</p>
-<?php endif; ?>
+<section id="list-comments">
+    <?php if (count($this->comments) > 0): ?>
+        <ul class="no-bullet">        
+            <?php foreach ($this->comments as $comment_lvl_2) : ?>    
+                <li class="panel">
+                    <strong><?= $comment_lvl_2['comment']['author'] ?></strong><br />
+                    <small>am <?= date('d.m.Y H:i', strtotime($comment_lvl_2['created'])) ?></small> <br />
+                    <p><?= nl2br($comment_lvl_2['comment']['comment']) ?></p>
+
+                    <script type="application/x-moraso" src="List.Comments.Form">
+                        parent_node_id = <?= $comment_lvl_2['node_id'] ?>
+                    </script>
+
+                    <ul class="no-bullet">
+                        <?php foreach ($comment_lvl_2['sub_comments'] as $comment_lvl_3) : ?>                    
+                            <li class="panel">
+                                <strong><?= $comment_lvl_3['comment']['author'] ?></strong><br />
+                                <small>am <?= date('d.m.Y H:i', strtotime($comment_lvl_3['created'])) ?></small> <br />
+                                <p><?= nl2br($comment_lvl_3['comment']['comment']) ?></p>
+
+                                <script type="application/x-moraso" src="List.Comments.Form">
+                                    parent_node_id = <?= $comment_lvl_3['node_id'] ?>
+                                </script>
+                            </li>
+
+                            <ul class="no-bullet">
+                                <?php foreach ($comment_lvl_3['sub_comments'] as $comment_lvl_4) : ?>
+                                    <li class="panel">
+                                        <strong><?= $comment_lvl_4['comment']['author'] ?></strong><br />
+                                        <small>am <?= date('d.m.Y H:i', strtotime($comment_lvl_4['created'])) ?></small> <br />
+                                        <p><?= nl2br($comment_lvl_4['comment']['comment']) ?></p>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>Bisher wurden keine Kommentare verfasst, sei der Erste!</p>
+    <?php endif; ?>
+</section>

@@ -15,15 +15,15 @@ class Moraso_Comments
         return Moraso_Db::put('_nodes_comments', null, $comment);
     }
 
-    public static function getComments($node_id, $startLevel = 1, $maxLevel = 2)
+    public static function getComments($node_id, $active = true, $startLevel = 1, $maxLevel = 2)
     {
-        $comments = Moraso_Nodes::getNodes($node_id, $startLevel);
-
-        foreach ($comments as &$comment) {            
+        $comments = Moraso_Nodes::getNodes($node_id, $active, $startLevel);
+                
+        foreach ($comments as &$comment) {
             $comment['comment'] = Moraso_Db::fetchRow('' .
                             'SELECT ' .
-                            '   verfasser, ' .
-                            '   nachricht ' .
+                            '   author, ' .
+                            '   comment ' .
                             'FROM ' .
                             '   _nodes_comments ' .
                             'WHERE ' .

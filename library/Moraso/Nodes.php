@@ -14,9 +14,9 @@ class Moraso_Nodes
         return Moraso_NestedSets::insert($parent_node_id, $public, $active, self::table, self::primary);
     }
     
-    public static function getNodes($parent_node_id, $level = 0)
+    public static function getNodes($parent_node_id, $active = true, $level = 0)
     {
-        return Moraso_NestedSets::getSet($parent_node_id, $level, self::table, self::primary);
+        return Moraso_NestedSets::getSet($parent_node_id, $active, $level, self::table, self::primary);
     }
 
 }

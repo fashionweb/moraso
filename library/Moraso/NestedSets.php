@@ -249,8 +249,7 @@ class Moraso_NestedSets
                                 'ORDER BY ' .
                                 '   o.lft ASC', array(
                             ':id' => $node,
-                            ':level' => $level + 1,
-                            ':active' => 1
+                            ':level' => $level + 1
                 ));
             }
         } else {
@@ -276,7 +275,9 @@ class Moraso_NestedSets
                                 'HAVING ' .
                                 '   level = 0 ' .
                                 'ORDER BY ' .
-                                '   n.lft ASC');
+                                '   n.lft ASC', array(
+                            ':active' => 1
+                ));
             } else {
                 $set = Moraso_Db::fetchAll('' .
                                 'SELECT ' .

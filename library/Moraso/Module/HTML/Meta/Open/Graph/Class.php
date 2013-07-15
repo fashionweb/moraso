@@ -35,7 +35,7 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
             'og:image:height' => 500,
             'og:url' => $url,
             'og:locale' => 'de_DE',
-            'og:country-name' => 'Germany'
+            'og:country-name' => 'GER'
         );
 
         /*
@@ -47,8 +47,8 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
         }
 
         // og:country-name
-        if (isset($this->_params->countryname) && !empty($this->_params->countryname)) {
-            $data['og:country-name'] = $this->_params->countryname;
+        if (isset($this->_params->country_name) && !empty($this->_params->country_name)) {
+            $data['og:country-name'] = $this->_params->country_name;
         }
 
         // og:site_name
@@ -95,6 +95,15 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
         if (isset($open_graph->type->locality) && !empty($open_graph->type->locality)) {
             $data['og:locality'] = $open_graph->type->locality;
         }
+        
+        // og:city
+        if (isset($this->_params->city) && !empty($this->_params->city)) {
+            $data['og:city'] = $this->_params->city;
+        }
+
+        if (isset($open_graph->type->city) && !empty($open_graph->type->city)) {
+            $data['og:city'] = $open_graph->type->city;
+        }
 
         // og:latitude
         if (isset($this->_params->latitude) && !empty($this->_params->latitude)) {
@@ -112,6 +121,60 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
 
         if (isset($open_graph->type->longitude) && !empty($open_graph->type->longitude)) {
             $data['og:longitude'] = $open_graph->type->longitude;
+        }
+
+        // og:street-address
+        if (isset($this->_params->street_address) && !empty($this->_params->street_address)) {
+            $data['og:street-address'] = $this->_params->street_address;
+        }
+
+        if (isset($open_graph->type->street_address) && !empty($open_graph->type->street_address)) {
+            $data['og:street-address'] = $open_graph->type->street_address;
+        }
+
+        // og:region
+        if (isset($this->_params->region) && !empty($this->_params->region)) {
+            $data['og:region'] = $this->_params->region;
+        }
+
+        if (isset($open_graph->type->region) && !empty($open_graph->type->region)) {
+            $data['og:region'] = $open_graph->type->region;
+        }
+
+        // og:postal-code
+        if (isset($this->_params->postal_code) && !empty($this->_params->postal_code)) {
+            $data['og:postal-code'] = $this->_params->postal_code;
+        }
+
+        if (isset($open_graph->type->postal_code) && !empty($open_graph->type->postal_code)) {
+            $data['og:postal-code'] = $open_graph->type->postal_code;
+        }
+
+        // og:email
+        if (isset($this->_params->email) && !empty($this->_params->email)) {
+            $data['og:email'] = $this->_params->email;
+        }
+
+        if (isset($open_graph->type->email) && !empty($open_graph->type->email)) {
+            $data['og:email'] = $open_graph->type->email;
+        }
+
+        // og:phone_number
+        if (isset($this->_params->phone_number) && !empty($this->_params->phone_number)) {
+            $data['og:phone_number'] = $this->_params->phone_number;
+        }
+
+        if (isset($open_graph->type->phone_number) && !empty($open_graph->type->phone_number)) {
+            $data['og:phone_number'] = $open_graph->type->phone_number;
+        }
+
+        // og:fax
+        if (isset($this->_params->fax) && !empty($this->_params->fax)) {
+            $data['og:fax'] = $this->_params->fax;
+        }
+
+        if (isset($open_graph->type->fax) && !empty($open_graph->type->fax)) {
+            $data['og:fax'] = $open_graph->type->fax;
         }
 
         // create View

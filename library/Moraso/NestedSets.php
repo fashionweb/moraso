@@ -198,6 +198,8 @@ class Moraso_NestedSets
                                 '   o.rgt, ' .
                                 '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
                                 '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.active, ' .
+                                '   o.public, ' .
                                 '   o.created, ' .
                                 '   o.modified ' .
                                 'FROM ' .
@@ -230,6 +232,8 @@ class Moraso_NestedSets
                                 '   o.rgt, ' .
                                 '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
                                 '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.active, ' .
+                                '   o.public, ' .
                                 '   o.created, ' .
                                 '   o.modified ' .
                                 'FROM ' .
@@ -261,6 +265,8 @@ class Moraso_NestedSets
                                 '   n.rgt, ' .
                                 '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
                                 '   COUNT(*)-1 AS level, ' .
+                                '   n.active, ' .
+                                '   n.public, ' .
                                 '   n.created, ' .
                                 '   n.modified ' .
                                 'FROM ' .
@@ -286,6 +292,8 @@ class Moraso_NestedSets
                                 '   n.rgt, ' .
                                 '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
                                 '   COUNT(*)-1 AS level, ' .
+                                '   n.active, ' .
+                                '   n.public, ' .
                                 '   n.created, ' .
                                 '   n.modified ' .
                                 'FROM ' .

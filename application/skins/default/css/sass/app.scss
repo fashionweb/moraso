@@ -171,3 +171,16 @@ button, .button {
         color: $main-color;
     }
 }
+
+/* Comments */
+#list-comments {
+    li {
+        position: relative;
+        
+        .admin_toolbar {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+    }
+}

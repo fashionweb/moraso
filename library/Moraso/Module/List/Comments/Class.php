@@ -24,6 +24,8 @@ class Moraso_Module_List_Comments_Class extends Moraso_Module_Abstract
         $parent_node_id = $this->_getParentNodeId($idartlang);
         
         $defaults = $this->_moduleConfigDefaults;
+        
+        $user = Aitsu_Adm_User::getInstance();
 
         $translation = array();
         $translation['configuration'] = Aitsu_Translate::_('Configuration');
@@ -36,12 +38,17 @@ class Moraso_Module_List_Comments_Class extends Moraso_Module_Abstract
         $template = !empty($template) ? $template : $defaults['template'];
 
         /* get Data */
-        $comments = Moraso_Comments::getComments($parent_node_id, true, $defaults['startLevel'], $defaults['maxLevel']);
-
+        if ($user !== NULL) {
+            $comments = Moraso_Comments::getComments($parent_node_id, false, $defaults['startLevel'], $defaults['maxLevel']);
+        } else {
+            $comments = Moraso_Comments::getComments($parent_node_id, true, $defaults['startLevel'], $defaults['maxLevel']);
+        }
+                
         /* create View */
         $view = $this->_getView();
         $view->parent_node_id = $parent_node_id;
         $view->comments = $comments;
+        $view->user = $user;
         return $view->render($template . '.phtml');
     }
 

@@ -1,0 +1,58 @@
+<!-- Standard -->
+<script type="application/x-moraso" src="List.Comments.Form">
+    parent_node_id = <?= $this->parent_node_id ?>
+</script>
+
+<section id="list-comments">
+    <?php if (count($this->comments) > 0): ?>
+        <ul class="no-bullet">        
+            <?php foreach ($this->comments as $comment_lvl_2) : ?>    
+                <li class="panel" data-node_id="<?= $comment_lvl_2['node_id'] ?>">
+                    <strong><?= $comment_lvl_2['comment']['author'] ?></strong><br />
+                    <small>am <?= date('d.m.Y H:i', strtotime($comment_lvl_2['created'])) ?></small> <br />
+                    <p><?= nl2br($comment_lvl_2['comment']['comment']) ?></p>
+
+                    <?php if ($this->user !== NULL) : ?>
+                        <div class="admin_toolbar">
+                            <ul class="button-group">
+                                <li><a href="#" class="deleteComment small alert button">löschen</a></li>
+
+                                <?php if (!$comment_lvl_2['active']) : ?>
+                                    <li><a href="#" class="small success button">genehmigen</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    <?php endif; ?>
+
+                    <script type="application/x-moraso" src="List.Comments.Form">
+                        parent_node_id = <?= $comment_lvl_2['node_id'] ?>
+                    </script>
+
+                    <ul class="no-bullet">
+                        <?php foreach ($comment_lvl_2['children'] as $comment_lvl_3) : ?>                    
+                            <li class="panel" data-node_id="<?= $comment_lvl_3['node_id'] ?>">
+                                <strong><?= $comment_lvl_3['comment']['author'] ?></strong><br />
+                                <small>am <?= date('d.m.Y H:i', strtotime($comment_lvl_3['created'])) ?></small> <br />
+                                <p><?= nl2br($comment_lvl_3['comment']['comment']) ?></p>
+
+                                <?php if ($this->user !== NULL) : ?>
+                                    <div class="admin_toolbar">
+                                        <ul class="button-group">
+                                            <li><a href="#" class="deleteComment small alert button">löschen</a></li>
+
+                                            <?php if (!$comment_lvl_3['active']) : ?>
+                                                <li><a href="#" class="small success button">genehmigen</a></li>
+                                                <?php endif; ?>
+                                        </ul>
+                                    </div>
+                                <?php endif; ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+                </li>
+            <?php endforeach; ?>
+        </ul>
+    <?php else: ?>
+        <p>Bisher wurden keine Kommentare verfasst, sei der Erste!</p>
+    <?php endif; ?>
+</section>

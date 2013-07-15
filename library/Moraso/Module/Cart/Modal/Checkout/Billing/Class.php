@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Cart_Modal_Checkout_Billing_Class extends Aitsu_Module_Abstract {
+class Moraso_Module_Cart_Modal_Checkout_Billing_Class extends Moraso_Module_Abstract {
 
     protected $_allowEdit = false;
     protected $_renderOnlyAllowed = true;
@@ -19,7 +19,7 @@ class Moraso_Module_Cart_Modal_Checkout_Billing_Class extends Aitsu_Module_Abstr
         /* get Data */
         $cart = Moraso_Cart::getInstance();
         $data = $cart->getProperty('billing');
-        
+                
         /* create View */
         $view = $this->_getView();
         $view->data = $data;

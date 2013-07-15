@@ -4,8 +4,8 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_NestedSets {
-
+class Moraso_NestedSets
+{
     /**
      * Description ...
      * 
@@ -21,8 +21,8 @@ class Moraso_NestedSets {
      * 
      * @example Moraso_NestedSets::move(array('lft' => 10, 'rgt' => 13), 13);
      */
-    public static function move($node, $parent, $next = 0, $table = '_cat') {
-
+    public static function move($node, $parent, $next = 0, $table = '_cat')
+    {
         $primary = self::_getPrimaryKey($table);
 
         if (!is_array($node)) {
@@ -30,14 +30,12 @@ class Moraso_NestedSets {
         }
 
         if (empty($parent) && empty($next)) {
-            $target = Aitsu_Db::fetchOne('select max(rgt) +1 from ' . $table . '');
+            $target = Moraso_Db::fetchOne('select max(rgt) +1 from ' . $table . '');
         } elseif ((!empty($next))) {
-            $target = Aitsu_Db::fetchOne('select lft from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $next));
+            $target = Moraso_Db::fetchOne('select lft from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $next));
         } else {
-            $target = Aitsu_Db::fetchOne('select rgt from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $parent));
+            $target = Moraso_Db::fetchOne('select rgt from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $parent));
         }
-
-        Aitsu_Db::startTransaction();
 
         try {
             $query = '' .
@@ -66,14 +64,12 @@ class Moraso_NestedSets {
             $search = array(':target', ':lft', ':rgt');
             $replace = array($target, $node['lft'], $node['rgt']);
 
-            Aitsu_Db::query(str_replace($search, $replace, $query));
+            Moraso_Db::query(str_replace($search, $replace, $query));
         } catch (Exception $e) {
-            Aitsu_Db::rollback();
             trigger_error($e->getMessage());
             return false;
         }
 
-        Aitsu_Db::commit();
         return true;
     }
 
@@ -87,22 +83,20 @@ class Moraso_NestedSets {
      * @example Moraso_NestedSets::delete(17);
      * @example Moraso_NestedSets::delete(17, '_example_table');
      */
-    public static function delete($node, $table = '_cat') {
-
+    public static function delete($node, $table = '_cat')
+    {
         if (!is_array($node)) {
             $node = self::getNodeLftRgt($node, $table);
         }
 
-        Aitsu_Db::startTransaction();
-
         try {
-            Aitsu_Db::query('' .
+            Moraso_Db::query('' .
                     'delete from ' .
                     ' ' . $table . ' ' .
                     'where ' .
                     ' lft between ' . $node['lft'] . ' and ' . $node['rgt']);
 
-            Aitsu_Db::query('' .
+            Moraso_Db::query('' .
                     'update ' .
                     ' ' . $table . ' ' .
                     'set ' .
@@ -110,7 +104,7 @@ class Moraso_NestedSets {
                     'where ' .
                     ' lft > ' . $node['rgt']);
 
-            Aitsu_Db::query('' .
+            Moraso_Db::query('' .
                     'update ' .
                     ' ' . $table . ' ' .
                     'set ' .
@@ -118,12 +112,10 @@ class Moraso_NestedSets {
                     'where ' .
                     ' rgt > ' . $node['rgt']);
         } catch (Exception $e) {
-            Aitsu_Db::rollback();
             trigger_error($e->getMessage());
             return false;
         }
 
-        Aitsu_Db::commit();
         return true;
     }
 
@@ -139,53 +131,44 @@ class Moraso_NestedSets {
      * @example Moraso_NestedSets::insert(array('name' => 'Example 2'), 17);
      * @example Moraso_NestedSets::insert(array('name' => 'Example 3'), 13, '_example_table');
      */
-    public static function insert(array $data, $parent = null, $table = '_cat') {
+    public static function insert($parent_node_id = null, $public = true, $active = false, $table = '_cat', $primary = null)
+    {
+        if (empty($primary)) {
+            $primary = self::_getPrimaryKey($table);
+        }
 
-        $primary = self::_getPrimaryKey($table);
-
-        unset($data[$primary]);
-
-        if (!empty($parent)) {
-            $parent = self::getNodeLftRgt($parent, $table);
+        if (!empty($parent_node_id)) {
+            $parent_node = self::getNodeLftRgt($parent_node_id, $table);
         } else {
-            $parent = Aitsu_Db::fetchRow('select max(rgt) + 1 as rgt from ' . $table);
+            $parent_node = Moraso_Db::fetchRow('select max(rgt) + 1 as rgt from ' . $table);
         }
 
-        $data['lft'] = $parent['rgt'];
-        $data['rgt'] = $parent['rgt'] + 1;
+        Moraso_Db::query('' .
+                'update ' .
+                '   ' . $table . ' ' .
+                'set ' .
+                '   rgt = rgt + 2 ' .
+                'where ' .
+                '   rgt >= :rgt', array(
+            ':rgt' => (int) $parent_node['rgt']
+        ));
 
-        Aitsu_Db::startTransaction();
+        Moraso_Db::query('' .
+                'update ' .
+                '   ' . $table . ' ' .
+                'set ' .
+                '   lft = lft + 2 ' .
+                'where ' .
+                '   lft >= :rgt', array(
+            ':rgt' => (int) $parent_node['rgt']
+        ));
 
-        try {
-            Aitsu_Db::query('' .
-                    'update ' .
-                    '   ' . $table . ' ' .
-                    'set ' .
-                    '   rgt = rgt + 2 ' .
-                    'where ' .
-                    '   rgt >= :rgt', array(
-                ':rgt' => $parent['rgt']
-            ));
-
-            Aitsu_Db::query('' .
-                    'update ' .
-                    '   ' . $table . ' ' .
-                    'set ' .
-                    '   lft = lft + 2 ' .
-                    'where ' .
-                    '   lft >= :rgt', array(
-                ':rgt' => $parent['rgt']
-            ));
-
-            Aitsu_Db::put($table, $primary, $data);
-        } catch (Exception $e) {
-            Aitsu_Db::rollback();
-            trigger_error($e->getMessage());
-            return false;
-        }
-
-        Aitsu_Db::commit();
-        return true;
+        return Moraso_Db::put($table, $primary, array(
+                    'public' => (int) $public,
+                    'active' => (int) $active,
+                    'lft' => (int) $parent_node['rgt'],
+                    'rgt' => (int) $parent_node['rgt'] + 1
+        ));
     }
 
     /**
@@ -196,79 +179,138 @@ class Moraso_NestedSets {
      * @param type $table
      * @return type 
      * 
-     * @example Moraso_NestedSets::treesource();
-     * @example Moraso_NestedSets::treesource(17, 1);
-     * @example Moraso_NestedSets::treesource(21, 2, '_example_table');
+     * @example Moraso_NestedSets::getSet();
+     * @example Moraso_NestedSets::getSet(17, 1);
+     * @example Moraso_NestedSets::getSet(21, true, 2, '_example_table');
      */
-    public static function treesource($node = null, $level = 0, $table = '_cat') {
-
+    public static function getSet($node = null, $active = true, $level = 0, $table = '_cat')
+    {
         $primary = self::_getPrimaryKey($table);
 
-        $categories = array();
+        $set = array();
 
         if (!empty($node)) {
-            $categories = Aitsu_Db::fetchAll('' .
-                            'select ' .
-                            '   o.' . $primary . ', ' .
-                            '   o.name, ' .
-                            '   count(p.' . $primary . ')-1 as level ' .
-                            'from ' .
-                            '   ' . $table . ' as n, ' .
-                            '   ' . $table . ' as p, ' .
-                            '   ' . $table . ' as o ' .
-                            'where ' .
-                            '   o.lft between p.lft and p.rgt ' .
-                            'and ' .
-                            '   o.lft between n.lft and n.rgt ' .
-                            'and ' .
-                            '   n.' . $primary . ' =:id ' .
-                            'group by ' .
-                            '   o.lft ' .
-                            'having ' .
-                            '   level =:level ' .
-                            'order by ' .
-                            '   o.lft asc', array(
-                        ':id' => $node,
-                        ':level' => $level + 1
-            ));
+            if ($active) {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   o.' . $primary . ', ' .
+                                '   o.lft, ' .
+                                '   o.rgt, ' .
+                                '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.active, ' .
+                                '   o.public, ' .
+                                '   o.created, ' .
+                                '   o.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p, ' .
+                                '   ' . $table . ' AS o ' .
+                                'WHERE ' .
+                                '   o.lft between p.lft AND p.rgt ' .
+                                'AND ' .
+                                '   o.active =:active ' .
+                                'AND ' .
+                                '   o.lft between n.lft AND n.rgt ' .
+                                'AND ' .
+                                '   n.' . $primary . ' =:id ' .
+                                'GROUP BY ' .
+                                '   o.lft ' .
+                                'HAVING ' .
+                                '   level =:level ' .
+                                'ORDER BY ' .
+                                '   o.lft ASC', array(
+                            ':id' => $node,
+                            ':level' => $level + 1,
+                            ':active' => 1
+                ));
+            } else {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   o.' . $primary . ', ' .
+                                '   o.lft, ' .
+                                '   o.rgt, ' .
+                                '   IF (o.lft + 1 = o.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(p.' . $primary . ')-1 AS level, ' .
+                                '   o.active, ' .
+                                '   o.public, ' .
+                                '   o.created, ' .
+                                '   o.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p, ' .
+                                '   ' . $table . ' AS o ' .
+                                'WHERE ' .
+                                '   o.lft between p.lft AND p.rgt ' .
+                                'AND ' .
+                                '   o.lft between n.lft AND n.rgt ' .
+                                'AND ' .
+                                '   n.' . $primary . ' =:id ' .
+                                'GROUP BY ' .
+                                '   o.lft ' .
+                                'HAVING ' .
+                                '   level =:level ' .
+                                'ORDER BY ' .
+                                '   o.lft ASC', array(
+                            ':id' => $node,
+                            ':level' => $level + 1
+                ));
+            }
         } else {
-            $categories = Aitsu_Db::fetchAll('' .
-                            'select ' .
-                            '   n.' . $primary . ', ' .
-                            '   n.name, ' .
-                            '   count(*)-1 as level ' .
-                            'from ' .
-                            '   ' . $table . ' as n, ' .
-                            '   ' . $table . ' as p ' .
-                            'where ' .
-                            '   n.lft between p.lft and p.rgt ' .
-                            'group by ' .
-                            '   n.' . $primary . ' ' .
-                            'having ' .
-                            '   level = 0 ' .
-                            'order by ' .
-                            '   n.lft asc');
+            if ($active) {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   n.' . $primary . ', ' .
+                                '   n.lft, ' .
+                                '   n.rgt, ' .
+                                '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(*)-1 AS level, ' .
+                                '   n.active, ' .
+                                '   n.public, ' .
+                                '   n.created, ' .
+                                '   n.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p ' .
+                                'WHERE ' .
+                                '   n.lft between p.lft and p.rgt ' .
+                                'AND ' .
+                                '   n.active =:active ' .
+                                'GROUP BY ' .
+                                '   n.' . $primary . ' ' .
+                                'HAVING ' .
+                                '   level = 0 ' .
+                                'ORDER BY ' .
+                                '   n.lft ASC', array(
+                            ':active' => 1
+                ));
+            } else {
+                $set = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   n.' . $primary . ', ' .
+                                '   n.lft, ' .
+                                '   n.rgt, ' .
+                                '   IF (n.lft + 1 = n.rgt, 0, 1) AS has_children, ' .
+                                '   COUNT(*)-1 AS level, ' .
+                                '   n.active, ' .
+                                '   n.public, ' .
+                                '   n.created, ' .
+                                '   n.modified ' .
+                                'FROM ' .
+                                '   ' . $table . ' AS n, ' .
+                                '   ' . $table . ' AS p ' .
+                                'WHERE ' .
+                                '   n.lft between p.lft and p.rgt ' .
+                                'GROUP BY ' .
+                                '   n.' . $primary . ' ' .
+                                'HAVING ' .
+                                '   level = 0 ' .
+                                'ORDER BY ' .
+                                '   n.lft ASC');
+            }
         }
 
-        $data = array();
-        foreach ($categories as $category) {
-            $leaf = false;
-            $isOnline = true;
-            $iconClas = 'treecat-' . ($isOnline ? 'online' : 'offline');
-
-            $data[] = array(
-                'id' => $category[$primary],
-                'idcat' => $category[$primary],
-                'idcategory' => $category[$primary],
-                'text' => $category['name'],
-                'leaf' => $leaf,
-                'iconCls' => $iconClas,
-                'type' => 'category',
-                'level' => $category['level']
-            );
-        }
-
-        return $data;
+        return $set;
     }
 
     /**
@@ -279,9 +321,9 @@ class Moraso_NestedSets {
      * 
      * @example self::_getPrimaryKey('_example_table');
      */
-    private static function _getPrimaryKey($table) {
-
-        $indexes = Aitsu_Db::fetchRowC('eternal', '' .
+    private static function _getPrimaryKey($table)
+    {
+        $indexes = Moraso_Db::fetchRowC('eternal', '' .
                         'show ' .
                         ' indexes ' .
                         'from ' .
@@ -306,13 +348,13 @@ class Moraso_NestedSets {
      * @example self::getNodeLftRgt(17, '_example_table');
      * @example self::getNodeLftRgt(21, '_example_table', 'idexample');
      */
-    public static function getNodeLftRgt($node, $table, $primary = null) {
-
+    public static function getNodeLftRgt($node, $table, $primary = null)
+    {
         if (empty($primary)) {
             $primary = self::_getPrimaryKey($table);
         }
 
-        return Aitsu_Db::fetchRow('select lft, rgt from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $node));
+        return Moraso_Db::fetchRow('select lft, rgt from ' . $table . ' where ' . $primary . ' =:id', array(':id' => $node));
     }
 
 }

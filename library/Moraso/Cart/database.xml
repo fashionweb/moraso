@@ -3,8 +3,14 @@
     <table name="cart_order" engine="InnoDB">
         <field name="order_id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" /> 
         <field name="payment_method" type="varchar(255)" default="cash"  nullable="false" /> 
-        <field name="payed" type="int(1) unsigned" default="null" nullable="true" /> 
+        <field name="payed" type="int(1) unsigned" default="null" nullable="true" />
+        <field name="ordered" type="int(1) unsigned" default="null" nullable="true" />
+        <field name="additional_info" type="text" default="null" nullable="true" /> 
         <field name="timestamp" type="timestamp" default="CURRENT_TIMESTAMP" nullable="false" />
+        
+        <index name="payed" columns="payed" type="index" />
+        <index name="ordered" columns="ordered" type="index" />
+        <index name="timestamp" columns="timestamp" type="index" />
     </table>
     
     <table name="cart_order_has_article" engine="InnoDB">
@@ -17,7 +23,38 @@
         </field>  
         <field name="qty" type="int(10) unsigned" default="1"  nullable="false" /> 
         <field name="timestamp" type="timestamp" default="CURRENT_TIMESTAMP" nullable="false" />
+    </table>
+    
+    <table name="cart_order_has_customer" engine="InnoDB">
+        <field name="id" type="int(10) unsigned" autoincrement="true" primary="true" default="null" /> 
+        <field name="order_id" type="int(10) unsigned" primary="true" default="null">
+            <constraint table="cart_order" column="order_id" onupdate="restrict" ondelete="cascade"/>
+        </field>
+        <field name="customer_id" type="int(10) unsigned" default="null">
+            <constraint table="acl_user" column="userid" onupdate="restrict" ondelete="cascade"/>
+        </field>  
         
-        <index name="id" columns="id" type="index" />
+        <field name="delivery_title" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_firstname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_secondname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_lastname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_street" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_housenumber" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_postal_code" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_city" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_telephone" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_fax" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="delivery_email" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_title" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_firstname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_secondname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_lastname" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_street" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_housenumber" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_postal_code" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_city" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_telephone" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_fax" type="varchar(255)" default="null" nullable="false" /> 
+        <field name="billing_email" type="varchar(255)" default="null" nullable="false" /> 
     </table>
 </database>

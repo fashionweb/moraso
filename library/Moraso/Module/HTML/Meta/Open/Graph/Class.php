@@ -25,16 +25,62 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
         } else {
             $url = Moraso_Rewrite_Standard::getInstance()->rewriteOutput('{ref:idart-' . $idart . '}');
         }
-
+        
         // set Graph Data
         $data = array(
             'og:title' => $article->pagetitle . $this->_params->title_suffix,
-            'og:type' => isset($open_graph->type->value) && !empty($open_graph->type->value) ? $open_graph->type->value : 'website',
+            'og:type' => 'website',
             'og:image' => Moraso_Html_Helper_Image::getPath($idart, $article->mainimage, 500, 500, 2),
+            'og:image:width' => 500,
+            'og:image:height' => 500,
             'og:url' => $url,
-            'og:site_name' => $this->_params->site_name,
-            'og:locale' => 'de_DE'
+            'og:locale' => 'de_DE',
+            'og:country-name' => 'Germany'
         );
+
+        if (isset($this->_params->type) && !empty($this->_params->type)) {
+            $data['og:type'] = $this->_params->type;
+        }
+        
+        if (isset($open_graph->type->value) && !empty($open_graph->type->value)) {
+            $data['og:type'] = $open_graph->type->value;
+        }
+        
+        if (isset($article->summary) && !empty($article->summary)) {
+            $data['og:description'] = $article->summary;
+        }
+
+        if (isset($this->_params->site_name) && !empty($this->_params->site_name)) {
+            $data['og:site_name'] = $this->_params->site_name;
+        }
+
+        if (isset($this->_params->locality) && !empty($this->_params->locality)) {
+            $data['og:locality'] = $this->_params->locality;
+        }
+
+        if (isset($this->_params->admins) && !empty($this->_params->admins)) {
+            $data['fb:admins'] = $this->_params->admins;
+        }
+
+        if (isset($this->_params->page_id) && !empty($this->_params->page_id)) {
+            $data['fb:page_id'] = $this->_params->page_id;
+        }
+
+        if (isset($this->_params->latitude) && !empty($this->_params->latitude)) {
+            $data['og:latitude'] = $this->_params->latitude;
+        }
+
+        if (isset($this->_params->longitude) && !empty($this->_params->longitude)) {
+            $data['og:longitude'] = $this->_params->longitude;
+        }
+
+        if (isset($this->_params->locale) && !empty($this->_params->locale)) {
+            $data['og:locale'] = $this->_params->locale;
+        }
+
+        if (isset($this->_params->countryname) && !empty($this->_params->countryname)) {
+            $data['og:country-name'] = $this->_params->countryname;
+        }
 
         // create View
         $view = $this->_getView();

@@ -8,7 +8,6 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 {
     protected function _getDefaults()
     {
-
         $defaults = array(
             'mapTypeControl' => true,
             'mapTypeControlOptions_position' => 'DEFAULT',
@@ -30,9 +29,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'scrollwheel' => true,
             'zoom' => 18,
             'zoomControl' => true,
-            'zoomControlOptions_position' => 'DEFAULT',
-            'wheater_WeatherLayer' => false,
-            'wheater_CloudLayer' => false
+            'zoomControlOptions_position' => 'DEFAULT'
         );
 
         $defaults['configurable'] = array(
@@ -54,9 +51,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'scrollwheel' => true,
             'zoom' => true,
             'zoomControl' => true,
-            'zoomControlOptions_position' => true,
-            'wheater_WeatherLayer' => true,
-            'wheater_CloudLayer' => true
+            'zoomControlOptions_position' => true
         );
 
         $defaults['name'] = 'webtischlerei';
@@ -69,13 +64,11 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 
     protected function _init()
     {
-
         Aitsu_Util_Javascript::addReference('https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather&sensor=false&language=de');
     }
 
     protected function _positionArray()
     {
-
         return array(
             'default' => '',
             'Elements are positioned in the center of the bottom row' => 'BOTTOM_CENTER',
@@ -95,7 +88,6 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 
     protected function _trueFalseArray()
     {
-
         return array(
             'default' => '',
             'true' => 'true',
@@ -105,7 +97,6 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {
-
         $defaults = $this->_moduleConfigDefaults;
 
         /* Name */
@@ -296,40 +287,30 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
         /* create View */
         $view = $this->_getView();
 
-        $view->mapTypeId = $mapTypeId;
-        $view->zoom = $zoom;
-        $view->address = $address;
         $view->index = $this->_index;
+        $view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
+        $view->mapTypeControlOptions = $mapTypeControlOptions;
+        $view->mapTypeId = $mapTypeId;
+        $view->maxZoom = $maxZoom;
+        $view->minZoom = $minZoom;
+        $view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
+        $view->overviewMapControlOptions = $overviewMapControlOptions;
+        $view->panControl = $panControl ? 'true' : 'false';
+        $view->panControlOptions = $panControlOptions;
+        $view->rotateControl = $rotateControl ? 'true' : 'false';
+        $view->rotateControlOptions = $rotateControlOptions;
+        $view->scaleControl = $scaleControl ? 'true' : 'false';
+        $view->scaleControlOptions = $scaleControlOptions;
+        $view->scrollwheel = $scrollwheel ? 'true' : 'false';
+        $view->zoom = $zoom;
+        $view->zoomControl = $zoomControl ? 'true' : 'false';
+        $view->zoomControlOptions = $zoomControlOptions;
+        $view->name = $name;
+        $view->address = $address;
 
-        if (isset($this->_params->template) && $this->_params->template === 'static') {
-            $view->latitude = $this->_params->latitude;
-            $view->longitude = $this->_params->longitude;
-            $view->size_w = $this->_params->size_w;
-            $view->size_h = $this->_params->size_h;
-            
-            $template = 'static';
-        } else {
-            $view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
-            $view->mapTypeControlOptions = $mapTypeControlOptions;
-            $view->maxZoom = $maxZoom;
-            $view->minZoom = $minZoom;
-            $view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
-            $view->overviewMapControlOptions = $overviewMapControlOptions;
-            $view->panControl = $panControl ? 'true' : 'false';
-            $view->panControlOptions = $panControlOptions;
-            $view->rotateControl = $rotateControl ? 'true' : 'false';
-            $view->rotateControlOptions = $rotateControlOptions;
-            $view->scaleControl = $scaleControl ? 'true' : 'false';
-            $view->scaleControlOptions = $scaleControlOptions;
-            $view->scrollwheel = $scrollwheel ? 'true' : 'false';
-            $view->zoomControl = $zoomControl ? 'true' : 'false';
-            $view->zoomControlOptions = $zoomControlOptions;
-            $view->name = $name;
+        Aitsu_Util_Javascript::add($view->render('js.phtml'));
 
-            Aitsu_Util_Javascript::add($view->render('js.phtml'));
-
-            $template = 'index';
-        }
+        $template = isset($this->_params->template) && !empty($this->_params->template) ? $this->_params->template : 'index';
 
         return $view->render($template . '.phtml');
     }

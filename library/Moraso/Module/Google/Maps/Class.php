@@ -4,9 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
-
-    protected function _getDefaults() {
+class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
+{
+    protected function _getDefaults()
+    {
 
         $defaults = array(
             'mapTypeControl' => true,
@@ -66,12 +67,14 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
         return $defaults;
     }
 
-    protected function _init() {
+    protected function _init()
+    {
 
         Aitsu_Util_Javascript::addReference('https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=weather&sensor=false&language=de');
     }
 
-    protected function _positionArray() {
+    protected function _positionArray()
+    {
 
         return array(
             'default' => '',
@@ -90,7 +93,8 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
         );
     }
 
-    protected function _trueFalseArray() {
+    protected function _trueFalseArray()
+    {
 
         return array(
             'default' => '',
@@ -99,7 +103,8 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
         );
     }
 
-    protected function _main() {
+    protected function _main()
+    {
 
         $defaults = $this->_moduleConfigDefaults;
 
@@ -192,7 +197,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
             $overviewMapControlOptions_opened = Aitsu_Content_Config_Select::set($this->_index, 'overviewMapControlOptions_opened', 'opened', $this->_trueFalseArray(), 'overviewMapControl');
         }
 
-        $overviewMapControlOptions->opened = (!empty($overviewMapControlOptions_opened) ? filter_var($overviewMapControlOptions_opened, FILTER_VALIDATE_BOOLEAN) : $defaults['overviewMapControlOptions_opened'])  ? 'true' : 'false';
+        $overviewMapControlOptions->opened = (!empty($overviewMapControlOptions_opened) ? filter_var($overviewMapControlOptions_opened, FILTER_VALIDATE_BOOLEAN) : $defaults['overviewMapControlOptions_opened']) ? 'true' : 'false';
 
         /* panControl */
         if ($defaults['configurable']['panControl']) {
@@ -288,51 +293,45 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract {
 
         $zoomControlOptions->position = !empty($zoomControlOptions_position) ? $zoomControlOptions_position : $defaults['zoomControlOptions_position'];
 
-        /* weather */
-        $weather = new stdClass();
-        
-        /* wheater_WeatherLayer */
-        if ($defaults['configurable']['wheater_WeatherLayer']) {
-            $wheater_WeatherLayer = Aitsu_Content_Config_Select::set($this->_index, 'WeatherLayer', 'WeatherLayer', $this->_trueFalseArray(), 'wheater');
-        }
-
-        $weather->WeatherLayer = (!empty($wheater_WeatherLayer) ? filter_var($wheater_WeatherLayer, FILTER_VALIDATE_BOOLEAN) : $defaults['wheater_WeatherLayer'])  ? 'true' : 'false';
-        
-        /* wheater_CloudLayer */
-        if ($defaults['configurable']['wheater_CloudLayer']) {
-            $wheater_CloudLayer = Aitsu_Content_Config_Select::set($this->_index, 'CloudLayer', 'CloudLayer', $this->_trueFalseArray(), 'wheater');
-        }
-
-        $weather->CloudLayer = (!empty($wheater_CloudLayer) ? filter_var($wheater_CloudLayer, FILTER_VALIDATE_BOOLEAN) : $defaults['wheater_CloudLayer'])  ? 'true' : 'false';
-
         /* create View */
         $view = $this->_getView();
 
-        $view->index = $this->_index;
-        $view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
-        $view->mapTypeControlOptions = $mapTypeControlOptions;
         $view->mapTypeId = $mapTypeId;
-        $view->maxZoom = $maxZoom;
-        $view->minZoom = $minZoom;
-        $view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
-        $view->overviewMapControlOptions = $overviewMapControlOptions;
-        $view->panControl = $panControl ? 'true' : 'false';
-        $view->panControlOptions = $panControlOptions;
-        $view->rotateControl = $rotateControl ? 'true' : 'false';
-        $view->rotateControlOptions = $rotateControlOptions;
-        $view->scaleControl = $scaleControl ? 'true' : 'false';
-        $view->scaleControlOptions = $scaleControlOptions;
-        $view->scrollwheel = $scrollwheel ? 'true' : 'false';
         $view->zoom = $zoom;
-        $view->zoomControl = $zoomControl ? 'true' : 'false';
-        $view->zoomControlOptions = $zoomControlOptions;
-        $view->name = $name;
         $view->address = $address;
-        $view->weather = $weather;
-        
-        Aitsu_Util_Javascript::add($view->render('js.phtml'));
+        $view->index = $this->_index;
 
-        return $view->render('index.phtml');
+        if (isset($this->_params->template) && $this->_params->template === 'static') {
+            $view->latitude = $this->_params->latitude;
+            $view->longitude = $this->_params->longitude;
+            $view->size_w = $this->_params->size_w;
+            $view->size_h = $this->_params->size_h;
+            
+            $template = 'static';
+        } else {
+            $view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
+            $view->mapTypeControlOptions = $mapTypeControlOptions;
+            $view->maxZoom = $maxZoom;
+            $view->minZoom = $minZoom;
+            $view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
+            $view->overviewMapControlOptions = $overviewMapControlOptions;
+            $view->panControl = $panControl ? 'true' : 'false';
+            $view->panControlOptions = $panControlOptions;
+            $view->rotateControl = $rotateControl ? 'true' : 'false';
+            $view->rotateControlOptions = $rotateControlOptions;
+            $view->scaleControl = $scaleControl ? 'true' : 'false';
+            $view->scaleControlOptions = $scaleControlOptions;
+            $view->scrollwheel = $scrollwheel ? 'true' : 'false';
+            $view->zoomControl = $zoomControl ? 'true' : 'false';
+            $view->zoomControlOptions = $zoomControlOptions;
+            $view->name = $name;
+
+            Aitsu_Util_Javascript::add($view->render('js.phtml'));
+
+            $template = 'index';
+        }
+
+        return $view->render($template . '.phtml');
     }
 
 }

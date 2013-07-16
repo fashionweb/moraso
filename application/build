@@ -50,8 +50,7 @@ passthru('git checkout master');
 passthru('git merge dev');
 passthru('git push origin master');
 passthru('git push origin :refs/tags/' . $new['major'] . '.' . $new['minor']);
-passthru('git fetch --tags');
-passthru('git tag -a ' . $new['major'] . '.' . $new['minor'] . ' -m "Version ' . $new['major'] . '.' . $new['minor'] . ' release"');
+passthru('git tag -a ' . $new['major'] . '.' . $new['minor'] . ' -m "Version ' . $new['major'] . '.' . $new['minor'] . '.' . $new['revision'] . ' release"');
 passthru('git push --tags');
 passthru('git checkout dev');
 ?>

@@ -41,7 +41,7 @@ $newVersion = $new['major'] . '.' . $new['minor'] . '.' . $new['revision'] . '-'
 $applicationStatusFile = realpath(dirname(__FILE__) . '/../library/Moraso/Status.php');
 file_put_contents($applicationStatusFile, str_replace($matches[0], '\'$/major/' . $new['major'] . '/minor/' . $new['minor'] . '/revision/' . $new['revision'] . '/build/' . $new['build'] . '$\'', file_get_contents($applicationStatusFile)));
 
-$readmeFile = realpath(dirname(__FILE__) . '/../README.textile');
+$readmeFile = realpath(dirname(__FILE__) . '/../README');
 file_put_contents($readmeFile, preg_replace('@^moraso version\\:\\s*\\*[^\\*]*\\*@m', "moraso version: *$newVersion*", file_get_contents($readmeFile)));
 
 passthru('git commit -am "Update: ' . $oldVersion . ' to ' . $newVersion . '"');
@@ -50,7 +50,8 @@ passthru('git checkout master');
 passthru('git merge dev');
 passthru('git push origin master');
 passthru('git push origin :refs/tags/' . $new['major'] . '.' . $new['minor']);
-passthru('git tag -a ' . $new['major'] . '.' . $new['minor'] . ' -m "' . $new['major'] . '.' . $new['minor'] . '"');
+passthru('git fetch --tags');
+passthru('git tag -a ' . $new['major'] . '.' . $new['minor'] . ' -m "Version ' . $new['major'] . '.' . $new['minor'] . ' release"');
 passthru('git push --tags');
 passthru('git checkout dev');
 ?>

@@ -11,10 +11,7 @@ if (version_compare(PHP_VERSION, MIN_VERS_PHP, '<')) {
     header('Content-type: text/html; charset=utf-8', true, 503);
 
     echo '<h2>Fehler</h2>';
-
-    if (version_compare(PHP_VERSION, MIN_VERS_PHP, '<')) {
-        echo 'Auf Ihrem Server läft PHP version ' . PHP_VERSION . ', moraso benötigt mindestens PHP ' . MIN_VERS_PHP . '!';
-    }
+    echo 'Auf Ihrem Server läft PHP version ' . PHP_VERSION . ', moraso benötigt mindestens PHP ' . MIN_VERS_PHP . '!';
 
     return;
 }

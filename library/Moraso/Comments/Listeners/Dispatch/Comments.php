@@ -8,19 +8,25 @@ class Moraso_Comments_Listeners_Dispatch_Comments implements Aitsu_Event_Listene
 {
     public static function notify(Aitsu_Event_Abstract $event)
     {
+        $spamProtectionSeconds = 10;
+
         if ((isset($_POST['action']) && $_POST['action'] === 'addComment') && (isset($_POST['parent_node_id']) && !empty($_POST['parent_node_id']))) {
-            $node_id = Moraso_Comments::create($_POST['parent_node_id'], array(
-                        'author' => $_POST['author'],
-                        'comment' => $_POST['comment']
-                            ), true, true);
+            if (!is_numeric($_POST['protect']) && base64_decode($_POST['protect'], true) && (time() - $spamProtectionSeconds >= base64_decode($_POST['protect']))) {
+                $_POST['node_id'] = Moraso_Comments::create($_POST['parent_node_id'], array(
+                            'author' => $_POST['author'],
+                            'comment' => $_POST['comment']
+                                ), true, true);
+                
+                $_POST['success'] = true;
+                
+            } else {
+                $_POST['success'] = false;
+                $_POST['spam'] = true;
+            }
 
             if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
                 header('Content-Type: application/json');
-                if (!empty($node_id)) {
-                    echo json_encode(array('success' => true, 'node_id' => $node_id));
-                } else {
-                    echo json_encode(array('success' => false));
-                }
+                echo json_encode($_POST);
                 exit();
             }
         }
@@ -34,7 +40,7 @@ class Moraso_Comments_Listeners_Dispatch_Comments implements Aitsu_Event_Listene
                 exit();
             }
         }
-        
+
         if ((isset($_POST['action']) && $_POST['action'] === 'activateComment') && (isset($_POST['node_id']) && !empty($_POST['node_id']))) {
             // alles was einen Eintrag aktiviert
         }

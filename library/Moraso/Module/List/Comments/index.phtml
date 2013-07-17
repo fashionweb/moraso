@@ -1,4 +1,16 @@
 <!-- Standard -->
+<?php if (isset($_POST['action']) && $_POST['action'] === 'addComment') : ?>
+    <?php if (!$_POST['spam'] && $_POST['success']) : ?>
+        <p data-alert class="alert-box success">Kommentar wurde erfolgreich gespeichert.</p>
+    <?php else : ?>
+        <?php if ($_POST['spam']) : ?>
+            <p data-alert class="alert-box alert">SPAMVERDACHT</p>
+        <?php else : ?>
+            <p data-alert class="alert-box alert">FEHLER</p>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>
+
 <script type="application/x-moraso" src="List.Comments.Form">
     parent_node_id = <?= $this->parent_node_id ?>
 </script>

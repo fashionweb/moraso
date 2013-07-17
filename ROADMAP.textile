@@ -1,3 +1,0 @@
-h1. moraso CMS (basierend auf dem aitsu CMSF) // Roadmap
-
-h2. v1.16

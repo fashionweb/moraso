@@ -1,10 +1,11 @@
 <form method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
     <input type="hidden" name="action" value="addComment" />
     <input type="hidden" name="parent_node_id" value="<?= $this->parent_node_id ?>" />
+    <input type="hidden" name="protect" value="<?= base64_encode(time()) ?>" />
 
     <label for="comment_author_<?= $this->parent_node_id ?>">Name</label>
     <input type="text" name="author" id="comment_author_<?= $this->parent_node_id ?>" />
-    
+
     <label for="comment_comment_<?= $this->parent_node_id ?>">Kommentar</label>
     <textarea name="comment" id="comment_comment_<?= $this->parent_node_id ?>"></textarea>
 

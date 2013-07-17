@@ -16,7 +16,7 @@ class Moraso_Module_List_Comments_Form_Class extends Moraso_Module_Abstract
     }
 
     protected function _main()
-    {        
+    {
         $defaults = $this->_moduleConfigDefaults;
 
         $translation = array();

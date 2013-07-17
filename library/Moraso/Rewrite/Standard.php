@@ -222,7 +222,7 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
             if ($results) {
                 foreach ($results AS $article) {
                     $cache = Aitsu_Cache::getInstance('rewriting_idart_' . $article['idart'], true);
-                    $cache->setLifetime(Aitsu_Util_Date::secONdsUntilEndOf('year'));
+                    $cache->setLifetime(Aitsu_Util_Date::secondsUntilEndOf('year'));
 
                     if ($cache->isValid()) {
                         $url = $cache->load();
@@ -254,7 +254,7 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
             if ($results) {
                 foreach ($results AS $category) {
                     $cache = Aitsu_Cache::getInstance('rewriting_idcat_' . $category['idcat'], true);
-                    $cache->setLifetime(Aitsu_Util_Date::secONdsUntilEndOf('year'));
+                    $cache->setLifetime(Aitsu_Util_Date::secondsUntilEndOf('year'));
 
                     if ($cache->isValid()) {
                         $url = $cache->load();

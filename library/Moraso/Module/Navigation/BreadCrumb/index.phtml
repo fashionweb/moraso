@@ -1,7 +1,10 @@
 <ul itemprop="breadcrumb">
-    <?php foreach ($this->bc as $entry) : $entry = (object) $entry; ?>
+    <li>
+        <a rel="home" href="{ref:idcat-0}">moraso CMS</a>
+    </li>
+    <?php foreach ($this->breadcrumbs as $breadcrumb) : ?>
         <li>
-            <a href="{ref:idcat-<?php echo $entry->idcat; ?>}"><?php echo $entry->name; ?></a>
+            <a href="<?= $breadcrumb->url ?>"><?= $breadcrumb->name ?></a>
         </li>
     <?php endforeach; ?>
 </ul>

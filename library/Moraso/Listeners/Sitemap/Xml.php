@@ -75,7 +75,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                 foreach ($articles as $article) {
                     $url = $urlset->addChild('url');
                     $url->addChild('loc', $rewriting->rewriteOutput('{ref:idart-' . $article['idart'] . '}'));
-                    $url->addChild('lastmod', $article['lastmodified']);
+                    $url->addChild('lastmod', date('c', strtotime($article['lastmodified'])));
                 }
 
                 echo $urlset->asXML();

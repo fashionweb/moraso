@@ -10,8 +10,8 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
     {
         if ($_GET['create'] === 'sitemap') {
             if ($_GET['format'] === 'xml') {
-                header("Content-Type:text/xml");
-
+                header ("Content-Type:text/xml");
+                
                 $idlang = Aitsu_Registry::get()->env->idlang;
                 $rewriting = Moraso_Rewrite_Standard::getInstance();
 
@@ -63,12 +63,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     }
                 }
                 
-                $sitemap = new SimpleXMLElement('<xml/>');
-
-                $sitemap->addAttribute('version', '1.0');
-                $sitemap->addAttribute('encoding', 'UTF-8');
-
-                $urlset = $sitemap->addChild('urlset');
+                $urlset = new SimpleXMLElement('<urlset/>');
                 $urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
                 foreach ($categories as $category) {
@@ -83,7 +78,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     $url->addChild('lastmod', $article['lastmodified']);
                 }
 
-                echo $sitemap->asXML();
+                echo $urlset->asXML();
             }
         }
 

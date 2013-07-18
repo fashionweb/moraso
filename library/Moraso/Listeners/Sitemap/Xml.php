@@ -17,32 +17,52 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
 
                 $categories = Moraso_Db::fetchAll('' .
                                 'SELECT ' .
-                                '   idcat, ' .
-                                '   lastmodified ' .
+                                '   catlang.idcat, ' .
+                                '   catlang.lastmodified ' .
                                 'FROM ' .
-                                '   _cat_lang ' .
+                                '   _cat_lang AS catlang ' .
+                                'LEFT JOIN ' .
+                                '   _cat AS cat ON cat.idcat = catlang.idcat ' .
                                 'WHERE ' .
-                                '   idlang =:idlang ' .
+                                '   catlang.idlang =:idlang ' .
                                 'AND ' .
-                                '   visible =:visible', array(
+                                '   cat.parentid >:parentid ' .
+                                'AND ' .
+                                '   catlang.visible =:visible', array(
                             ':idlang' => $idlang,
+                            ':parentid' => 0,
                             ':visible' => 1
                 ));
 
-                $articles = Moraso_Db::fetchAll('' .
-                                'SELECT ' .
-                                '   idart, ' .
-                                '   lastmodified ' .
-                                'FROM ' .
-                                '   _art_lang ' .
-                                'WHERE ' .
-                                '   idlang =:idlang ' .
-                                'AND ' .
-                                '   online =:online', array(
-                            ':idlang' => $idlang,
-                            ':online' => 1
-                ));
-
+                $articles = array();
+                foreach ($categories as $category) {
+                    $new_articles = Moraso_Db::fetchAll('' .
+                                    'SELECT ' .
+                                    '   artlang.idart, ' .
+                                    '   artlang.lastmodified ' .
+                                    'FROM ' .
+                                    '   _art_lang AS artlang ' .
+                                    'LEFT JOIN ' .
+                                    '   _cat_art AS catart ON catart.idart = artlang.idart ' .
+                                    'WHERE ' .
+                                    '   artlang.idlang =:idlang ' .
+                                    'AND ' .
+                                    '   artlang.online =:online ' .
+                                    'AND ' .
+                                    '   catart.idcat =:idcat', array(
+                                ':idlang' => $idlang,
+                                ':online' => 1,
+                                ':idcat' => $category['idcat']
+                    ));
+                    
+                    foreach ($new_articles as $new_article) {
+                        $articles[] = array(
+                            'idart' => $new_article['idart'],
+                            'lastmodified' =>  $new_article['lastmodified']
+                        );
+                    }
+                }
+                
                 $sitemap = new SimpleXMLElement('<xml/>');
 
                 $sitemap->addAttribute('version', '1.0');

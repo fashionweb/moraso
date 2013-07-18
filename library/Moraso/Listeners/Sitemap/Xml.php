@@ -10,8 +10,8 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
     {
         if ($_GET['create'] === 'sitemap') {
             if ($_GET['format'] === 'xml') {
-                header ("Content-Type:text/xml");
-                
+                header("Content-Type:text/xml");
+
                 $idlang = Aitsu_Registry::get()->env->idlang;
                 $rewriting = Moraso_Rewrite_Standard::getInstance();
 
@@ -34,35 +34,29 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                             ':visible' => 1
                 ));
 
-                $articles = array();
+                $categoryList = array();
                 foreach ($categories as $category) {
-                    $new_articles = Moraso_Db::fetchAll('' .
-                                    'SELECT ' .
-                                    '   artlang.idart, ' .
-                                    '   artlang.lastmodified ' .
-                                    'FROM ' .
-                                    '   _art_lang AS artlang ' .
-                                    'LEFT JOIN ' .
-                                    '   _cat_art AS catart ON catart.idart = artlang.idart ' .
-                                    'WHERE ' .
-                                    '   artlang.idlang =:idlang ' .
-                                    'AND ' .
-                                    '   artlang.online =:online ' .
-                                    'AND ' .
-                                    '   catart.idcat =:idcat', array(
-                                ':idlang' => $idlang,
-                                ':online' => 1,
-                                ':idcat' => $category['idcat']
-                    ));
-                    
-                    foreach ($new_articles as $new_article) {
-                        $articles[] = array(
-                            'idart' => $new_article['idart'],
-                            'lastmodified' =>  $new_article['lastmodified']
-                        );
-                    }
+                    $categoryList[] = $category['idcat'];
                 }
-                
+
+                $articles = Moraso_Db::fetchAll('' .
+                                'SELECT ' .
+                                '   artlang.idart, ' .
+                                '   artlang.lastmodified ' .
+                                'FROM ' .
+                                '   _art_lang AS artlang ' .
+                                'LEFT JOIN ' .
+                                '   _cat_art AS catart ON catart.idart = artlang.idart ' .
+                                'WHERE ' .
+                                '   artlang.idlang =:idlang ' .
+                                'AND ' .
+                                '   artlang.online =:online ' .
+                                'AND ' .
+                                '   catart.idcat IN(' . implode(',', $categoryList) . ')', array(
+                            ':idlang' => $idlang,
+                            ':online' => 1
+                ));
+
                 $urlset = new SimpleXMLElement('<urlset/>');
                 $urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
@@ -80,8 +74,8 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
 
                 echo $urlset->asXML();
             }
-            
-             exit();
+
+            exit();
         }
     }
 

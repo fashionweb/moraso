@@ -8,7 +8,7 @@ class Moraso_Status
 {
     public static function version()
     {
-        $version = '$/major/1/minor/18/revision/1/build/40$';
+        $version = '$/major/1/minor/19/revision/0/build/41$';
 
         return str_replace(array(
             '/major/',

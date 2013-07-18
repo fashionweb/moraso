@@ -80,9 +80,9 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
 
                 echo $urlset->asXML();
             }
+            
+             exit();
         }
-
-        exit();
     }
 
 }

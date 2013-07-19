@@ -32,6 +32,7 @@ class Moraso_Module_List_Comments_Form_Class extends Moraso_Module_Abstract
         /* create View */
         $view = $this->_getView();
         $view->parent_node_id = $this->_params->parent_node_id;
+        $view->spam_protect_time = isset($this->_params->spam_protect_time) && !empty($this->_params->spam_protect_time) ? $this->_params->spam_protect_time : 10;
         return $view->render($template . '.phtml');
     }
 

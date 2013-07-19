@@ -1,0 +1,41 @@
+<?php print_r($_POST); ?>
+
+<?php if (isset($_POST['action']) && $_POST['action'] === 'sendContactRequest') : ?>
+    <?php if (!$_POST['spam'] && $_POST['success']) : ?>
+        <p data-alert class="alert-box success">Kontaktanfrage wurde erfolgreich versandt.</p>
+    <?php else : ?>
+        <?php if ($_POST['spam']) : ?>
+            <p data-alert class="alert-box alert">SPAMVERDACHT</p>
+        <?php else : ?>
+            <p data-alert class="alert-box alert">FEHLER</p>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+<form method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
+    <input type="hidden" name="action" value="sendContactRequest" />
+    <input type="hidden" name="spam_protect" value="<?= base64_encode(time()) ?>" />
+    <input type="hidden" name="spam_protect_time" value="<?= base64_encode(10) ?>" />
+
+    <div class="row">
+        <div class="large-2 columns">
+            <label for="contact_title"><?= Aitsu_Translate::_('Title') ?></label>
+            <input type="text" name="title" id="contact_title" />
+        </div>
+
+        <div class="large-5 columns">
+            <label for="contact_firstname"><?= Aitsu_Translate::_('Firstname') ?></label>
+            <input type="text" name="firstname" id="contact_firstname" />
+        </div>
+
+        <div class="large-5 columns">
+            <label for="contact_lastname"><?= Aitsu_Translate::_('Lastname') ?></label>
+            <input type="text" name="lastname" id="contact_lastname" />
+        </div>
+    </div>
+
+    <label for="contact_request"><?= Aitsu_Translate::_('Request') ?></label>
+    <textarea name="request" id="contact_request"></textarea>
+
+    <input type="submit" class="small button" value="<?= Aitsu_Translate::_('send Request') ?>" />
+</form>

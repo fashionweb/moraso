@@ -4,15 +4,15 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
-
-    public static function getName() {
-
+class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
+{
+    public static function getName()
+    {
         return Aitsu_Translate::translate('Create Basic Structure');
     }
 
-    public function doCheckIfExecutable() {
-
+    public function doCheckIfExecutable()
+    {
         if (Moraso_Config::get('done.create.basic.structure')) {
             throw new Exception(Aitsu_Translate::translate('Script has already been executed!'));
         }
@@ -20,8 +20,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory('The script will run!');
     }
 
-    public function doCreateMainCategory() {
-
+    public function doCreateMainCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'main',
@@ -39,8 +39,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Main Category has been created'));
     }
 
-    public function doCreateMetaCategory() {
-
+    public function doCreateMetaCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'meta',
@@ -58,8 +58,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Meta Category has been created'));
     }
 
-    public function doCreateSystemCategory() {
-
+    public function doCreateSystemCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'system',
@@ -77,8 +77,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('System Category has been created'));
     }
 
-    public function doCreateImprintCategory() {
-
+    public function doCreateImprintCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'Impressum',
@@ -96,15 +96,34 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Imprint Category has been created'));
     }
 
-    public function doCreateLoginCategory() {
+    public function doCreateContactCategory()
+    {
+        try {
+            $catInfo = array(
+                'name' => 'Kontakt',
+                'urlname' => 'kontakt'
+            );
 
+            Aitsu_Registry::get()->session->createStructure->contactIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->metaIdCat);
+        } catch (Exception $e) {
+            trigger_error($e->getMessage());
+            return (object) array(
+                        'message' => Aitsu_Translate::translate('Creating Contact Category failed')
+            );
+        }
+
+        return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Contact Category has been created'));
+    }
+
+    public function doCreateLoginCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'Login',
                 'urlname' => 'login'
             );
 
-            Aitsu_Registry::get()->session->createStructure->loginIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->systemIdCat);
+            Aitsu_Registry::get()->session->createStructure->loginIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->metaIdCat);
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -115,8 +134,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Login Category has been created'));
     }
 
-    public function doCreateErrorCategory() {
-
+    public function doCreateErrorCategory()
+    {
         try {
             $catInfo = array(
                 'name' => 'Error',
@@ -134,8 +153,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Error Category has been created'));
     }
 
-    public function doCreateStartArticle() {
-
+    public function doCreateStartArticle()
+    {
         try {
             Aitsu_Registry::get()->session->createStructure->startIdArt = $this->_createArticle('index', 'Herzlich willkommen', Aitsu_Registry::get()->session->createStructure->mainIdCat);
         } catch (Exception $e) {
@@ -148,8 +167,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Start Article has been created'));
     }
 
-    public function doCreateErrorArticle() {
-
+    public function doCreateErrorArticle()
+    {
         try {
             Aitsu_Registry::get()->session->createStructure->errorIdArt = $this->_createArticle('index', 'Seite nicht gefunden', Aitsu_Registry::get()->session->createStructure->errorIdCat);
         } catch (Exception $e) {
@@ -162,8 +181,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Error Article has been created'));
     }
 
-    public function doCreateLoginArticle() {
-
+    public function doCreateLoginArticle()
+    {
         try {
             Aitsu_Registry::get()->session->createStructure->loginIdArt = $this->_createArticle('index', 'Login', Aitsu_Registry::get()->session->createStructure->loginIdCat);
         } catch (Exception $e) {
@@ -176,8 +195,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Login Article has been created'));
     }
 
-    public function doCreateImprintArticle() {
-
+    public function doCreateImprintArticle()
+    {
         try {
             Aitsu_Registry::get()->session->createStructure->imprintIdArt = $this->_createArticle('index', 'Impressum', Aitsu_Registry::get()->session->createStructure->imprintIdCat);
         } catch (Exception $e) {
@@ -190,8 +209,22 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Imprint Article has been created'));
     }
 
-    public function doWriteConfig() {
+    public function doCreateContactArticle()
+    {
+        try {
+            Aitsu_Registry::get()->session->createStructure->contactIdArt = $this->_createArticle('index', 'Kontakt', Aitsu_Registry::get()->session->createStructure->contactIdCat);
+        } catch (Exception $e) {
+            trigger_error($e->getMessage());
+            return (object) array(
+                        'message' => Aitsu_Translate::translate('Creating Contact Article failed')
+            );
+        }
 
+        return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Contact Article has been created'));
+    }
+
+    public function doWriteConfig()
+    {
         Aitsu_Db::startTransaction();
 
         $client = 'default';
@@ -219,8 +252,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Config has been written'));
     }
 
-    public function doFinished() {
-
+    public function doFinished()
+    {
         Aitsu_Registry::get()->session->createStructure = null;
 
         Moraso_Db::put('_moraso_config', 'id', array(
@@ -233,8 +266,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Script finished!'));
     }
 
-    public function _createCategory($catInfo, $createInIdCat = 0) {
-
+    public function _createCategory($catInfo, $createInIdCat = 0)
+    {
         Aitsu_Db::startTransaction();
 
         $idcat = Aitsu_Persistence_Category::factory($createInIdCat)->insert(Aitsu_Registry::get()->session->currentLanguage);
@@ -253,8 +286,8 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract {
         return $idcat;
     }
 
-    public function _createArticle($title, $pagetitle, $idcat) {
-
+    public function _createArticle($title, $pagetitle, $idcat)
+    {
         Aitsu_Db::startTransaction();
 
         $art = Aitsu_Persistence_Article::factory();

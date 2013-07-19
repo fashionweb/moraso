@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_List_Comments_Form_Class extends Moraso_Module_Abstract
+class Moraso_Module_Contact_Form_Class extends Moraso_Module_Abstract
 {
     protected function _getDefaults()
     {
@@ -32,7 +32,6 @@ class Moraso_Module_List_Comments_Form_Class extends Moraso_Module_Abstract
 
         /* create View */
         $view = $this->_getView();
-        $view->parent_node_id = $this->_params->parent_node_id;
         $view->spam_protect_time = $defaults['spam_protect_time'];
         return $view->render($template . '.phtml');
     }

@@ -1,7 +1,8 @@
 <form method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
     <input type="hidden" name="action" value="addComment" />
     <input type="hidden" name="parent_node_id" value="<?= $this->parent_node_id ?>" />
-    <input type="hidden" name="protect" value="<?= base64_encode(time()) ?>" />
+    <input type="hidden" name="spam_protect" value="<?= base64_encode(time()) ?>" />
+    <input type="hidden" name="spam_protect_time" value="<?= base64_encode(10) ?>" />
 
     <label for="comment_author_<?= $this->parent_node_id ?>">Name</label>
     <input type="text" name="author" id="comment_author_<?= $this->parent_node_id ?>" />

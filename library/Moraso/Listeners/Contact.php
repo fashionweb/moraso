@@ -13,13 +13,15 @@ class Moraso_Listeners_Contact implements Aitsu_Event_Listener_Interface
             $_POST['spam'] = true;
 
             if (!is_numeric($_POST['spam_protect_time']) && base64_decode($_POST['spam_protect_time'], true) && is_numeric(base64_decode($_POST['spam_protect_time']))) {
-                if (!is_numeric($_POST['spam_protect']) && base64_decode($_POST['spam_protect'], true)) {
+                if (!is_numeric($_POST['spam_protect']) && base64_decode($_POST['spam_protect'], true) && is_numeric(base64_decode($_POST['spam_protect']))) {
                     if ((time() - base64_decode($_POST['spam_protect_time']) >= base64_decode($_POST['spam_protect']))) {
-                        // okay,.. dann versende ich die Anfrage mal!
-                        // und vll. packen wir die Daten auch in die DB, mal bequatschen
+                        if (crypt($_POST['spam_protect'] . $_POST['spam_protect_time'], $_POST['spam_protect_hash']) === $_POST['spam_protect_hash']) {
+                            // okay,.. dann versende ich die Anfrage mal!
+                            // und vll. packen wir die Daten auch in die DB, mal bequatschen
 
-                        $_POST['success'] = true;
-                        $_POST['spam'] = false;
+                            $_POST['success'] = true;
+                            $_POST['spam'] = false;
+                        }
                     }
 
                     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {

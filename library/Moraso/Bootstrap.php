@@ -528,7 +528,7 @@ class Moraso_Bootstrap {
         if (empty($expire) || Aitsu_Application_Status::isEdit()) {
             $cacheControl = 'no-cache, must-revalidat';
             $pragma = 'no-cache';
-            $expires = 'Mon, 16 Mar 1987 15:30:21';
+            $expires = 'Mon, 16 Mar 1987 14:35:00';
         } else {
             $cacheControl = 'max-age=' . $expire;
             $pragma = 'public';

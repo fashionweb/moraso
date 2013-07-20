@@ -27,10 +27,10 @@
                     <?php if ($this->user !== NULL) : ?>
                         <div class="admin_toolbar">
                             <ul class="button-group">
-                                <li><a href="#" class="deleteComment small alert button">löschen</a></li>
+                                <li><a href="#" class="deleteComment small alert button"><?= Aitsu_Translate::_('delete') ?></a></li>
 
                                 <?php if (!$comment_lvl_2['active']) : ?>
-                                    <li><a href="#" class="small success button">genehmigen</a></li>
+                                    <li><a href="#" class="small success button"><?= Aitsu_Translate::_('approve') ?></a></li>
                                 <?php endif; ?>
                             </ul>
                         </div>
@@ -50,10 +50,10 @@
                                 <?php if ($this->user !== NULL) : ?>
                                     <div class="admin_toolbar">
                                         <ul class="button-group">
-                                            <li><a href="#" class="deleteComment small alert button">löschen</a></li>
+                                            <li><a href="#" class="deleteComment small alert button"><?= Aitsu_Translate::_('delete') ?></a></li>
 
                                             <?php if (!$comment_lvl_3['active']) : ?>
-                                                <li><a href="#" class="small success button">genehmigen</a></li>
+                                                <li><a href="#" class="small success button"><?= Aitsu_Translate::_('approve') ?></a></li>
                                                 <?php endif; ?>
                                         </ul>
                                     </div>
@@ -65,6 +65,6 @@
             <?php endforeach; ?>
         </ul>
     <?php else: ?>
-        <p>Bisher wurden keine Kommentare verfasst, sei der Erste!</p>
+        <p><?= Aitsu_Translate::_('No comments have been written, be the first!') ?></p>
     <?php endif; ?>
 </section>

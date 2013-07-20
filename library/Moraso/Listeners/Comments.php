@@ -14,15 +14,17 @@ class Moraso_Listeners_Comments implements Aitsu_Event_Listener_Interface
 
             if (isset($_POST['parent_node_id']) && !empty($_POST['parent_node_id'])) {
                 if (!is_numeric($_POST['spam_protect_time']) && base64_decode($_POST['spam_protect_time'], true) && is_numeric(base64_decode($_POST['spam_protect_time']))) {
-                    if (!is_numeric($_POST['spam_protect']) && base64_decode($_POST['spam_protect'], true)) {
+                    if (!is_numeric($_POST['spam_protect']) && base64_decode($_POST['spam_protect'], true) && is_numeric(base64_decode($_POST['spam_protect']))) {
                         if ((time() - base64_decode($_POST['spam_protect_time']) >= base64_decode($_POST['spam_protect']))) {
-                            $_POST['node_id'] = Moraso_Comments::create($_POST['parent_node_id'], array(
-                                        'author' => $_POST['author'],
-                                        'comment' => $_POST['comment']
-                                            ), true, true);
+                            if (crypt($_POST['spam_protect'] . $_POST['spam_protect_time'], $_POST['spam_protect_hash']) === $_POST['spam_protect_hash']) {
+                                $_POST['node_id'] = Moraso_Comments::create($_POST['parent_node_id'], array(
+                                            'author' => $_POST['author'],
+                                            'comment' => $_POST['comment']
+                                                ), true, true);
 
-                            $_POST['success'] = true;
-                            $_POST['spam'] = false;
+                                $_POST['success'] = true;
+                                $_POST['spam'] = false;
+                            }
                         }
 
                         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {

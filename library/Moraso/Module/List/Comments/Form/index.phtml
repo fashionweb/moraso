@@ -1,14 +1,26 @@
-<form method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
+<!-- Default -->
+<form data-abide method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
     <input type="hidden" name="action" value="addComment" />
     <input type="hidden" name="parent_node_id" value="<?= $this->parent_node_id ?>" />
     <input type="hidden" name="spam_protect" value="<?= base64_encode(time()) ?>" />
-    <input type="hidden" name="spam_protect_time" value="<?= base64_encode(10) ?>" />
+    <input type="hidden" name="spam_protect_time" value="<?= base64_encode($this->spam_protect_time) ?>" />
+    <input type="hidden" name="spam_protect_hash" value="<?= crypt(base64_encode(time()) . base64_encode($this->spam_protect_time)) ?>" />
 
-    <label for="comment_author_<?= $this->parent_node_id ?>">Name</label>
-    <input type="text" name="author" id="comment_author_<?= $this->parent_node_id ?>" />
+    <div class="row">
+        <div class="large-12 columns">
+            <label for="comment_author_<?= $this->parent_node_id ?>"><?= Aitsu_Translate::_('Name') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+            <input type="text" name="author" id="comment_author_<?= $this->parent_node_id ?>" required />
+            <small class="error"><?= Aitsu_Translate::_('Name is required!') ?></small>
+        </div>
 
-    <label for="comment_comment_<?= $this->parent_node_id ?>">Kommentar</label>
-    <textarea name="comment" id="comment_comment_<?= $this->parent_node_id ?>"></textarea>
+        <div class="large-12 columns">
+            <label for="comment_comment_<?= $this->parent_node_id ?>"><?= Aitsu_Translate::_('Comment') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+            <textarea name="comment" id="comment_comment_<?= $this->parent_node_id ?>" required></textarea>
+            <small class="error"><?= Aitsu_Translate::_('Comment is required!') ?></small>
+        </div>
 
-    <input type="submit" class="small button" value="kommentieren" />
+        <div class="large-12 columns">
+            <input type="submit" class="small button" value="<?= Aitsu_Translate::_('comment') ?>" />
+        </div>
+    </div>
 </form>

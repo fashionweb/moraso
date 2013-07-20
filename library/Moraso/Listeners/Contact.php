@@ -16,11 +16,9 @@ class Moraso_Listeners_Contact implements Aitsu_Event_Listener_Interface
                 if (!is_numeric($_POST['spam_protect']) && base64_decode($_POST['spam_protect'], true) && is_numeric(base64_decode($_POST['spam_protect']))) {
                     if ((time() - base64_decode($_POST['spam_protect_time']) >= base64_decode($_POST['spam_protect']))) {
                         if (crypt($_POST['spam_protect'] . $_POST['spam_protect_time'], $_POST['spam_protect_hash']) === $_POST['spam_protect_hash']) {
-                            // okay,.. dann versende ich die Anfrage mal!
-                            // und vll. packen wir die Daten auch in die DB, mal bequatschen
-
-                            $_POST['success'] = true;
                             $_POST['spam'] = false;
+
+                            Aitsu_Event::raise('frontend.contact.form.execute', null);
                         }
                     }
 

@@ -10,7 +10,12 @@ class Moraso_Module_Contact_Form_Class extends Moraso_Module_Abstract
     {
         $defaults = array(
             'template' => 'index',
-            'spam_protect_time' => 10
+            'spam_protect_time' => 10,
+            'mail_subject' => 'Kontaktanfrage',
+            'mail_from_name' => 'Kontaktformular | moraso cms',
+            'mail_from_email' => 'no-reply@moraso-cms.de',
+            'mail_to_name' => 'Christian Kehres | webtischlerei',
+            'mail_to_email' => 'c.kehres@webtischlerei.de'
         );
 
         return $defaults;
@@ -33,6 +38,11 @@ class Moraso_Module_Contact_Form_Class extends Moraso_Module_Abstract
         /* create View */
         $view = $this->_getView();
         $view->spam_protect_time = $defaults['spam_protect_time'];
+        $view->mail_subject = $defaults['mail_subject'];
+        $view->mail_from_name = $defaults['mail_from_name'];
+        $view->mail_from_email = $defaults['mail_from_email'];
+        $view->mail_to_name = $defaults['mail_to_name'];
+        $view->mail_to_email = $defaults['mail_to_email'];
         return $view->render($template . '.phtml');
     }
 

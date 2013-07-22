@@ -21,7 +21,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                                 '   catlang.lastmodified ' .
                                 'FROM ' .
                                 '   _cat_lang AS catlang ' .
-                                'LEFT JOIN ' .
+                                'INNER JOIN ' .
                                 '   _cat AS cat ON cat.idcat = catlang.idcat ' .
                                 'WHERE ' .
                                 '   catlang.idlang =:idlang ' .
@@ -45,8 +45,10 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                                 '   artlang.lastmodified ' .
                                 'FROM ' .
                                 '   _art_lang AS artlang ' .
-                                'LEFT JOIN ' .
+                                'INNER JOIN ' .
                                 '   _cat_art AS catart ON catart.idart = artlang.idart ' .
+                                'INNER JOIN ' .
+                                '   _cat_lang AS catlang ON (catlang.idcat = catart.idcat AND catlang.startidartlang != artlang.idartlang AND catlang.idlang = artlang.idlang) ' .
                                 'WHERE ' .
                                 '   artlang.idlang =:idlang ' .
                                 'AND ' .

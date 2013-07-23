@@ -1,0 +1,13 @@
+<plugin>
+    <id>51ee4ca5-3e80-4328-86e4-1a2fc0a8b230</id>
+    <name>Addresses</name>
+    <icon>execute</icon>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.addresses.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

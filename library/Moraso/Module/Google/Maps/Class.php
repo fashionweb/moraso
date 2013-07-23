@@ -114,7 +114,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
         $address = !empty($address) ? $address : $defaults['address'];
 
         /* MapTypeId */
-        if ($defaults['configurable']['MapTypeId']) {
+        if ($defaults['configurable']['mapTypeId']) {
             $mapTypeIdSelect = array(
                 'default' => '',
                 'This map type displays a transparent layer of major streets on satellite images.' => 'HYBRID',

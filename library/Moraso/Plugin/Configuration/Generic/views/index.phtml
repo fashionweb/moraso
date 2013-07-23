@@ -1,21 +1,6 @@
 var center = Ext.getCmp('viewport-center');
 center.removeAll();
 
-var configurationTabs = new Ext.TabPanel({
-    id: 'configuration-tabs',
-    resizeTabs: false,
-    minTabWidth: 115,
-    tabWidth:135,
-    enableTabScroll:true,
-    defaults: {
-        autoScroll:true
-    }
-});
-
-center.add(configurationTabs);
-
-Ext.getCmp('viewport').doLayout();
-
 var reader = new Ext.data.JsonReader({
     idProperty: 'id',
     root: 'data',
@@ -57,7 +42,7 @@ var store = new Ext.data.GroupingStore({
 });
                 
 var configurationGrid = new Ext.grid.GridPanel({
-    title: '<?php echo Aitsu_Translate::translate('Configuration'); ?> (<?php echo Aitsu_Translate::translate('Overall'); ?>)',
+    title: '<?php echo Aitsu_Translate::translate('Configuration'); ?>',
     id: 'configurationGrid',
     store: store,
     columns: [
@@ -140,28 +125,5 @@ var configurationGrid = new Ext.grid.GridPanel({
 	}
 });
 
-configurationTabs.add(configurationGrid);
-
-var configurationCacheGrid = new Ext.grid.GridPanel({
-    title: '<?php echo Aitsu_Translate::translate('Configuration'); ?> (<?php echo Aitsu_Translate::translate('Cache'); ?>)',
-    disabled: true
-});
-
-configurationTabs.add(configurationCacheGrid);
-
-var configurationLuceneGrid = new Ext.grid.GridPanel({
-    title: '<?php echo Aitsu_Translate::translate('Configuration'); ?> (<?php echo Aitsu_Translate::translate('Lucene'); ?>)',
-    disabled: true
-});
-
-configurationTabs.add(configurationLuceneGrid);
-
-var configurationRewritungGrid = new Ext.grid.GridPanel({
-    title: '<?php echo Aitsu_Translate::translate('Configuration'); ?> (<?php echo Aitsu_Translate::translate('Rewriting'); ?>)',
-    disabled: true
-});
-
-configurationTabs.add(configurationRewritungGrid);
-
-configurationTabs.setActiveTab(0);
-configurationTabs.doLayout();
+center.add(configurationGrid);
+Ext.getCmp('viewport').doLayout();

@@ -54,12 +54,36 @@ class Moraso_Plugin_Addresses_Generic_Controller extends Moraso_Adm_Plugin_Contr
 
         $form->setOptions('groups', $groups);
 
+        $country_list = Moraso_Db::fetchAll('SELECT * FROM _geo_country');
+
+        $countries = array();
+        foreach ($country_list as $country) {
+            $countries[] = (object) array(
+                        'value' => $country['iso2'],
+                        'name' => str_replace("'", "\'", $country['en'])
+            );
+        }
+
+        $form->setOptions('country', $countries);
+
         $address = Moraso_Addresses::get($address_id);
 
         if ($address) {
-            $form->setValues((array) $address->googleOutput);
-            $form->setValues(array('groups' => (array) $address->groups));
-            $form->setValues((array) $address->userInput);
+            $values = array();
+
+            $googleOutput = (array) $address->googleOutput;
+            foreach ($googleOutput as $key => $value) {
+                $values['google_' . $key] = $value;
+            }
+
+            $userInput = (array) $address->userInput;
+            foreach ($userInput as $key => $value) {
+                $values[$key] = $value;
+            }
+
+            $values['groups'] = (array) $address->groups;
+
+            $form->setValues($values);
         }
 
         if ($this->getRequest()->getParam('loader')) {
@@ -72,7 +96,7 @@ class Moraso_Plugin_Addresses_Generic_Controller extends Moraso_Adm_Plugin_Contr
             if ($form->isValid()) {
                 $address = $form->getValues();
 
-                Moraso_Addresses::set($address['name'], $address['street'], $address['house_number'], $address['postal_code'], $address['city'], $address['address_id'], $address['groups']);
+                Moraso_Addresses::set($address['name'], $address['street'], $address['house_number'], $address['postal_code'], $address['city'], $address['country'], $address['address_id'], $address['groups']);
 
                 $this->_helper->json((object) array(
                             'success' => true,

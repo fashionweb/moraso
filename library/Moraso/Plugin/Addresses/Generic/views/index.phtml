@@ -7,8 +7,7 @@ var addressesReader = new Ext.data.JsonReader({
             name: 'address_id',
             type: 'int'
         }, {
-            name: 'addresses_group_id',
-            type: 'int'
+            name: 'addresses_group'
         }, {
             name: 'street'
         }, {
@@ -19,6 +18,8 @@ var addressesReader = new Ext.data.JsonReader({
             name: 'city'
         }, {
             name: 'name'
+        }, {
+            name: 'country'
         }
     ],
     root: 'addresses'
@@ -27,7 +28,7 @@ var addressesReader = new Ext.data.JsonReader({
 var addressesStore = new Ext.data.GroupingStore({
     reader: addressesReader,
     url: '<?= $this->url(array('paction' => 'store')) ?>',
-    groupField: 'addresses_group_id',
+    groupField: 'addresses_group',
     autoLoad: true
 });
 
@@ -37,8 +38,8 @@ var addressesColumns = new Ext.grid.ColumnModel({
             dataIndex: 'address_id', 
             header: '#'
         }, {
-            dataIndex: 'addresses_group_id',
-            header: '<?= Aitsu_Translate::translate('Group #') ?>',
+            dataIndex: 'addresses_group',
+            header: '<?= Aitsu_Translate::translate('Group') ?>',
             hidden: true
         }, {
             dataIndex: 'name',
@@ -58,6 +59,10 @@ var addressesColumns = new Ext.grid.ColumnModel({
         }, {
             dataIndex: 'city',
             header: '<?= Aitsu_Translate::translate('City') ?>',
+            width: 200
+        }, {
+            dataIndex: 'country',
+            header: '<?= Aitsu_Translate::translate('Country') ?>',
             fixed: false
         }
     ],

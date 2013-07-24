@@ -60,13 +60,13 @@ class Moraso_Addresses
                 'userInput' => (object) Moraso_Db::fetchAll('' .
                         'SELECT ' .
                         '   address.*, ' .
-                        '   `group`.name AS addresses_group ' .
+                        '   addresses_group.name AS addresses_group ' .
                         'FROM ' .
                         '   _addresses AS address ' .
                         'LEFT JOIN ' .
                         '   _addresses_address_has_group AS hasGroup ON hasGroup.address_id = address.address_id ' .
                         'LEFT JOIN ' .
-                        '   _addresses_groups AS `group` ON group.addresses_group_id = hasGroup.addresses_group_id'),
+                        '   _addresses_groups AS addresses_group ON addresses_group.addresses_group_id = hasGroup.addresses_group_id'),
                 'googleOutput' => (object) Moraso_Db::fetchAll('' .
                         'SELECT ' .
                         '   * ' .

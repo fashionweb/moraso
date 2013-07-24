@@ -7,6 +7,7 @@
         <field name="house_number" type="varchar(255)" nullable="true" default="null" />
         <field name="postal_code" type="int(5) unsigned" default="null" nullable="false" />
         <field name="city" type="varchar(255)" default="null" />
+        <field name="country" type="varchar(2)" default="null" />
                 
         <!-- Indexe setzen -->
         <index name="index_name" columns="name" type="index" />
@@ -14,6 +15,7 @@
         <index name="index_house_number" columns="house_number" type="index" />
         <index name="index_postal_code" columns="postal_code" type="index" />
         <index name="index_city" columns="city" type="index" />
+        <index name="index_country" columns="country" type="index" />
     </table>
     
     <table name="addresses_groups" engine="InnoDB" since="">

@@ -53,26 +53,56 @@ class Moraso_Addresses
                         '   _addresses_groups');
     }
 
-    public static function get($address_id = null)
+    public static function get($address_id = null, $addresses_group_id = null)
     {
         if (is_null($address_id)) {
-            $return = array(
-                'userInput' => (object) Moraso_Db::fetchAll('' .
-                        'SELECT ' .
-                        '   address.*, ' .
-                        '   addresses_group.name AS addresses_group ' .
-                        'FROM ' .
-                        '   _addresses AS address ' .
-                        'LEFT JOIN ' .
-                        '   _addresses_address_has_group AS hasGroup ON hasGroup.address_id = address.address_id ' .
-                        'LEFT JOIN ' .
-                        '   _addresses_groups AS addresses_group ON addresses_group.addresses_group_id = hasGroup.addresses_group_id'),
-                'googleOutput' => (object) Moraso_Db::fetchAll('' .
-                        'SELECT ' .
-                        '   * ' .
-                        'FROM ' .
-                        '   _addresses_google_data')
-            );
+            if (is_null($addresses_group_id)) {
+                $return = array(
+                    'userInput' => (object) Moraso_Db::fetchAll('' .
+                            'SELECT ' .
+                            '   address.*, ' .
+                            '   addresses_group.name AS addresses_group ' .
+                            'FROM ' .
+                            '   _addresses AS address ' .
+                            'LEFT JOIN ' .
+                            '   _addresses_address_has_group AS hasGroup ON hasGroup.address_id = address.address_id ' .
+                            'LEFT JOIN ' .
+                            '   _addresses_groups AS addresses_group ON addresses_group.addresses_group_id = hasGroup.addresses_group_id'),
+                    'googleOutput' => (object) Moraso_Db::fetchAll('' .
+                            'SELECT ' .
+                            '   * ' .
+                            'FROM ' .
+                            '   _addresses_google_data')
+                );
+            } else {
+                $return = array(
+                    'userInput' => (object) Moraso_Db::fetchAll('' .
+                            'SELECT ' .
+                            '   address.* ' .
+                            'FROM ' .
+                            '   _addresses AS address ' .
+                            'LEFT JOIN ' .
+                            '   _addresses_address_has_group AS hasGroup ON hasGroup.address_id = address.address_id ' .
+                            'WHERE ' .
+                            '   hasGroup.addresses_group_id =:addresses_group_id', array(
+                        ':addresses_group_id' => $addresses_group_id
+                    )),
+                    'googleOutput' => (object) Moraso_Db::fetchAll('' .
+                            'SELECT ' .
+                            '   googleData.*, ' .
+                            '   address.name ' .
+                            'FROM ' .
+                            '   _addresses_google_data AS googleData ' .
+                            'LEFT JOIN ' .
+                            '   _addresses AS address ON address.address_id = googleData.address_id ' .
+                            'LEFT JOIN ' .
+                            '   _addresses_address_has_group AS hasGroup ON hasGroup.address_id = address.address_id ' .
+                            'WHERE ' .
+                            '   hasGroup.addresses_group_id =:addresses_group_id', array(
+                        ':addresses_group_id' => $addresses_group_id
+                    ))
+                );
+            }
         } else {
             $return = array(
                 'userInput' => (object) Moraso_Db::fetchRow('SELECT * FROM _addresses WHERE address_id =:address_id', array(':address_id' => $address_id)),

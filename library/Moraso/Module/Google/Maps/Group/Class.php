@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
+class Moraso_Module_Google_Maps_Group_Class extends Moraso_Module_Abstract
 {
     protected function _getDefaults()
     {
@@ -53,12 +53,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'zoomControl' => true,
             'zoomControlOptions_position' => true
         );
-
-        $defaults['name'] = 'webtischlerei';
-        $defaults['address'] = 'Von-Kronenfeldt-Str. 20, 27318 Hoya, Deutschland';
-        $defaults['configurable']['name'] = true;
-        $defaults['configurable']['address'] = true;
-
+        
         return $defaults;
     }
 
@@ -85,6 +80,18 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'Elements are positioned in the top right and flow towards the middle.' => 'TOP_RIGHT'
         );
     }
+    
+    protected function _addressesGroups()
+    {
+        $addresses_groups = Moraso_Addresses::getGroups();
+        
+        $array = array(); 
+        foreach ($addresses_groups as $addresses_group) {
+            $array[$addresses_group['name']] = $addresses_group['addresses_group_id'];
+        }
+        
+        return $array;
+    }
 
     protected function _trueFalseArray()
     {
@@ -98,20 +105,6 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
     protected function _main()
     {
         $defaults = $this->_moduleConfigDefaults;
-
-        /* Name */
-        if ($defaults['configurable']['name']) {
-            $name = Aitsu_Content_Config_Text::set($this->_index, 'name', Aitsu_Translate::translate('Name'), Aitsu_Translate::_('Configuration'));
-        }
-
-        $name = !empty($name) ? $name : $defaults['name'];
-
-        /* Address */
-        if ($defaults['configurable']['address']) {
-            $address = Aitsu_Content_Config_Text::set($this->_index, 'address', Aitsu_Translate::translate('Address'), Aitsu_Translate::_('Configuration'));
-        }
-
-        $address = !empty($address) ? $address : $defaults['address'];
 
         /* MapTypeId */
         if ($defaults['configurable']['mapTypeId']) {
@@ -284,6 +277,15 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 
         $zoomControlOptions->position = !empty($zoomControlOptions_position) ? $zoomControlOptions_position : $defaults['zoomControlOptions_position'];
 
+        /* Markers */
+        $addresses_group_id = Aitsu_Content_Config_Select::set($this->_index, 'addresses_group_id', 'Addresses Group', $this->_addressesGroups(), Aitsu_Translate::_('Configuration'));
+        
+        if (empty($addresses_group_id)) {
+            return;
+        }
+        
+        $markers = Moraso_Addresses::get(null, $addresses_group_id);
+                
         /* create View */
         $view = $this->_getView();
 
@@ -305,8 +307,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
         $view->zoom = $zoom;
         $view->zoomControl = $zoomControl ? 'true' : 'false';
         $view->zoomControlOptions = $zoomControlOptions;
-        $view->name = $name;
-        $view->address = $address;
+        $view->markers = $markers->googleOutput;
 
         Aitsu_Util_Javascript::add($view->render('js.phtml'));
 

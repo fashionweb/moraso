@@ -1,0 +1,59 @@
+var map, position;
+var markers = [];
+    
+function initGoogleMap_<?php echo $this->index; ?> () {   
+    var mapOptions = {
+        mapTypeControl: <?php echo $this->mapTypeControl; ?>,
+        mapTypeControlOptions: {
+            position: google.maps.ControlPosition.<?php echo $this->mapTypeControlOptions->position; ?>,
+            style: google.maps.MapTypeControlStyle.<?php echo $this->mapTypeControlOptions->style; ?>
+        },
+        mapTypeId: google.maps.MapTypeId.<?php echo $this->mapTypeId; ?>,
+        maxZoom: <?php echo $this->maxZoom; ?>,
+        minZoom: <?php echo $this->minZoom; ?>,
+        overviewMapControl: <?php echo $this->overviewMapControl; ?>,
+        overviewMapControlOptions: {
+            opened: <?php echo $this->overviewMapControlOptions->opened; ?>
+        },
+        panControl: <?php echo $this->panControl; ?>,
+        panControlOptions: {
+            position: google.maps.ControlPosition.<?php echo $this->panControlOptions->position; ?>
+        },
+        rotateControl: <?php echo $this->rotateControl; ?>,
+        rotateControlOptions: {
+            position: google.maps.ControlPosition.<?php echo $this->rotateControlOptions->position; ?>
+        },
+        scaleControl: <?php echo $this->scaleControl; ?>,
+        scaleControlOptions: {
+            position: google.maps.ControlPosition.<?php echo $this->scaleControlOptions->position; ?>,
+            style: google.maps.ScaleControlStyle.<?php echo $this->scaleControlOptions->style; ?>
+        },
+        scrollwheel: <?php echo $this->scrollwheel; ?>,
+        zoom: <?php echo $this->zoom; ?>,
+        zoomControl: <?php echo $this->zoomControl; ?>,
+        zoomControlOptions: {
+            position: google.maps.ControlPosition.<?php echo $this->zoomControlOptions->position; ?>
+        }
+    };
+    
+    map = new google.maps.Map(document.getElementById('googleMap_<?php echo $this->index; ?>'), mapOptions);
+
+    var bounds = new google.maps.LatLngBounds();
+    
+    <?php foreach ($this->markers as $key => $marker) : ?>
+        position = new google.maps.LatLng(<?= $marker['lat'] ?>, <?= $marker['lng'] ?>);
+        
+        markers[<?= $key ?>] = new google.maps.Marker({
+            map: map,
+            position: position,
+            title: '<?php echo $marker['name']; ?>'
+        });
+        
+        bounds.extend(position);
+    <?php endforeach; ?>
+        
+    map.fitBounds(bounds);
+    map.panToBounds(bounds);
+}
+
+google.maps.event.addDomListener(window, 'load', initGoogleMap_<?php echo $this->index; ?> );

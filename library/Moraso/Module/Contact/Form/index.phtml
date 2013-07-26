@@ -1,0 +1,49 @@
+<!-- Default -->
+<?php if (isset($_POST['action']) && $_POST['action'] === 'sendContactRequest') : ?>
+    <?php if (!$_POST['spam'] && $_POST['success']) : ?>
+        <p data-alert class="alert-box success">Kontaktanfrage wurde erfolgreich versandt.</p>
+    <?php else : ?>
+        <?php if ($_POST['spam']) : ?>
+            <p data-alert class="alert-box alert">SPAMVERDACHT</p>
+        <?php else : ?>
+            <p data-alert class="alert-box alert">FEHLER <small><?= $_POST['message'] ?></small></p>
+        <?php endif; ?>
+    <?php endif; ?>
+<?php endif; ?>
+
+<form data-abide method="post" action="<?= Aitsu_Util::getCurrentUrl() ?>" class="panel">
+    <input type="hidden" name="action" value="sendContactRequest" />
+    <input type="hidden" name="mail_subject" value="<?= $this->mail_subject ?>" />
+    <input type="hidden" name="mail_from_name" value="<?= $this->mail_from_name ?>" />
+    <input type="hidden" name="mail_from_email" value="<?= $this->mail_from_email ?>" />
+    <input type="hidden" name="mail_to_name" value="<?= $this->mail_to_name ?>" />
+    <input type="hidden" name="mail_to_email" value="<?= $this->mail_to_email ?>" />
+    <input type="hidden" name="spam_protect" value="<?= base64_encode(time()) ?>" />
+    <input type="hidden" name="spam_protect_time" value="<?= base64_encode($this->spam_protect_time) ?>" />
+    <input type="hidden" name="spam_protect_hash" value="<?= crypt(base64_encode(time()) . base64_encode($this->spam_protect_time)) ?>" />
+
+    <div class="row">
+        <div class="large-2 columns">
+            <label for="contact_title"><?= Aitsu_Translate::_('Title') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+            <input type="text" name="title" id="contact_title" required />
+            <small class="error"><?= Aitsu_Translate::_('Title is required!') ?></small>
+        </div>
+
+        <div class="large-5 columns">
+            <label for="contact_firstname"><?= Aitsu_Translate::_('Firstname') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+            <input type="text" name="firstname" id="contact_firstname" required />
+            <small class="error"><?= Aitsu_Translate::_('Firstname is required!') ?></small>
+        </div>
+
+        <div class="large-5 columns">
+            <label for="contact_lastname"><?= Aitsu_Translate::_('Lastname') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+            <input type="text" name="lastname" id="contact_lastname" required />
+            <small class="error"><?= Aitsu_Translate::_('Lastname is required!') ?></small>
+        </div>
+    </div>
+
+    <label for="contact_request"><?= Aitsu_Translate::_('Request') ?> <small><?= Aitsu_Translate::_('required') ?></small></label>
+    <textarea name="request" id="contact_request" required></textarea>
+
+    <input type="submit" class="small button" value="<?= Aitsu_Translate::_('send Request') ?>" />
+</form>

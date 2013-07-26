@@ -1,0 +1,50 @@
+        /* SESSION MANAGEMENT */
+        var sessionPeriod = <?php echo Aitsu_Registry :: get()->session->sessionPeriod > 300 ? Aitsu_Registry :: get()->session->sessionPeriod : 300; ?>;
+        var remainingSessionPeriod = sessionPeriod;
+		Ext.TaskMgr.start({
+		    run: function() {
+		    	remainingSessionPeriod--;
+		    	var h = Math.floor(remainingSessionPeriod / 60 / 60);
+		    	var m = Math.floor((remainingSessionPeriod - h * 60 * 60) / 60);
+		    	var s = Math.floor(remainingSessionPeriod - h * 60 * 60 - m * 60);
+		    	m = m < 10 ? '0' + m : m;
+		    	s = s < 10 ? '0' + s : s;
+                        
+                        if ((h == 0 && m == 0) || h >= 1) {
+                            Ext.getCmp('basic-statusbar').setStatus('<?php echo Aitsu_Translate :: translate('Remaining session time'); ?>: ' + h + ' Std. ' + m + ' Minuten ');
+                        } else if (h == 0 && m >= 6) {
+                            Ext.getCmp('basic-statusbar').setStatus('<?php echo Aitsu_Translate :: translate('Remaining session time'); ?>: ' + m + ' Minuten ');
+                        } else if (h == 0 && (m >= 1 && m <= 5)) {
+                            Ext.getCmp('basic-statusbar').setStatus('<?php echo Aitsu_Translate :: translate('Remaining session time'); ?>: ' + m + ' Minuten ' + s + ' Sekunden ');
+                        } else {
+                            Ext.getCmp('basic-statusbar').setStatus('<?php echo Aitsu_Translate :: translate('Remaining session time'); ?>: ' + s + ' Sekunden ');
+                        }
+				if (remainingSessionPeriod <= 0) {
+					window.location.href = '<?php echo $this->url(array('controller' => 'acl', 'action' => 'logout'), 'default'); ?>';
+				}    	
+		    },
+		    interval: 1000
+		});
+		Ext.getBody().on('keydown', function() {
+			remainingSessionPeriod = sessionPeriod;
+		});
+		Ext.getBody().on('mousedown', function() {
+			remainingSessionPeriod = sessionPeriod;
+		});
+		Ext.TaskMgr.start({
+		    run: function() {
+		    	Ext.Ajax.request({
+				   url: '<?php echo $this->url(array('controller' => 'acl', 'action' => 'refreshsession'), 'default'); ?>',
+				   success: function(response, opts) {
+				      var res = Ext.decode(response.responseText);
+				      if (!res.success) {
+				      	window.location.href = '<?php echo $this->url(array('controller' => 'acl', 'action' => 'logout'), 'default'); ?>';
+				      }
+				   },
+				   failure: function(response, opts) {
+				      alert('ERROR');
+				   }
+				});
+		    },
+		    interval: 300000
+		});

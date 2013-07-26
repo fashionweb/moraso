@@ -1,0 +1,5 @@
+<?php foreach ($this->data as $key => $value) : ?>
+    <?php if (!empty($value)) : ?>
+        <meta name="<?php echo $key; ?>" content="<?php echo $value; ?>" />
+    <?php endif; ?>
+<?php endforeach; ?>

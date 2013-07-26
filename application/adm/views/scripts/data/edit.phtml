@@ -1,0 +1,108 @@
+Ext.getCmp('viewport-east').setVisible(false);
+
+var center = Ext.getCmp('viewport-center');
+center.removeAll();
+
+var panel = new Ext.TabPanel({
+    id: 'page-edit-tab',
+    resizeTabs: false,
+    minTabWidth: 115,
+    tabWidth:135,
+    enableTabScroll:true,
+    defaults: {
+        autoScroll:true
+    },
+    tabPosition: 'top'
+});
+
+center.add(panel);
+
+var reloadTreeByArt = function(id) {
+        var tree = Ext.getCmp('pageview-cattree'); 
+        
+	var node = tree.getNodeById("idart-" + id);
+        
+	tree.getLoader().load(node.parentNode, function(n) {
+		n.expand(false, false, function() {
+			tree.getNodeById(node.attributes.id).expand(false, false);
+		});
+	});
+}
+
+var setUnpublished = function() {
+    var b = Ext.getCmp('publish-button');
+    b.setIconClass('page-unpublished');
+    b.setDisabled(false);
+}
+
+var onlineBtn = new Ext.Button({
+    tooltip: '<?php echo ($this->art->online ? Aitsu_Translate::translate('Set offline') : Aitsu_Translate::translate('Set online')); ?>',
+    iconCls: '<?php echo ($this->art->online ? 'page-online' : 'page-offline'); ?>',
+    handler: function(b, e) {
+        Ext.Ajax.request({
+            url: '<?php echo $this->url(array('controller' => 'data', 'action' => 'toggleonline'), 'default'); ?>',
+            success: function(response, opts) {
+                var rsp = Ext.decode(response.responseText);
+                if (rsp.online == 1) {
+                    b.setIconClass('page-online');
+                    b.setTooltip('<?php echo Aitsu_Translate::translate('Set offline'); ?>');
+                } else {
+                    b.setIconClass('page-offline');
+                    b.setTooltip('<?php echo Aitsu_Translate::translate('Set online'); ?>');
+                }
+                reloadTreeByArt(<?php echo $this->idart; ?>);
+                setUnpublished();
+            },
+            params: {
+                idart: <?php echo $this->idart; ?>
+            }
+        });
+    }
+});
+
+var publishBtn = new Ext.Button({
+    id: 'publish-button',
+    tooltip: '<?php echo Aitsu_Translate::translate('Publish'); ?>',
+    iconCls: '<?php echo ($this->art->ispublished ? 'page-published' : 'page-unpublished'); ?>',
+    disabled: <?php echo ($this->art->ispublished ? 'true' : 'false'); ?>,
+    handler: function(b, e) {
+        Ext.Ajax.request({
+            url: '<?php echo $this->url(array('controller' => 'data', 'action' => 'startpublishing'), 'default'); ?>',
+            success: function(response, opts) {
+                b.setIconClass('page-published');
+            },
+            params: {
+                idart: <?php echo $this->idart; ?>
+            }
+        });
+    }
+});
+
+<?php if ($this->hidePublishing) : ?>
+publishBtn.hide();
+<?php endif; ?>
+
+var eastPanel = new Ext.Panel({
+    layout: 'accordion',
+    border: false,
+    id: 'page-plugin-accordion',
+    layoutConfig: {
+        titleCollapse: true,
+        hideCollapseTool: true,
+        animate: false
+    },
+    tbar: {
+        items: [
+            onlineBtn,
+            publishBtn
+        ]
+    }
+});
+
+var east = Ext.getCmp('viewport-east');
+east.removeAll();
+east.setVisible(true);
+east.setAutoScroll(true);
+east.setWidth(350);
+east.add(eastPanel);
+east.expand(false);

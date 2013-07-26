@@ -1,0 +1,12 @@
+<plugin>
+    <id>51e112e0-8158-436e-8d81-0b39c0a8b230</id>
+    <name>Open Graph</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.opengraph.article</identifier>
+        </privilege>
+    </privileges>
+</plugin>

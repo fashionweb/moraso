@@ -1,0 +1,69 @@
+<div class="row">
+    <div class="large-12 columns">
+        <h1>Warenkorb</h1>
+
+        <?php if (count((array) $this->articles) > 0) : ?>
+            <table id="checkout_table_overview" class="large-12">
+                <thead>
+                    <tr>
+                        <th width="100"></th>
+                        <th>Beschreibung</th>
+                        <th class="text-right" width="50">Menge</th>
+                        <th class="text-right" width="100">Einzelpreis</th>
+                        <th class="text-right" width="100">Gesamtpreis</th>
+                        <th width="100"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->articles as $idart => $article) : ?>
+                        <tr data-article-id="<?= $idart ?>">
+                            <td>
+                                <img src="<?= $article->mainimage ?>" alt="<?= $article->pagetitle ?>" title="<?= $article->pagetitle ?>" />
+                            </td>
+                            <td>
+                                <h2><?= $article->pagetitle ?></h2>
+
+                                <p><?= $article->summary ?></p>
+                            </td>
+                            <td class="text-right"><?= $article->qty ?></td>
+                            <td class="text-right"><?= $article->price ?></td>
+                            <td class="text-right"><?= $article->price_total ?></td>
+                            <td class="text-right"><a class="delete" href="#delete">entfernen</a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+                <tfoot>                    
+                    <tr>
+                        <td colspan="4" class="text-right">Gesamtsumme</td>
+                        <td class="text-right"><?= $this->amount_total ?></td>
+                        <td class="text-right"><small>(Brutto)</small></td>
+                    </tr>
+                    <?php foreach ($this->amount_total_tax as $tax_class => $tax_value) : ?>
+                        <tr>
+                            <td colspan="4" class="text-right">enthaltende <?= $tax_class ?>% MwSt.</td>
+                            <td class="text-right"><?= $tax_value ?></td>
+                            <td></td>
+                        </tr>
+                    <?php endforeach; ?>
+                    <tr>
+                        <td colspan="4" class="text-right">Gesamtsumme ohne MwSt.</td>
+                        <td class="text-right"><?= $this->amount_total_without_tax ?></td>
+                        <td class="text-right"><small>(Netto)</small></td>
+                    </tr>
+                </tfoot>
+            </table>
+        <?php else: ?>
+            <p>Leider haben Sie noch keine Produkte in Ihren Warenkorb gelegt.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <?php if (count((array) $this->articles) > 0) : ?>
+            <a href="#checkout" class="right small openCheckout button">zur Kasse &raquo;</a>
+        <?php endif; ?>
+    </div>
+</div>
+
+<a class="close-reveal-modal">&#215;</a>

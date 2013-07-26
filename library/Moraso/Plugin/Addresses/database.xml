@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="schema.xsd">
+    <table name="addresses" engine="InnoDB" since="">
+        <field name="address_id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" />
+        <field name="name" type="varchar(255)" nullable="true" default="null" />
+        <field name="street" type="varchar(255)" nullable="true" default="null" />
+        <field name="house_number" type="varchar(255)" nullable="true" default="null" />
+        <field name="postal_code" type="int(5) unsigned" default="null" nullable="false" />
+        <field name="city" type="varchar(255)" default="null" />
+        <field name="country" type="varchar(2)" default="null" />
+                
+        <!-- Indexe setzen -->
+        <index name="index_name" columns="name" type="index" />
+        <index name="index_street" columns="street" type="index" />
+        <index name="index_house_number" columns="house_number" type="index" />
+        <index name="index_postal_code" columns="postal_code" type="index" />
+        <index name="index_city" columns="city" type="index" />
+        <index name="index_country" columns="country" type="index" />
+    </table>
+    
+    <table name="addresses_groups" engine="InnoDB" since="">
+        <field name="addresses_group_id" type="int(10) unsigned" default="null" autoincrement="true" primary="true" />
+        <field name="name" type="varchar(255)" nullable="true" default="null" />
+                 
+        <!-- Indexe setzen -->
+        <index name="index_name" columns="name" type="index" />
+        
+        <!-- Basiswerte -->
+        <dataset use="ifempty">
+            <record>
+                <value attribute="addresses_group_id">1</value>
+                <value attribute="name">Group #1</value>
+            </record>
+            <record>
+                <value attribute="addresses_group_id">2</value>
+                <value attribute="name">Group #2</value>
+            </record>
+        </dataset>
+    </table>
+    
+    <table name="addresses_address_has_group" engine="InnoDB" since="">
+        <field name="address_id" type="int(10) unsigned" default="null" primary="false">
+            <constraint table="addresses" column="address_id" onupdate="restrict" ondelete="cascade" />
+        </field>
+        
+         <field name="addresses_group_id" type="int(10) unsigned" default="null" primary="false">
+            <constraint table="addresses_groups" column="addresses_group_id" onupdate="restrict" ondelete="cascade" />
+        </field>
+        
+        <!-- Indexe setzen -->
+        <index name="un_address_group" columns="address_id,addresses_group_id" type="unique" />
+    </table>
+    
+    <table name="addresses_google_data" engine="InnoDB" since="">
+        <field name="address_id" type="int(10) unsigned" default="null" primary="true">
+            <constraint table="addresses" column="address_id" onupdate="restrict" ondelete="cascade" />
+        </field>
+        
+        <field name="lat" type="double" nullable="false" default="null" />
+        <field name="lng" type="double" nullable="false" default="null" />
+        
+        <field name="street_address" type="varchar(255)" nullable="true" default="null" />
+        <field name="route" type="varchar(255)" nullable="true" default="null" />
+        <field name="intersection" type="varchar(255)" nullable="true" default="null" />
+        <field name="political" type="varchar(255)" nullable="true" default="null" />
+        <field name="country" type="varchar(255)" nullable="true" default="null" />
+        <field name="administrative_area_level_1" type="varchar(255)" nullable="true" default="null" />
+        <field name="administrative_area_level_2" type="varchar(255)" nullable="true" default="null" />
+        <field name="administrative_area_level_3" type="varchar(255)" nullable="true" default="null" />
+        <field name="colloquial_area" type="varchar(255)" nullable="true" default="null" />
+        <field name="locality" type="varchar(255)" nullable="true" default="null" />
+        <field name="sublocality" type="varchar(255)" nullable="true" default="null" />
+        <field name="neighborhood" type="varchar(255)" nullable="true" default="null" />
+        <field name="premise" type="varchar(255)" nullable="true" default="null" />
+        <field name="subpremise" type="varchar(255)" nullable="true" default="null" />
+        <field name="postal_code" type="varchar(255)" nullable="true" default="null" />
+        <field name="natural_feature" type="varchar(255)" nullable="true" default="null" />
+        <field name="airport" type="varchar(255)" nullable="true" default="null" />
+        <field name="park" type="varchar(255)" nullable="true" default="null" />
+        <field name="point_of_interest" type="varchar(255)" nullable="true" default="null" />
+        <field name="post_box" type="varchar(255)" nullable="true" default="null" />
+        <field name="street_number" type="varchar(255)" nullable="true" default="null" />
+        <field name="floor" type="varchar(255)" nullable="true" default="null" />
+        <field name="room" type="varchar(255)" nullable="true" default="null" />
+        
+        <!-- Indexe setzen -->
+        <index name="index_lat" columns="lat" type="index" />
+        <index name="index_lng" columns="lng" type="index" />
+    </table>
+</database>

@@ -1,0 +1,57 @@
+<?php
+
+$filename = realpath(dirname(__FILE__) . '/../library/Moraso/Status.php');
+$applicationStatus = file_get_contents($filename);
+
+$matches = array();
+preg_match_all('@\'\\$/major/(\\d+)/minor/(\\d+)/revision/(\\d+)/build/(\\d+)\\$\'@', $applicationStatus, $matches);
+
+$old = array(
+    'major' => $matches[1][0],
+    'minor' => $matches[2][0],
+    'revision' => $matches[3][0],
+    'build' => $matches[4][0]
+);
+
+$new = array(
+    'major' => $old['major'],
+    'minor' => $old['minor'],
+    'revision' => $old['revision'],
+    'build' => $old['build'] + 1
+);
+
+$options = getopt('b::');
+
+if (isset($options['b']) && !empty($options['b'])) {
+    if ($options['b'] === 'major') {
+        $new['major'] = $old['major'] + 1;
+        $new['minor'] = 0;
+        $new['revision'] = 0;
+    } elseif ($options['b'] === 'minor') {
+        $new['minor'] = $old['minor'] + 1;
+        $new['revision'] = 0;
+    } elseif ($options['b'] === 'revision') {
+        $new['revision'] = $old['revision'] + 1;
+    }
+}
+
+$oldVersion = $old['major'] . '.' . $old['minor'] . '.' . $old['revision'] . '-' . $old['build'];
+$newVersion = $new['major'] . '.' . $new['minor'] . '.' . $new['revision'] . '-' . $new['build'];
+
+$applicationStatusFile = realpath(dirname(__FILE__) . '/../library/Moraso/Status.php');
+file_put_contents($applicationStatusFile, str_replace($matches[0], '\'$/major/' . $new['major'] . '/minor/' . $new['minor'] . '/revision/' . $new['revision'] . '/build/' . $new['build'] . '$\'', file_get_contents($applicationStatusFile)));
+
+$readmeFile = realpath(dirname(__FILE__) . '/../README.textile');
+file_put_contents($readmeFile, preg_replace('@^moraso version\\:\\s*\\*[^\\*]*\\*@m', "moraso version: *$newVersion*", file_get_contents($readmeFile)));
+
+passthru('git commit -am "Update: ' . $oldVersion . ' to ' . $newVersion . '"');
+passthru('git push origin dev');
+passthru('git checkout master');
+passthru('git merge dev');
+passthru('git push origin master');
+passthru('git tag -d ' . $new['major'] . '.' . $new['minor']);
+passthru('git push origin :refs/tags/' . $new['major'] . '.' . $new['minor']);
+passthru('git tag -a ' . $new['major'] . '.' . $new['minor'] . ' -m "Version ' . $new['major'] . '.' . $new['minor'] . '.' . $new['revision'] . ' release"');
+passthru('git push --tags');
+passthru('git checkout dev');
+?>

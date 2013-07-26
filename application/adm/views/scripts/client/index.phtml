@@ -1,0 +1,21 @@
+var center = Ext.getCmp('viewport-center');
+center.removeAll();
+
+var tabs = new Ext.TabPanel({
+	resizeTabs: false,
+	minTabWidth: 115,
+	tabWidth:135,
+	enableTabScroll:true,
+	defaults: {
+		autoScroll:true
+	}
+});
+
+center.add(tabs);
+
+<?php echo $this->partial('client/clientlist.phtml'); ?>
+<?php echo $this->partial('client/languagelist.phtml'); ?>
+
+tabs.setActiveTab(0);
+
+Ext.getCmp('viewport').doLayout();

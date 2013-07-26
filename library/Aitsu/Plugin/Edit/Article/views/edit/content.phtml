@@ -1,0 +1,27 @@
+{
+	title:'<?php echo $this->field->index; ?>',
+	layout:'fit',
+	border: false,
+	items: [{
+		xtype: 'textarea',
+		name: 'content[<?php echo $this->field->index; ?>]',
+		value: '<?php echo str_replace("'", "\\'", str_replace("\r", '', str_replace("\n", '\n', str_replace("\\", "\\\\", $this->field->content)))); ?>',
+		<?php if ($this->field->type == Aitsu_Content :: PLAINTEXT) : ?>
+		listeners : {			
+		}
+		<?php elseif ($this->field->type == Aitsu_Content :: HTML) : ?>
+		listeners: {
+			afterrender: function(f) {
+				<?php if (Aitsu_Config :: get('edit.ckeditor.type') != null) : ?>
+					<?php echo $this->partial('/edit/ckeditor/' . Aitsu_Config :: get('edit.ckeditor.type') . '.phtml'); ?>
+				<?php else : ?>
+					<?php echo $this->partial('/edit/ckeditor/normal.phtml'); ?>
+				<?php endif; ?>
+			},
+			beforedestroy: function(f) {
+				CKEDITOR.instances[f.getId()].destroy();
+			}
+		}
+		<?php endif; ?>
+	}]
+}

@@ -1,0 +1,13 @@
+<plugin>
+    <id></id>
+    <name>UUID Generator</name>
+    <icon>tm-tag-green</icon>
+    <author>Andreas Kummer</author>
+    <copyright>2010, w3concepts AG</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.uuid.generic</identifier>
+        </privilege>
+    </privileges>
+</plugin>

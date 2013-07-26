@@ -1,0 +1,7 @@
+.*
+!.htaccess
+!.gitignore
+!.description.txt
+!.database.xml
+/nbproject
+/logs

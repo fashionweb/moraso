@@ -1,0 +1,7 @@
+<p><?php printf(Aitsu_Translate::_("About %s results found for '%s'"), count($this->results), $this->searchterm); ?></p>
+<dl>
+    <?php foreach ($this->results as $pos => $result) : ?>
+        <dt><a href="{ref:idart-<?php echo $result->idart; ?>}"><?php echo $result->pagetitle; ?> (<?php echo bcmul($result->score, 100, 0); ?> %)</a></dt>
+        <dd><?php echo $result->summary; ?></dd>
+    <?php endforeach; ?>
+</dl>

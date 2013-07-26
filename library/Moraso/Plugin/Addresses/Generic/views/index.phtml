@@ -1,0 +1,156 @@
+var center = Ext.getCmp('viewport-center');
+center.removeAll();
+
+var addressesReader = new Ext.data.JsonReader({
+    fields: [
+        {
+            name: 'address_id',
+            type: 'int'
+        }, {
+            name: 'addresses_group'
+        }, {
+            name: 'street'
+        }, {
+            name: 'house_number'
+        }, {
+            name: 'postal_code'
+        }, {
+            name: 'city'
+        }, {
+            name: 'name'
+        }, {
+            name: 'country'
+        }
+    ],
+    root: 'addresses'
+});
+
+var addressesStore = new Ext.data.GroupingStore({
+    reader: addressesReader,
+    url: '<?= $this->url(array('paction' => 'store')) ?>',
+    groupField: 'addresses_group',
+    autoLoad: true
+});
+
+var addressesColumns = new Ext.grid.ColumnModel({
+    columns: [
+        {
+            dataIndex: 'address_id', 
+            header: '#'
+        }, {
+            dataIndex: 'addresses_group',
+            header: '<?= Aitsu_Translate::translate('Group') ?>',
+            hidden: true
+        }, {
+            dataIndex: 'name',
+            header: '<?= Aitsu_Translate::translate('Name') ?>',
+            width: 200
+        }, {
+            dataIndex: 'street',
+            header: '<?= Aitsu_Translate::translate('Street') ?>',
+            width: 200
+        }, {
+            dataIndex: 'house_number',
+            header: '<?= Aitsu_Translate::translate('House Number') ?>',
+            width: 75
+        }, {
+            dataIndex: 'postal_code',
+            header: '<?= Aitsu_Translate::translate('Postal Code') ?>'
+        }, {
+            dataIndex: 'city',
+            header: '<?= Aitsu_Translate::translate('City') ?>',
+            width: 200
+        }, {
+            dataIndex: 'country',
+            header: '<?= Aitsu_Translate::translate('Country') ?>',
+            fixed: false
+        }
+    ],
+    defaults: {
+        sortable: false,
+        menuDisabled: true,
+        width: 50,
+        fixed: true,
+        resizable: false
+    }
+});
+
+var addressesGroupingView = new Ext.grid.GroupingView({
+    forceFit: true,
+    groupTextTpl: '{text} ({[values.rs.length]} {[values.rs.length > 1 ? "Addresss" : "Address"]})'
+});
+                
+var addressesGrid = new Ext.grid.GridPanel({
+    title: '<?= Aitsu_Translate::translate('Addresses') ?>',
+    id: 'addressesGrid',
+    store: addressesStore,
+    colModel: addressesColumns,
+    view: addressesGroupingView,
+    viewConfig: {
+        forceFit: true,
+        autoFill: true
+    },
+    tbar: {
+        items: [{
+            tooltip: '<?= Aitsu_Translate::translate('Add new Address') ?>',
+            iconCls: 'tb-add',
+            handler: function(b, e) {
+                Ext.aitsu.load(['<?= $this->url(array('paction' => 'edit')) ?>']);
+            }
+        }, {
+            tooltip: '<?= Aitsu_Translate :: translate('Refresh list') ?>',
+            iconCls: 'tb-refresh',
+            handler: function(b, e) {
+                Ext.getCmp('addressesGrid').getStore().load();
+            }
+        }]
+    },
+	listeners: {
+		rowclick: function(grid, rowIndex, event) {
+			var rec = grid.getStore().getAt(rowIndex);
+			Ext.aitsu.load(['<?= $this->url(array('paction' => 'edit')) ?>'], null, {
+				address_id: rec.get('address_id')
+			});
+		},
+		rowcontextmenu: function(grid, rowIndex, event) {
+			this.getSelectionModel().selectRow(rowIndex);
+			var record = this.getStore().getAt(rowIndex);
+			
+			var menu = new Ext.menu.Menu();
+			
+			menu.addItem({
+				text: '<?= $this->translate('Delete') ?>',
+				iconCls: 'delete',
+				handler: function() {
+					 Ext.MessageBox.show({
+					 	title: '<?= $this->translate('Delete Address') ?>',
+					 	msg: '<?= $this->translate('Are you sure to delete the selected address?') ?>',
+					 	buttons: Ext.MessageBox.OKCANCEL,
+					 	fn: function(result) {
+					 		if (result == 'ok') {
+				            	Ext.Ajax.request({
+				            		url: '<?= $this->url(array('paction' => 'delete')) ?>',
+				            		success: function(response, opts) {
+				            			var rsp = Ext.decode(response.responseText);
+				            			if (rsp.success) {
+				            				Ext.aitsu.msg('<?= Aitsu_Translate::translate('Address removed') ?>', '<?= Aitsu_Translate::translate('The selected Address has been removed.') ?>');
+					            			grid.getStore().load(); 
+				            			}
+				            		},
+				            		params: {
+                                                            address_id: record.get('address_id')
+                                                        }
+				            	});					 			
+					 		}
+					 	}
+					 });
+				}
+			});
+			
+			menu.showAt(event.getXY());
+		}		
+	}
+});
+
+center.add(addressesGrid);
+Ext.getCmp('viewport').doLayout();

@@ -1,0 +1,39 @@
+{
+	region: 'north',
+	split: true,
+	margins: '0 0 0 0',
+	height: 40,
+        minHeight: 40,
+        maxHeight: 40,
+	layout: 'border',
+	items: [{
+		region: 'center',
+		margins: '0 0 0 0',
+		border: false,
+		items:
+			new Ext.Toolbar({
+				layout: 'hbox',
+				style: 'padding-top: 5px;',
+				height: '100%',
+				items: [
+					<?php echo $this->partial('layout/navigation/top.phtml'); ?>
+					<?php echo $this->partial('layout/navigation/languagechooser.phtml'); ?>
+					{
+						text: 'Logout (<?php echo Aitsu_Adm_User::getInstance()->lastname; ?>, <?php echo Aitsu_Adm_User::getInstance()->firstname; ?>)',						iconCls: 'tm-logout',
+						listeners: {
+							click: function() {
+								window.location.href = '<?php echo $this->url(array('controller' => 'acl', 'action' => 'logout'), 'default'); ?>';
+							}
+						}
+					}
+				]
+			})
+		}, {
+			region: 'east',
+			margins: '0 0 0 0',
+			border: false,
+			width: 200,
+			html: '<div class="x-toolbar" style="padding: 8px 10px; text-align:right;"><img src="<?php echo $this->baseUrl('/images/logo_moraso.png'); ?>"</div>'
+		}
+	]
+}

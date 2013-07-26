@@ -1,0 +1,39 @@
+var west = Ext.getCmp('viewport-west');
+west.removeAll();
+west.setVisible(true);
+west.expand(false);
+west.removeAll();
+
+west.add(new Ext.tree.TreePanel({
+	id: 'pageview-cattree',
+	title: '<?php echo $this->translate('Scripts'); ?>',
+	useArrows: true,
+	autoScroll: true,
+	animate: true,
+	containerScroll: true,
+	border: false,
+	dataUrl: '<?php echo $this->url(array('action' => 'tree')); ?>',
+	rootVisible: false,
+	singleExpand: true,
+	stopRestoring: false,
+	root: {
+		nodeType: 'async',
+		text: 'Root',
+		draggable: false,
+		id: '0'
+	},
+	listeners: {
+		click: function(node, event) {
+			if (node.attributes.type == 'category') {
+				node.expand();
+			}
+			if (node.attributes.type == 'script') {
+				Ext.aitsu.load(['<?php echo $this->url(array('action' => 'show')); ?>'], null, {
+					script: node.attributes.id
+				});
+			}
+		}
+	}
+}));
+
+Ext.getCmp('viewport').doLayout();

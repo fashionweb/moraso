@@ -1,0 +1,66 @@
+<div class="row">
+    <div class="large-12 columns">
+        <h1>Kasse</h1>
+
+        <div class="progress large-12 success"><span class="meter" style="width: 0%"></span></div>
+
+        <div class="row">
+            <?php if (count((array) $this->articles) !== 0) : ?>
+                <div class="large-8 columns">
+                    <p>Sie werden nun durch den Bestellabschluss geführt</p>
+
+                    <p>Dieser besteht bei uns aus Insgesamt 4 Schritten.</p>
+
+                    <dl>
+                        <dt>Schritt 1</dt>
+                        <dd>Lieferadresse angeben</dd>
+
+                        <dt>Schritt 2</dt>
+                        <dd>Rechnungsadresse angeben</dd>
+
+                        <dt>Schritt 3</dt>
+                        <dd>Zahlungsart wählen</dd>
+
+                        <dt>Schritt 4</dt>
+                        <dd>Bestellung abschließen</dd>
+                    </dl>
+                </div>
+
+                <div class="large-4 columns">
+                    <div class="panel">
+                        <h2>Warenkorb</h2>
+
+                        <?php foreach ($this->articles as $article) : ?>
+                            <div class="row collapse">
+                                <div class="large-2 columns">
+                                    <?php echo $article->qty ?> x
+                                </div>
+                                <div class="large-6 columns">
+                                    <?php echo $article->pagetitle ?>
+                                </div>
+                                <div class="large-4 text-right columns">
+                                    <?php echo $article->price_total ?>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php else : ?>
+                <div class="large-12 columns">
+                    <p>Ihr Warenkorb ist noch leer!</p>
+                </div>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="large-12 columns">
+        <a href="#" class="left small closeModal button">&laquo; Weiter shoppen</a>
+        <?php if (count((array) $this->articles) !== 0) : ?>
+            <a href="#" class="right small openCheckoutDelivery button">Versandadresse angeben &raquo;</a>
+        <?php endif; ?>
+    </div>
+</div>
+
+<a class="close-reveal-modal">&#215;</a>

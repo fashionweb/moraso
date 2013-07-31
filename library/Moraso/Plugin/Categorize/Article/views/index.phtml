@@ -1,0 +1,115 @@
+var categoryToken = new Ext.form.ComboBox({
+    id: 'id_category',
+    typeAhead: false,
+    triggerAction: 'all',
+    lazyRender:true,
+    width: 315,
+    minChars: 1,
+    emptyText: '<?php echo Aitsu_Translate::translate('Choose Category'); ?>',
+    store: new Ext.data.JsonStore({
+    	autoDestroy: true,
+    	url: '<?php echo $this->url(array('namespace' => 'moraso', 'plugin' => 'categorize', 'area' => 'article', 'paction' => 'categorystore'), 'plugin'); ?>',
+    	storeId: 'categoriesStore',
+    	root: 'categories',
+    	idProperty: 'id_category',
+    	fields: ['id_category', 'name']
+    }),
+    valueField: 'id_category',
+    displayField: 'name'
+});
+
+var categories = new Ext.grid.GridPanel({
+	store: new Ext.data.JsonStore({
+        autoDestroy: true,
+        url: '<?php echo $this->url(array('namespace' => 'moraso', 'plugin' => 'categorize', 'area' => 'article', 'paction' => 'store'), 'plugin'); ?>',
+        remoteSort: false,
+        storeId: 'articleCategoriesStore',
+        idProperty: 'id_category',
+        root: 'categories',
+        fields: [{
+            name: 'id_categorization'
+        }, {
+            name: 'name'
+        }],
+        baseParams: {
+            id_art: <?php echo $this->id_art; ?>
+        }
+    }),
+    columns: [
+        {dataIndex: 'name', header: '<?php echo Aitsu_Translate::translate('Category'); ?>', menuDisabled: true, sortable: true}
+    ],
+    viewConfig: {
+        forceFit: true,
+        autoFill: true
+    },
+    hideHeaders: true,
+    border: false,
+    tbar: {
+            items: [
+			categoryToken,
+			{
+	            tooltip: '<?php echo Aitsu_Translate::translate('Save Category'); ?>',
+	            iconCls: 'tb-add',
+	            handler: function(b, e) {
+	            	Ext.Ajax.request({
+	            		url: '<?php echo $this->url(array('namespace' => 'moraso', 'plugin' => 'categorize', 'area' => 'article', 'paction' => 'add'), 'plugin'); ?>',
+	            		success: function(response, opts) {
+	            			categories.getStore().load();
+	            			categoryToken.setValue('');
+	            		},
+	            		params: {
+	            			id_art: <?php echo $this->id_art; ?>,
+	            			id_category: categoryToken.getValue()
+	            		}
+	            	});
+	            }
+	        }
+	    ]
+	},
+	listeners: {
+		render: {
+			fn: function(){
+				this.getStore().load();
+			}
+		},
+		rowclick: function(grid, rowIndex, event) {
+			var record = this.getStore().getAt(rowIndex);
+		},
+		rowcontextmenu: function(grid, rowIndex, event) {
+			
+			this.getSelectionModel().selectRow(rowIndex);
+			var record = this.getStore().getAt(rowIndex);
+			
+			var menu = new Ext.menu.Menu();
+			
+			menu.addItem({
+				text: '<?php echo $this->translate('Delete'); ?>',
+				iconCls: 'delete',
+				handler: function() {
+	            	Ext.Ajax.request({
+	            		url: '<?php echo $this->url(array('namespace' => 'moraso', 'plugin' => 'categorize', 'area' => 'article', 'paction' => 'delete'), 'plugin'); ?>',
+	            		success: function(response, opts) {
+	            			var rsp = Ext.decode(response.responseText);
+	            			if (rsp.success) {
+		            			var store = grid.getStore().remove(record); 
+	            			}
+	            		},
+	            		params: {
+	            			id_categorization: record.get('id_categorization')
+	            		}
+	            	});					 			
+				}
+			});
+			
+			menu.showAt(event.getXY());
+		}
+			
+	}
+});
+
+Ext.getCmp('page-plugin-accordion').add({
+    id: 'article-plugin-categorize',
+    title: '<?php echo Aitsu_Translate::translate('Categorize'); ?>',
+    layout: 'fit',
+    items: categories
+});

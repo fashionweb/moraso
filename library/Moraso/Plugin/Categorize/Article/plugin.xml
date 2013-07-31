@@ -1,0 +1,12 @@
+<plugin>
+    <id>51f8e1bf-2f8c-4ebe-a032-0b75c0a8b230</id>
+    <name>Categorize</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.categorize.article</identifier>
+        </privilege>
+    </privileges>
+</plugin>

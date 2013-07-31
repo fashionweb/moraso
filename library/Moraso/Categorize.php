@@ -12,6 +12,7 @@ class Moraso_Categorize
             return Moraso_Db::fetchAll('' .
                             'SELECT ' .
                             '   hasCategory.id_categorization, ' .
+                            '   categorization.id_category, ' .
                             '   categorization.name ' .
                             'FROM ' .
                             '   _art_has_categorization AS hasCategory ' .

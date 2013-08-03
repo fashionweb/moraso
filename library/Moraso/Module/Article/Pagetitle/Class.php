@@ -11,7 +11,7 @@ class Moraso_Module_Article_Pagetitle_Class extends Moraso_Module_Abstract
         $pagetitle = Aitsu_Content_Text::get('Pagetitle', 0);
 
         if (empty($pagetitle)) {
-            $pagetitle = stripslashes(Aitsu_Core_Article::factory()->teaertitle);
+            $pagetitle = stripslashes(Aitsu_Core_Article::factory()->pagetitle);
         }
 
         $view = $this->_getView();

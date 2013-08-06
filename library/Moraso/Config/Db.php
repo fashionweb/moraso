@@ -42,7 +42,9 @@ class Moraso_Config_Db
                         'FROM ' .
                         '   _moraso_config AS default_config ' .
                         'LEFT JOIN ' .
-                        '   _moraso_config AS config ON (config.env = default_config.env AND config.identifier = default_config.identifier AND config.config =:config)', array(
+                        '   _moraso_config AS config ON (config.env = default_config.env AND config.identifier = default_config.identifier AND config.config =:config) ' .
+                        'WHERE ' .
+                        '   default_config.config = \'default\'', array(
                     ':config' => $config_file
         ));
 

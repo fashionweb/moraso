@@ -4,28 +4,13 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Config_Db {
-
-    public static function setConfigFromDatabase($config_file, $return = false, $env = null) {
+class Moraso_Config_Db
+{
+    public static function setConfigFromDatabase($config_file, $return = false, $env = null)
+    {
 
         if (empty($env)) {
             $env = Moraso_Util::getEnv();
-        }
-
-        $database_config = Aitsu_Db::fetchAll('' .
-                        'select ' .
-                        '   env, ' .
-                        '   identifier, ' .
-                        '   value ' .
-                        'from ' .
-                        '   _moraso_config ' .
-                        'where ' .
-                        '   config =:config', array(
-                    ':config' => $config_file
-        ));
-
-        if (empty($database_config)) {
-            return;
         }
 
         $database_array = array(
@@ -50,8 +35,19 @@ class Moraso_Config_Db {
             )
         );
 
-        foreach ($database_config as $row) {
+        $database_config = Moraso_Db::fetchAll('' .
+                        'SELECT ' .
+                        '   default_config.env, ' .
+                        '   default_config.identifier, ' .
+                        '   COALESCE(config.value, default_config.value) AS value ' .
+                        'FROM ' .
+                        '   _moraso_config AS default_config ' .
+                        'LEFT JOIN ' .
+                        '   _moraso_config AS config ON (config.env = default_config.env AND config.identifier = default_config.identifier AND config.config =:config)', array(
+                    ':config' => $config_file
+        ));
 
+        foreach ($database_config as $row) {
             if ($row['value'] == 'true' || $row['value'] == 'false') {
                 $row['value'] = filter_var($row['value'], FILTER_VALIDATE_BOOLEAN);
             }

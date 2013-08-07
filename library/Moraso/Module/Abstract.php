@@ -4,14 +4,15 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
-
+abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
+{
     protected $_renderOnMobile = true;
     protected $_renderOnTablet = true;
     protected $_moduleConfigDefaults = array();
+    protected $_newRenderingMethode = false;
 
-    protected static function _getInstance($className) {
-
+    protected static function _getInstance($className)
+    {
         $instance = new $className ();
 
         $className = str_replace('_', '.', $className);
@@ -27,8 +28,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
         return $instance;
     }
 
-    public static function init($context, $instance = null) {
-
+    public static function init($context, $instance = null)
+    {
         $instance = is_null($instance) ? self::_getInstance($context['className']) : $instance;
 
         if ($instance->_notForHumans()) {
@@ -66,6 +67,12 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
             $instance->_params = Aitsu_Util::parseSimpleIni($instance->_context['params']);
         }
 
+        $instance->_defaults = $instance->_getDefaults();
+        $instance->_view = $instance->_getView();
+
+        $instance->_translation = array();
+        $instance->_translation['configuration'] = Aitsu_Translate::_('Configuration');
+
         if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
         }
@@ -79,8 +86,24 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
                 return $output_raw;
             }
         }
+        
+        if ($instance->_defaults['configurable']['template']) {
+            $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
+
+            if (!empty($template)) {
+                $instance->_view->template = $template . '.phtml';
+            }
+        }
+
+        if (!isset($instance->_view->template) || empty($instance->_view->template)) {
+            $instance->_view->template = $instance->_defaults['template'] . '.phtml';
+        }
 
         $output_raw .= $instance->_main();
+
+        if ($instance->_newRenderingMethode) {
+            $output_raw .= $instance->_view->render($instance->_view->template);
+        }
 
         $output = $instance->_transformOutput($output_raw);
 
@@ -101,7 +124,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
                 } else {
                     $moduleName = 'UNKNOWN';
                 }
-                
+
                 if ($instance->_isBlock) {
                     return '' .
                             '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
@@ -136,8 +159,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
         return $output;
     }
 
-    protected function _getView($view = null) {
-
+    protected function _getView($view = null)
+    {
         if ($this->_view != null) {
             return $this->_view;
         }
@@ -162,15 +185,53 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
         return $view;
     }
 
-    protected function _getDefaults() {
+    protected function _getDefaults()
+    {
+        $module_parts = explode('_', get_class($this));
 
+        $module_sliced = array_slice($module_parts, $module_parts[0] != 'Module' ? 2 : 1, -1);
+
+        $modulePath = implode('/', $module_sliced);
+
+        $modulePaths = array();
+
+        $modulePaths[] = realpath(APPLICATION_PATH . '/../library/') . '/Moraso/Module/';
+        $modulePaths[] = APPLICATION_PATH . '/modules/' . $modulePath . '/';
+        $modulePaths[] = realpath(APPLICATION_PATH . '/../library/') . '/Moraso/Module/' . $modulePath . '/';
+
+        $heredity = Moraso_Skin_Heredity::build();
+
+        foreach (array_reverse($heredity) as $skin) {
+            $modulePaths[] = APPLICATION_PATH . "/skins/" . $skin . "/module/" . $modulePath . '/';
+        }
+        
         $defaults = array();
+
+        foreach ($modulePaths as $modulePath) {
+            $module_config = json_decode(file_get_contents($modulePath . '/module.json'));
+
+            foreach ($module_config->defaults as $key => $value) {
+                if ($key === 'configurable' && is_object($value)) {
+                    foreach ($value as $param => $bool) {
+                        $defaults['configurable'][$param] = $bool;
+                    }
+                } else {
+                    if ($value === '##this.article.idart##') {
+                        $value = Aitsu_Registry::get()->env->idart;
+                    } elseif ($value === '##this.article.idartlang##') {
+                        $value = Aitsu_Registry::get()->env->idartlang;
+                    }
+
+                    $defaults[$key] = $value;
+                }
+            }
+        }
 
         return $defaults;
     }
 
-    protected function _getModulConfigDefaults($module) {
-
+    protected function _getModulConfigDefaults($module)
+    {
         $moduleConfig = Moraso_Config::get('module.' . $module);
 
         $defaults = $this->_getDefaults();
@@ -236,6 +297,15 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract {
         }
 
         $this->_moduleConfigDefaults = $defaults;
+    }
+
+    protected function _cachingPeriod()
+    {
+        if (isset($this->_defaults['caching'])) {
+            return $this->_defaults['caching'];
+        }
+
+        return 0;
     }
 
 }

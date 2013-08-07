@@ -1,0 +1,12 @@
+{
+    "description": "Hier handelt es sich um die Basis-Konfiguration die für jedes Modul greift.",
+    "defaults": {
+        "idart": "##this.article.idart##",
+        "idartlang": "##this.article.idartlang##",
+        "template": "index",
+        "caching": "eternal",
+        "configurable": {
+            "template": true
+        }
+    }
+}

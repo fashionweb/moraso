@@ -6,49 +6,19 @@
  */
 class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
 {
-    protected function _getDefaults()
-    {
-        $defaults = array(
-            'idart' => Aitsu_Registry::get()->env->idart,
-            'template' => 'index',
-            'configurable' => array(
-                'template' => true
-            )
-        );
+    protected $_newRenderingMethode = true;
 
-        return $defaults;
-    }
     protected function _main()
     {
-        $defaults = $this->_moduleConfigDefaults;
-
-        $idartlang = Moraso_Util::getIdArtLang($defaults['idart']);
-        
-        $translation = array();
-        $translation['configuration'] = Aitsu_Translate::_('Configuration');
-
-        if ($defaults['configurable']['template']) {
-            $template = Aitsu_Content_Config_Select::set($this->_index, 'template', Aitsu_Translate::_('Template'), $this->_getTemplates(), $translation['configuration']);
-        }
-
-        $template = !empty($template) ? $template : $defaults['template'];
-        
-        $view = $this->_getView();
-        $view->author = Moraso_Db::fetchOneC('eternal', '' .
-		'SELECT ' .
-		'   author ' .
-		'FROM ' .
-                '   _art_meta ' .
-		'WHERE ' .
-		'   idartlang = :idartlang', array (
-			':idartlang' => $idartlang
-		));
-        return $view->render($template . '.phtml');
-    }
-
-    protected function _cachingPeriod()
-    {
-        return 'eternal';
+        $this->_view->author = Moraso_Db::fetchOneC('eternal', '' .
+                        'SELECT ' .
+                        '   author ' .
+                        'FROM ' .
+                        '   _art_meta ' .
+                        'WHERE ' .
+                        '   idartlang = :idartlang', array(
+                    ':idartlang' => $this->_defaults['idartlang']
+        ));
     }
 
 }

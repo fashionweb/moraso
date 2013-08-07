@@ -42,7 +42,7 @@ class Moraso_Module_Article_Date_Class extends Moraso_Module_Abstract
 
         $format = !empty($format) ? $format : $defaults['format'];
 
-        $timestamp = Moraso_db::fetchOneC('eternal', '' .
+        $timestamp = Moraso_Db::fetchOneC('eternal', '' .
                         'SELECT ' .
                         '   date ' .
                         'FROM ' .

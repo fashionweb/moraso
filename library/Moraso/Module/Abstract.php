@@ -10,6 +10,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
     protected $_renderOnTablet = true;
     protected $_moduleConfigDefaults = array();
     protected $_newRenderingMethode = false;
+    protected $_withoutView = false;
 
     protected static function _getInstance($className)
     {
@@ -100,7 +101,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
         $output_raw .= $instance->_main();
 
-        if ($instance->_newRenderingMethode) {
+        if ($instance->_newRenderingMethode && !$instance->_withoutView) {
             $output_raw .= $instance->_view->render($instance->_view->template);
         }
 

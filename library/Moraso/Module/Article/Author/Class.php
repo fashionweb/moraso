@@ -34,7 +34,7 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
         $template = !empty($template) ? $template : $defaults['template'];
         
         $view = $this->_getView();
-        $view->author = Moraso_db::fetchOneC('eternal', '' .
+        $view->author = Moraso_Db::fetchOneC('eternal', '' .
 		'SELECT ' .
 		'   author ' .
 		'FROM ' .

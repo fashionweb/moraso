@@ -9,6 +9,7 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
     protected function _getDefaults()
     {
         $defaults = array(
+            'idart' => Aitsu_Registry::get()->env->idart,
             'template' => 'index',
             'configurable' => array(
                 'template' => true
@@ -21,6 +22,8 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
     {
         $defaults = $this->_moduleConfigDefaults;
 
+        $idartlang = Moraso_Util::getIdArtLang($defaults['idart']);
+        
         $translation = array();
         $translation['configuration'] = Aitsu_Translate::_('Configuration');
 
@@ -38,7 +41,7 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
                 '   _art_meta ' .
 		'WHERE ' .
 		'   idartlang = :idartlang', array (
-			':idartlang' => Aitsu_Registry::get()->env->idartlang
+			':idartlang' => $idartlang
 		));
         return $view->render($template . '.phtml');
     }

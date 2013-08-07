@@ -9,6 +9,7 @@ class Moraso_Module_Article_Date_Class extends Moraso_Module_Abstract
     protected function _getDefaults()
     {
         $defaults = array(
+            'idart' => Aitsu_Registry::get()->env->idart,
             'template' => 'index',
             'format' => 'd.m.Y H:i:s',
             'configurable' => array(
@@ -23,6 +24,8 @@ class Moraso_Module_Article_Date_Class extends Moraso_Module_Abstract
     protected function _main()
     {
         $defaults = $this->_moduleConfigDefaults;
+
+        $idartlang = Moraso_Util::getIdArtLang($defaults['idart']);
 
         $translation = array();
         $translation['configuration'] = Aitsu_Translate::_('Configuration');
@@ -40,14 +43,14 @@ class Moraso_Module_Article_Date_Class extends Moraso_Module_Abstract
         $format = !empty($format) ? $format : $defaults['format'];
 
         $timestamp = Moraso_db::fetchOneC('eternal', '' .
-		'SELECT ' .
-		'   date ' .
-		'FROM ' .
-                '   _art_meta ' .
-		'WHERE ' .
-		'   idartlang = :idartlang', array (
-			':idartlang' => Aitsu_Registry::get()->env->idartlang
-		));
+                        'SELECT ' .
+                        '   date ' .
+                        'FROM ' .
+                        '   _art_meta ' .
+                        'WHERE ' .
+                        '   idartlang = :idartlang', array(
+                    ':idartlang' => $idartlang
+        ));
 
         $view = $this->_getView();
         $view->date = date($format, strtotime($timestamp));

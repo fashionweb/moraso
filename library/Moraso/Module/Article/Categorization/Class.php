@@ -9,6 +9,7 @@ class Moraso_Module_Article_Categorization_Class extends Moraso_Module_Abstract
     protected function _getDefaults()
     {
         $defaults = array(
+            'idart' => Aitsu_Registry::get()->env->idart,
             'template' => 'index',
             'configurable' => array(
                 'template' => true
@@ -17,6 +18,7 @@ class Moraso_Module_Article_Categorization_Class extends Moraso_Module_Abstract
 
         return $defaults;
     }
+
     protected function _main()
     {
         $defaults = $this->_moduleConfigDefaults;
@@ -29,9 +31,9 @@ class Moraso_Module_Article_Categorization_Class extends Moraso_Module_Abstract
         }
 
         $template = !empty($template) ? $template : $defaults['template'];
-        
+
         $view = $this->_getView();
-        $view->categories = Moraso_Categorize::get(Aitsu_Registry::get()->env->idart);
+        $view->categories = Moraso_Categorize::get($defaults['idart']);
         return $view->render($template . '.phtml');
     }
 

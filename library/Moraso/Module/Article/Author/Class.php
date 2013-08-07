@@ -9,9 +9,7 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
     protected $_newRenderingMethode = true;
 
     protected function _main()
-    {        
-        print_r($this->_defaults);
-        
+    {
         $this->_view->author = Moraso_Db::fetchOneC('eternal', '' .
                         'SELECT ' .
                         '   author ' .

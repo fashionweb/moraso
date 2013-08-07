@@ -67,7 +67,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             $instance->_params = Aitsu_Util::parseSimpleIni($instance->_context['params']);
         }
 
-        $instance->_defaults = $instance->_getDefaults();
+        $instance->_defaults = $instance->_getModulConfigDefaults(str_replace('_', '.', strtolower($instance->_moduleName)));
         $instance->_view = $instance->_getView();
 
         $instance->_translation = array();
@@ -76,8 +76,6 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
         }
-
-        $instance->_getModulConfigDefaults(str_replace('_', '.', strtolower($instance->_moduleName)));
 
         $output_raw = $instance->_init();
 
@@ -235,7 +233,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         $moduleConfig = Moraso_Config::get('module.' . $module);
 
         $defaults = $this->_getDefaults();
-
+        
         foreach ($defaults as $key => $value) {
             $type = gettype($value);
 
@@ -297,6 +295,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         }
 
         $this->_moduleConfigDefaults = $defaults;
+        
+        return $defaults;
     }
 
     protected function _cachingPeriod()

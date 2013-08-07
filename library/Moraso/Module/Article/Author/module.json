@@ -1,0 +1,7 @@
+{
+    "name": "Article Author",
+    "description": "Dieses Modul zeigt den Autoren an welcher in den Meta-Daten des Artikels angegeben wird.",
+    "defaults": {
+        "foo": "bar"
+    }
+}

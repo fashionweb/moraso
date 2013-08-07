@@ -70,8 +70,9 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         $instance->_defaults = $instance->_getModulConfigDefaults(str_replace('_', '.', strtolower($instance->_moduleName)));
         $instance->_view = $instance->_getView();
 
-        $instance->_translation = array();
-        $instance->_translation['configuration'] = Aitsu_Translate::_('Configuration');
+        $instance->_translation = array(
+            'configuration' => Aitsu_Translate::_('Configuration')
+        );
 
         if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
@@ -84,7 +85,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                 return $output_raw;
             }
         }
-        
+
         if ($instance->_defaults['configurable']['template']) {
             $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
 
@@ -202,7 +203,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         foreach (array_reverse($heredity) as $skin) {
             $modulePaths[] = APPLICATION_PATH . "/skins/" . $skin . "/module/" . $modulePath . '/';
         }
-        
+
         $defaults = array();
 
         foreach ($modulePaths as $modulePath) {
@@ -216,6 +217,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                 } else {
                     if ($value === '##this.article.idart##') {
                         $value = Aitsu_Registry::get()->env->idart;
+                    } elseif ($value === '##this.article.idlang##') {
+                        $value = Aitsu_Registry::get()->env->idlang;
                     } elseif ($value === '##this.article.idartlang##') {
                         $value = Aitsu_Registry::get()->env->idartlang;
                     }
@@ -232,8 +235,16 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
     {
         $moduleConfig = Moraso_Config::get('module.' . $module);
 
+        if (isset($this->_params->idart) && !empty($this->_params->idart)) {
+            if (isset($this->_params->idlang) && !empty($this->_params->idlang)) {
+                $this->_params->idartlang = Moraso_Util::getIdArtLang($this->_params->idart, $this->_params->idlang);
+            } else {
+                $this->_params->idartlang = Moraso_Util::getIdArtLang($this->_params->idart);
+            }
+        }
+
         $defaults = $this->_getDefaults();
-        
+
         foreach ($defaults as $key => $value) {
             $type = gettype($value);
 
@@ -295,7 +306,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         }
 
         $this->_moduleConfigDefaults = $defaults;
-        
+
         return $defaults;
     }
 

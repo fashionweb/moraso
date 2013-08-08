@@ -1,0 +1,20 @@
+{
+    "defaults": {
+        "caching": "eternal",
+        "spam_protect_time": 10,
+        "mail_subject": "Kontaktanfrage",
+        "mail_from_name": "Kontaktformular | moraso cms",
+        "mail_from_email": "no-reply@moraso-cms.de",
+        "mail_to_name": "Christian Kehres | webtischlerei",
+        "mail_to_email": "c.kehres@webtischlerei.de",
+        "configurable": {
+            "template": true,
+            "spam_protect_time": true,
+            "mail_subject": true,
+            "mail_from_name": true,
+            "mail_from_email": true,
+            "mail_to_name": true,
+            "mail_to_email": true
+        }
+    }
+}

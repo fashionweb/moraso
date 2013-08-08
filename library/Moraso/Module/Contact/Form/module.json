@@ -8,7 +8,6 @@
         "mail_to_name": "Christian Kehres | webtischlerei",
         "mail_to_email": "c.kehres@webtischlerei.de",
         "configurable": {
-            "template": true,
             "spam_protect_time": true,
             "mail_subject": true,
             "mail_from_name": true,

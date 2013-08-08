@@ -1,0 +1,8 @@
+{
+	"name": "List Comments",
+	"defaults": {
+		"startLevel": 1,
+		"maxLevel": 2,
+		"caching": 0
+	}
+}

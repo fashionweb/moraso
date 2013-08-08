@@ -11,14 +11,14 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
     protected function _main()
     {        
         $this->_view->author = Moraso_Db::fetchOneC('eternal', '' .
-                        'SELECT ' .
-                        '   author ' .
-                        'FROM ' .
-                        '   _art_meta ' .
-                        'WHERE ' .
-                        '   idartlang = :idartlang', array(
-                    ':idartlang' => $this->_defaults['idartlang']
-        ));
+            'SELECT ' .
+            '   author ' .
+            'FROM ' .
+            '   _art_meta ' .
+            'WHERE ' .
+            '   idartlang = :idartlang', array(
+                ':idartlang' => $this->_defaults['idartlang']
+                ));
     }
 
 }

@@ -9,16 +9,8 @@ class Moraso_Module_Article_Author_Class extends Moraso_Module_Abstract
     protected $_newRenderingMethode = true;
 
     protected function _main()
-    {        
-        $this->_view->author = Moraso_Db::fetchOneC('eternal', '' .
-            'SELECT ' .
-            '   author ' .
-            'FROM ' .
-            '   _art_meta ' .
-            'WHERE ' .
-            '   idartlang = :idartlang', array(
-                ':idartlang' => $this->_defaults['idartlang']
-                ));
+    {
+        $this->_view->author = Moraso_Db::simpleFetch('author', '_art_meta', array('idartlang' => $this->_defaults['idartlang']), 1, 'eternal')
     }
 
 }

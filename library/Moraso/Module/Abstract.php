@@ -216,12 +216,16 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                         $defaults['configurable'][$param] = $bool;
                     }
                 } else {
-                    if ($value === '##this.article.idart##') {
+                    switch($value) {
+                        case '##this.article.idart##':
                         $value = Aitsu_Registry::get()->env->idart;
-                    } elseif ($value === '##this.article.idlang##') {
+                        break;
+                        case '##this.article.idlang##':
                         $value = Aitsu_Registry::get()->env->idlang;
-                    } elseif ($value === '##this.article.idartlang##') {
+                        break;
+                        case '##this.article.idartlang##':
                         $value = Aitsu_Registry::get()->env->idartlang;
+                        break;
                     }
 
                     $defaults[$key] = $value;

@@ -1,7 +1,11 @@
 {
-	"name": "Article Categorization",
-	"description": "Dieses Modul zeigt an welchen Kategorien ein Artikel zugewiesen ist.",
+	"name": "Article Date",
+	"description": "Dieses Modul zeigt an Meta-Datum eines Artikels an.",
 	"defaults": {
-		"caching": "eternal"
+		"format": "d.m.Y H:i:s",
+		"caching": "eternal",
+		"configurable": {
+			"format": true
+		}
 	}
 }

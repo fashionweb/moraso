@@ -11,11 +11,7 @@ class Moraso_Module_Navigation_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {                
-        if (isset($this->_defaults->idcat) && !empty($this->_defaults->idcat)) {
-            $idcat = $this->_defaults->idcat;
-        } else {
-            $idcat = Moraso_Config::get('navigation.' . $this->_index);
-        }
+        $idcat = isset($this->_defaults->idcat) && !empty($this->_defaults->idcat) ? $this->_defaults->idcat : Moraso_Config::get('navigation.' . $this->_index);
         
         $this->_view->nav = Moraso_Navigation_Frontend::getTree($idcat);
     }

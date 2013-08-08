@@ -73,7 +73,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
         $instance->_translation = array(
             'configuration' => Aitsu_Translate::_('Configuration')
-        );
+            );
 
         if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
@@ -127,24 +127,24 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
                 if ($instance->_isBlock) {
                     return '' .
-                            '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
-                            '<div style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' .
-                            '	<div style="height:15px; background-color: #CCC; color: white; font-size: 11px; padding:2px 5px 0 5px;">' .
-                            '		<span style="font-weight:bold; float:left;">' . $index . '</span><span style="float:right;">Module <span style="font-weight:bold;">' . $moduleName . '</span></span>' .
-                            '	</div>' .
-                            '</div>';
+                    '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
+                    '<div style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' .
+                    '	<div style="height:15px; background-color: #CCC; color: white; font-size: 11px; padding:2px 5px 0 5px;">' .
+                    '		<span style="font-weight:bold; float:left;">' . $index . '</span><span style="float:right;">Module <span style="font-weight:bold;">' . $moduleName . '</span></span>' .
+                    '	</div>' .
+                    '</div>';
                 } else {
                     return '' .
-                            '<span style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' .
-                            '	' . $moduleName . '::' . $index .
-                            '</span>';
+                    '<span style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' .
+                    '	' . $moduleName . '::' . $index .
+                    '</span>';
                 }
             }
 
             if (!$instance->_isBlock) {
                 return '' .
-                        '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
-                        '<span style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' . $output . '</span>';
+                '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
+                '<span style="border:1px dashed #CCC; padding:2px 2px 2px 2px;">' . $output . '</span>';
             }
 
             if (isset($instance->_params->suppressWrapping) && $instance->_params->suppressWrapping) {
@@ -152,8 +152,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
 
             return '' .
-                    '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
-                    '<div>' . $output . '</div>';
+            '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
+            '<div>' . $output . '</div>';
         }
 
         return $output;
@@ -242,6 +242,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             } else {
                 $this->_params->idartlang = Moraso_Util::getIdArtLang($this->_params->idart);
             }
+        } elseif (isset($this->_params->idlang) && !empty($this->_params->idlang)) {
+            $this->_params->idartlang = Moraso_Util::getIdArtLang($this->_params->idart, $this->_params->idlang);
         }
 
         $defaults = $this->_getDefaults();

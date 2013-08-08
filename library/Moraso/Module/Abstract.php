@@ -244,6 +244,9 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
         } elseif (isset($this->_params->idlang) && !empty($this->_params->idlang)) {
             $this->_params->idartlang = Moraso_Util::getIdArtLang($this->_params->idart, $this->_params->idlang);
+        } elseif (isset($this->_params->idartlang) && !empty($this->_params->idartlang)) {
+            $this->_params->idart = Moraso_Util::getIdArt(this->_params->idartlang);
+            $this->_params->idlang = Moraso_Util::getIdLangByIdArtLang(this->_params->idartlang);
         }
 
         $defaults = $this->_getDefaults();

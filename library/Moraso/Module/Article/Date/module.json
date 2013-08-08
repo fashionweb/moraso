@@ -1,0 +1,11 @@
+{
+	"name": "Article Date",
+	"description": "Dieses Modul zeigt an Meta-Datum eines Artikels an.",
+	"defaults": {
+		"format": "d.m.Y H:i:s",
+		"caching": "eternal",
+		"configurable": {
+			"format": true
+		}
+	}
+}

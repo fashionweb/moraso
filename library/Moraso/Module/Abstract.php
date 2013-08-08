@@ -96,6 +96,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
                 if (!empty($idart)) {
                     $instance->_defaults['idart'] = preg_replace('/[^0-9]/', '', $idart);
+                    $instance->_defaults['idartlang'] = Moraso_Util::getIdArtLang($instance->_defaults['idart'], $instance->_defaults['idlang']);
                 }
             }
 
@@ -119,7 +120,9 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
 
+            //if (in_array($instance->_view->template, $instance->_getTemplates())) {
             $output_raw .= $instance->_view->render($instance->_view->template);
+            //}
         }
 
         $output = $instance->_transformOutput($output_raw);

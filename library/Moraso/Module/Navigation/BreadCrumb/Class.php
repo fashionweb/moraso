@@ -6,19 +6,19 @@
  */
 class Moraso_Module_Navigation_BreadCrumb_Class extends Moraso_Module_Abstract
 {
+    protected $_newRenderingMethode = true;
     protected $type = 'navigation';
-    protected $_allowEdit = false;
 
     protected function _main()
     {
-        $breadcrumbs = Aitsu_Persistence_View_Category::breadCrumb();
+        $breadcrumbs = Aitsu_Persistence_View_Category::breadCrumb($this->_defaults['idcat']);
         unset($breadcrumbs[0]);
 
         foreach ($breadcrumbs as &$breadcrumb) {
             $breadcrumb = (object) $breadcrumb;
         }
 
-        $article = Aitsu_Core_Article::factory();
+        $article = Aitsu_Core_Article::factory($this->_defaults['idartlang']);
 
         $lastCategory = end($breadcrumbs);
         if ($lastCategory->startidartlang !== $article->idartlang) {
@@ -29,14 +29,6 @@ class Moraso_Module_Navigation_BreadCrumb_Class extends Moraso_Module_Abstract
             );
         }
         
-        $view = $this->_getView();
-        $view->breadcrumbs = (object) $breadcrumbs;
-        return $view->render('index.phtml');
+        $this->_view->breadcrumbs = (object) $breadcrumbs;
     }
-
-    protected function _cachingPeriod()
-    {
-        return 'eternal';
-    }
-
 }

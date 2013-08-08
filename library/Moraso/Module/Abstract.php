@@ -72,10 +72,6 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             'source' => Aitsu_Translate::_('Source')
             );
 
-        if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
-            Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
-        }
-
         $output_raw = $instance->_init();
 
         if ($instance->_cachingPeriod() > 0) {
@@ -113,6 +109,10 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         }
 
         $output_raw .= $instance->_main();
+
+        if (count(array_filter($instance->_defaults['configurable'])) === 0) {
+            Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
+        }
 
         if ($instance->_newRenderingMethode && !$instance->_withoutView) {
             if (!isset($instance->_view->template) || empty($instance->_view->template)) {

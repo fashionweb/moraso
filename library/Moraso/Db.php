@@ -96,30 +96,30 @@ class Moraso_Db extends Aitsu_Db
         if ($caching === 0) {
             if ($limit === 1) {
                 if (is_array($select)) {
-                    return Moraso_Db::fetchRow('select ' . implode(', ', $select) . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                    return Moraso_Db::fetchRow('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
                 }
 
-                return Moraso_Db::fetchOne('select ' . $select . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                return Moraso_Db::fetchOne('SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
             } else {
                 if (!is_array($select)) {
                     $select = str_split($select);
                 }
 
-                return Moraso_Db::fetchAll('select ' . implode(', ', $select) . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                return Moraso_Db::fetchAll('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
             }
         } else {
             if ($limit === 1) {
                 if (is_array($select)) {
-                    return Moraso_Db::fetchRowC($caching, 'select ' . implode(', ', $select) . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                    return Moraso_Db::fetchRowC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
                 }
 
-                return Moraso_Db::fetchOneC($caching, 'select ' . $select . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
             } else {
                 if (!is_array($select)) {
                     $select = str_split($select);
                 }
 
-                return Moraso_Db::fetchAllC($caching, 'select ' . implode(', ', $select) . ' from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+                return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
             }
         }
     }

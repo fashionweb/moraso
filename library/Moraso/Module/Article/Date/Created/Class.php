@@ -6,49 +6,18 @@
  */
 class Moraso_Module_Article_Date_Created_Class extends Moraso_Module_Abstract
 {
-    protected function _getDefaults()
-    {
-        $defaults = array(
-            'template' => 'index',
-            'format' => 'd.m.Y H:i:s',
-            'configurable' => array(
-                'template' => true,
-                'format' => true
-            )
-        );
-
-        return $defaults;
-    }
+    protected $_newRenderingMethode = true;
 
     protected function _main()
     {
-        $defaults = $this->_moduleConfigDefaults;
-
-        $translation = array();
-        $translation['configuration'] = Aitsu_Translate::_('Configuration');
-
-        if ($defaults['configurable']['template']) {
-            $template = Aitsu_Content_Config_Select::set($this->_index, 'template', Aitsu_Translate::_('Template'), $this->_getTemplates(), $translation['configuration']);
+        if ($this->_defaults['configurable']['format']) {
+            $format = Aitsu_Content_Config_Text::set($this->_index, 'format', Aitsu_Translate::_('Format'), $this->_translation['configuration']);
         }
 
-        $template = !empty($template) ? $template : $defaults['template'];
+        $format = !empty($format) ? $format : $this->_defaults['format'];
 
-        if ($defaults['configurable']['format']) {
-            $format = Aitsu_Content_Config_Text::set($this->_index, 'format', Aitsu_Translate::_('Format'), $translation['configuration']);
-        }
+        $timestamp = Aitsu_Core_Article::factory($this->_defaults['idartlang'])->created;
 
-        $format = !empty($format) ? $format : $defaults['format'];
-
-        $timestamp = Aitsu_Core_Article::factory()->created;
-
-        $view = $this->_getView();
-        $view->date = date($format, strtotime($timestamp));
-        return $view->render($template . '.phtml');
+        $this->_view->date = date($format, strtotime($timestamp));
     }
-
-    protected function _cachingPeriod()
-    {
-        return 'eternal';
-    }
-
 }

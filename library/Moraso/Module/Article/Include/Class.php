@@ -4,65 +4,21 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Article_Include_Class extends Moraso_Module_Abstract {
+class Moraso_Module_Article_Include_Class extends Moraso_Module_Abstract
+{
+    protected $_newRenderingMethode = true;
 
-    protected function _getDefaults() {
+    protected function _main()
+    {
+        if ($this->_defaults['idart'] == Aitsu_Registry::get()->env->idart || empty($this->_defaults['idart'])) {
+            $this->_withoutView = true;
+        } else {
+            $article = Aitsu_Persistence_Article::factory($this->_defaults['idart'], $this->_defaults['idlang'])->load();
 
-        $defaults = array(
-            'template' => 'index'
-        );
-
-        return $defaults;
+            $this->_view->content = Moraso_Db::simpleFetch(array('index', 'value'), '_article_content', array('idartlang' => $this->_defaults['idartlang']), 999);
+            $this->_view->images = Aitsu_Core_File::getFiles($this->_defaults['idartlang']);
+            $this->_view->tags = $article->getTags();
+            $this->_view->data = $article->getData();
+        }        
     }
-
-    protected function _main() {
-
-        $defaults = $this->_moduleConfigDefaults;
-
-        $idart_source = Aitsu_Content_Config_Link::set($this->_index, 'Article.Include.Source', 'Source', Aitsu_Translate::_('Source article'));
-        $idart = preg_replace('/[^0-9]/', '', $idart_source);
-
-        if (empty($idart) || strpos($idart_source, 'idart') === false) {
-            return '';
-        }
-
-        $view = $this->_getView();
-
-        $idlang = Moraso_Util::getIdlang();
-
-        $idartlang = Moraso_Util::getIdArtLang($idart, $idlang);
-
-        $article = Aitsu_Persistence_Article::factory($idart, $idlang)->load();
-
-        $selectTemplate = Aitsu_Content_Config_Select::set($this->_index, 'template', Aitsu_Translate::_('Template'), $this->_getTemplates(), Aitsu_Translate::_('Configuration'));
-
-        $view->content = Moraso_Db::fetchAll('' .
-                        'SELECT ' .
-                        '   `index`, ' .
-                        '   value ' .
-                        'FROM ' .
-                        '   _article_content ' .
-                        'WHERE ' .
-                        '   idartlang =:idartlang', array(
-                    ':idartlang' => $idartlang
-        ));
-
-        $view->images = Aitsu_Core_File::getFiles($idartlang);
-        $view->tags = $article->getTags();
-        $view->data = $article->getData();
-
-        $template = !empty($selectTemplate) ? $selectTemplate : $defaults['template'];
-
-        if (!in_array($template, $this->_getTemplates())) {
-            return '';
-        }
-
-        return $view->render($template . '.phtml');
-    }
-
-    protected function _cachingPeriod() {
-
-        return Aitsu_Util_Date::secondsUntilEndOf('day');
-    }
-
 }

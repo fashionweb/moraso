@@ -87,21 +87,21 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
         }
 
-        if ($instance->_defaults['configurable']['template']) {
-            $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
-
-            if (!empty($template)) {
-                $instance->_view->template = $template . '.phtml';
-            }
-        }
-
-        if (!isset($instance->_view->template) || empty($instance->_view->template)) {
-            $instance->_view->template = $instance->_defaults['template'] . '.phtml';
-        }
-
         $output_raw .= $instance->_main();
 
         if ($instance->_newRenderingMethode && !$instance->_withoutView) {
+            if ($instance->_defaults['configurable']['template']) {
+                $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
+
+                if (!empty($template)) {
+                    $instance->_view->template = $template . '.phtml';
+                }
+            }
+
+            if (!isset($instance->_view->template) || empty($instance->_view->template)) {
+                $instance->_view->template = $instance->_defaults['template'] . '.phtml';
+            }
+
             $output_raw .= $instance->_view->render($instance->_view->template);
         }
 

@@ -4,8 +4,8 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Db extends Aitsu_Db {
-
+class Moraso_Db extends Aitsu_Db
+{
     /**
      * Based on Aitsu_Db::filter()
      * Extended by variable $groups
@@ -13,8 +13,8 @@ class Moraso_Db extends Aitsu_Db {
      * @since 1.2.6-1
      * @see Aitsu_Db::filter();
      */
-    public static function filter($baseQuery, $limit = null, $offset = null, $filters = null, $orders = null, $groups = null) {
-
+    public static function filter($baseQuery, $limit = null, $offset = null, $filters = null, $orders = null, $groups = null)
+    {
         $limit = is_null($limit) || !is_numeric($limit) ? 100 : $limit;
         $offset = is_null($offset) || !is_numeric($offset) ? 0 : $offset;
         $filters = is_array($filters) ? $filters : array();
@@ -33,11 +33,11 @@ class Moraso_Db extends Aitsu_Db {
         $groupBy = count($groups) == 0 ? '' : 'group by ' . implode(', ', $groups);
 
         $results = Moraso_Db::fetchAll('' .
-                        $baseQuery .
-                        ' ' . $where .
-                        ' ' . $groupBy .
-                        ' ' . $orderBy .
-                        'limit ' . $offset . ', ' . $limit, $filterValues);
+            $baseQuery .
+            ' ' . $where .
+            ' ' . $groupBy .
+            ' ' . $orderBy .
+            'limit ' . $offset . ', ' . $limit, $filterValues);
 
         $return = array();
 
@@ -53,8 +53,8 @@ class Moraso_Db extends Aitsu_Db {
     /**
      * @since 1.14.0-1
      */
-    public static function delete($from, array $where) {
-
+    public static function delete($from, array $where)
+    {
         $whereClause = array();
         $whereValues = array();
 
@@ -76,8 +76,8 @@ class Moraso_Db extends Aitsu_Db {
     /**
      * @since 1.14.0-1
      */
-    public static function simpleFetch($select, $from, array $where, $limit = 1, $caching = 0) {
-
+    public static function simpleFetch($select, $from, array $where, $limit = 1, $caching = 0)
+    {
         $whereClause = array();
         $whereValues = array();
 
@@ -123,5 +123,4 @@ class Moraso_Db extends Aitsu_Db {
             }
         }
     }
-
 }

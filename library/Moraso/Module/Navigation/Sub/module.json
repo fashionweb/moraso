@@ -1,0 +1,10 @@
+{
+	"name": "Sub-Navigation",
+	"defaults": {
+		"firstLevel": "1",
+		"caching": "##secondsUntilEndOf.day##",
+		"configurable": {
+			"idcat": true
+		}
+	}
+}

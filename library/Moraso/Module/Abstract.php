@@ -40,11 +40,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         $isMobile = Aitsu_Registry::get()->env->mobile->detect->isMobile;
         $isTablet = Aitsu_Registry::get()->env->mobile->detect->isTablet;
 
-        if ($isMobile == 'is' && !$instance->_renderOnMobile) {
-            return false;
-        }
-
-        if ($isTablet == 'is' && !$instance->_renderOnTablet) {
+        if (($isMobile == 'is' && !$instance->_renderOnMobile) || ($isTablet == 'is' && !$instance->_renderOnTablet)) {
             return false;
         }
 
@@ -72,7 +68,8 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         $instance->_view = $instance->_getView();
 
         $instance->_translation = array(
-            'configuration' => Aitsu_Translate::_('Configuration')
+            'configuration' => Aitsu_Translate::_('Configuration'),
+            'source' => Aitsu_Translate::_('Source')
             );
 
         if (!$instance->_allowEdit || (isset($instance->_params->edit) && !$instance->_params->edit)) {
@@ -87,17 +84,33 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
         }
 
+        if ($instance->_defaults['configurable']['template']) {
+            $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
+
+            if (!empty($template)) {
+                $instance->_view->template = $template . '.phtml';
+            }
+        }
+
+        if ($instance->_defaults['configurable']['idart']) {
+            $idart = Aitsu_Content_Config_Link::set($instance->_index, 'idart', 'idart', $instance->_translation['source']);
+
+            if (!empty($idart)) {
+                $instance->_defaults['idart'] = preg_replace('/[^0-9]/', '', $idart);
+            }
+        }
+
+        if ($instance->_defaults['configurable']['idcat']) {
+            $idcat = Aitsu_Content_Config_Link::set($instance->_index, 'idcat', 'idcat', $instance->_translation['source']);
+
+            if (!empty($idcat)) {
+                $instance->_defaults['idcat'] = preg_replace('/[^0-9]/', '', $idcat);
+            }
+        }
+
         $output_raw .= $instance->_main();
 
         if ($instance->_newRenderingMethode && !$instance->_withoutView) {
-            if ($instance->_defaults['configurable']['template']) {
-                $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
-
-                if (!empty($template)) {
-                    $instance->_view->template = $template . '.phtml';
-                }
-            }
-
             if (!isset($instance->_view->template) || empty($instance->_view->template)) {
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
@@ -208,27 +221,37 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         $defaults = array();
 
         foreach ($modulePaths as $modulePath) {
-            $module_config = json_decode(file_get_contents($modulePath . '/module.json'));
+            if (file_exists($modulePath . 'module.json')) {
+                $module_config = json_decode(file_get_contents($modulePath . 'module.json'));
 
-            foreach ($module_config->defaults as $key => $value) {
-                if ($key === 'configurable' && is_object($value)) {
-                    foreach ($value as $param => $bool) {
-                        $defaults['configurable'][$param] = $bool;
-                    }
-                } else {
-                    switch($value) {
-                        case '##this.article.idart##':
-                        $value = Aitsu_Registry::get()->env->idart;
-                        break;
-                        case '##this.article.idlang##':
-                        $value = Aitsu_Registry::get()->env->idlang;
-                        break;
-                        case '##this.article.idartlang##':
-                        $value = Aitsu_Registry::get()->env->idartlang;
-                        break;
-                    }
+                if (isset($module_config->defaults) && !empty($module_config->defaults)) {
+                    foreach ($module_config->defaults as $key => $value) {
+                        if ($key === 'configurable' && is_object($value)) {
+                            foreach ($value as $param => $bool) {
+                                $defaults['configurable'][$param] = $bool;
+                            }
+                        } else {
+                            switch($value) {
+                                case '##this.article.idart##':
+                                $value = Aitsu_Registry::get()->env->idart;
+                                break;
+                                case '##this.article.idlang##':
+                                $value = Aitsu_Registry::get()->env->idlang;
+                                break;
+                                case '##this.article.idartlang##':
+                                $value = Aitsu_Registry::get()->env->idartlang;
+                                break;
+                                case '##this.article.idcat##':
+                                $value = Aitsu_Registry::get()->env->idcat;
+                                break;
+                                case '##secondsUntilEndOf.day##':
+                                $value = Aitsu_Util_Date::secondsUntilEndOf('day');
+                                break;
+                            }
 
-                    $defaults[$key] = $value;
+                            $defaults[$key] = $value;
+                        }
+                    }
                 }
             }
         }
@@ -328,5 +351,4 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
         return 0;
     }
-
 }

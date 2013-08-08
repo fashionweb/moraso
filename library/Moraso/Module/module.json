@@ -4,10 +4,16 @@
         "idart": "##this.article.idart##",
         "idlang": "##this.article.idlang##",
         "idartlang": "##this.article.idartlang##",
+        "idcat": "##this.article.idcat##",
         "template": "index",
         "caching": "eternal",
         "configurable": {
-            "template": true
+            "idart": false,
+            "idlang": false,
+            "idartlang": false,
+            "idcat": false,
+            "template": true,
+            "caching": false
         }
     }
 }

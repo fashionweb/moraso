@@ -1,0 +1,11 @@
+{
+	"name": "Article-Created Date",
+	"description": "Dieses Modul zeigt an Erstell-Datum eines Artikels an.",
+	"defaults": {
+		"format": "d.m.Y H:i:s",
+		"caching": "eternal",
+		"configurable": {
+			"format": true
+		}
+	}
+}

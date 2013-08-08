@@ -1,0 +1,9 @@
+{
+	"name": "Navigation",
+	"defaults": {
+		"idcat": "0",
+		"configurable": {
+			"idcat": true
+		}
+	}
+}

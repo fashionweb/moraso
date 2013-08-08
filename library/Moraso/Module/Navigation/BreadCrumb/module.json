@@ -1,0 +1,8 @@
+{
+	"name": "BreadCrumb-Navigation",
+	"defaults": {
+		"configurable": {
+			"template": false
+		}
+	}
+}

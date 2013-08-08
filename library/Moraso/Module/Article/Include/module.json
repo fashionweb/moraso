@@ -1,0 +1,11 @@
+{
+	"name": "Article Include",
+	"description": "Dieses Modul fügt einen x-beliebigen Artikel an eine vorgesehene Stelle ein.",
+	"defaults": {
+		"idart": "0",
+		"caching": "##secondsUntilEndOf.day##",
+		"configurable": {
+			"idart": true
+		}
+	}
+}

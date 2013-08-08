@@ -3,6 +3,5 @@
 	"description": "Dieses Modul zeigt an welchen Kategorien ein Artikel zugewiesen ist.",
 	"defaults": {
 		"caching": "eternal"
-		}
 	}
 }

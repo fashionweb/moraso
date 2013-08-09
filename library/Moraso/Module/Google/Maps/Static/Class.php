@@ -19,6 +19,10 @@ class Moraso_Module_Google_Maps_Static_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {
+        $this->_view->index = $this->_index;
+
+        var_dump($this->_defaults);
+
         /* MapTypeId */
         if ($this->_defaults['configurable']['MapTypeId']) {
             $mapTypeIdSelect = array(
@@ -32,49 +36,41 @@ class Moraso_Module_Google_Maps_Static_Class extends Moraso_Module_Abstract
             $mapTypeId = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeId', 'mapTypeId', $mapTypeIdSelect, $this->_translations['configuration']);
         }
 
-        $mapTypeId = !empty($mapTypeId) ? $mapTypeId : $this->_defaults['mapTypeId'];
+        $this->_view->mapTypeId = !empty($mapTypeId) ? $mapTypeId : $this->_defaults['mapTypeId'];
 
         /* zoom */
         if ($this->_defaults['configurable']['zoom']) {
             $zoom = Aitsu_Content_Config_Text::set($this->_index, 'zoom', 'zoom', 'zoom');
         }
 
-        $zoom = !empty($zoom) ? $zoom : $this->_defaults['zoom'];
+        $this->_view->zoom = !empty($zoom) ? $zoom : $this->_defaults['zoom'];
         
         /* latitude */
         if ($this->_defaults['configurable']['latitude']) {
             $latitude = Aitsu_Content_Config_Text::set($this->_index, 'latitude', 'latitude', 'latitude');
         }
 
-        $latitude = !empty($latitude) ? $latitude : $this->_defaults['latitude'];
+        $this->_view->latitude = !empty($latitude) ? $latitude : $this->_defaults['latitude'];
         
         /* longitude */
         if ($this->_defaults['configurable']['longitude']) {
             $longitude = Aitsu_Content_Config_Text::set($this->_index, 'longitude', 'longitude', 'longitude');
         }
 
-        $longitude = !empty($longitude) ? $longitude : $this->_defaults['longitude'];
+        $this->_view->longitude = !empty($longitude) ? $longitude : $this->_defaults['longitude'];
         
         /* width */
         if ($this->_defaults['configurable']['width']) {
             $width = Aitsu_Content_Config_Text::set($this->_index, 'width', 'width', 'width');
         }
 
-        $width = !empty($width) ? $width : $this->_defaults['width'];
+        $this->_view->width = !empty($width) ? $width : $this->_defaults['width'];
         
         /* height */
         if ($this->_defaults['configurable']['height']) {
             $height = Aitsu_Content_Config_Text::set($this->_index, 'height', 'height', 'height');
         }
 
-        $height = !empty($height) ? $height : $this->_defaults['height'];
-
-        $this->_view->index = $this->_index;
-        $this->_view->mapTypeId = $mapTypeId;
-        $this->_view->zoom = $zoom;
-        $this->_view->latitude = $latitude;
-        $this->_view->longitude = $longitude;
-        $this->_view->width = $width;
-        $this->_view->height = $height;
+        $this->_view->height = !empty($height) ? $height : $this->_defaults['height'];
     }
 }

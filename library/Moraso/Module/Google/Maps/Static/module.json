@@ -1,0 +1,19 @@
+{
+	"name": "Google Maps Static",
+	"defaults": {
+		"mapTypeId": "HYBRID",
+		"zoom": 18,
+		"latitude": "52.80896",
+		"longitude": "9.142725",
+		"width": 800,
+		"height": 450,
+		"configurable": {
+			"mapTypeId": true,
+			"zoom": true,
+			"latitude": true,
+			"longitude": true,
+			"width": true,
+			"height": true
+		}
+	}
+}

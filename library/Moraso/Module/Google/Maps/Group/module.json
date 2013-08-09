@@ -1,0 +1,47 @@
+{
+    "name": "Google Maps Group",
+    "defaults": {
+		"mapTypeControl": true,
+		"mapTypeControlOptions_position": "DEFAULT",
+		"mapTypeControlOptions_style": "DEFAULT",
+		"mapTypeId": "HYBRID",
+		"maxZoom": "20",
+		"minZoom": "0",
+		"overviewMapControl": true,
+		"overviewMapControlOptions_opened": true,
+		"overviewMapControl": true,
+		"overviewMapControlOptions_position": "DEFAULT",
+		"panControl": true,
+		"panControlOptions_position": "DEFAULT",
+		"rotateControl": true,
+		"rotateControlOptions_position": "DEFAULT",
+		"scaleControl": true,
+		"scaleControlOptions_position": "DEFAULT",
+		"scaleControlOptions_style": "DEFAULT",
+		"scrollwheel": true,
+		"zoom": "18",
+		"zoomControl": true,
+		"zoomControlOptions_position": "DEFAULT"
+		"configurable": {
+			"mapTypeControl": true,
+			"mapTypeControlOptions_position": true,
+			"mapTypeControlOptions_style": true,
+			"mapTypeId": true,
+			"maxZoom": true,
+			"minZoom": true,
+			"overviewMapControl": true,
+			"overviewMapControlOptions_opened": true,
+			"panControl": true,
+			"panControlOptions_position": true,
+			"rotateControl": true,
+			"rotateControlOptions_position": true,
+			"scaleControl": true,
+			"scaleControlOptions_position": true,
+			"scaleControlOptions_style": true,
+			"scrollwheel": true,
+			"zoom": true,
+			"zoomControl": true,
+			"zoomControlOptions_position": true
+		}
+	}
+}

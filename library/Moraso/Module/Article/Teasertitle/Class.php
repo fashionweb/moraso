@@ -6,6 +6,8 @@
  */
 class Moraso_Module_Article_Teasertitle_Class extends Moraso_Module_Abstract
 {
+    protected $_newRenderingMethode = true;
+
     protected function _main()
     {
         $teasertitle = Aitsu_Content_Text::get('Teasertitle', 0);
@@ -14,17 +16,7 @@ class Moraso_Module_Article_Teasertitle_Class extends Moraso_Module_Abstract
             $teasertitle = stripslashes(Aitsu_Core_Article::factory()->teasertitle);
         }
 
-        $view = $this->_getView();
-
-        $view->tag = $this->_params->tag;
-        $view->teasertitle = htmlentities($teasertitle, ENT_COMPAT, 'UTF-8');
-
-        return $view->render('index.phtml');
+        $this->_view->tag = $this->_defaults['tag'];
+        $this->_view->teasertitle = htmlentities($teasertitle, ENT_COMPAT, 'UTF-8');
     }
-
-    protected function _cachingPeriod()
-    {
-        return 'eternal';
-    }
-
 }

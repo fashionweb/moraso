@@ -1,0 +1,15 @@
+{
+	"name": "Standard Skin (Shop-Erweiterung)",
+	
+	"parent": "default",
+
+	"pagetitle": {
+		"suffix": " | moraso CMS (inkl. Warenkorb)"
+	},
+
+	"js": {
+		"bottom": {
+			"cart": "js/cart.js"
+		}
+	}
+}

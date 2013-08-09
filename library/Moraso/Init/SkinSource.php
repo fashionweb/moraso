@@ -85,19 +85,20 @@ class Moraso_Init_SkinSource implements Aitsu_Event_Listener_Interface {
         if (is_readable($location)) {
             $content = file_get_contents($location, false);
         } else {
-            $xml_file = $skin_path . '/skin.xml';
+            $json_file_dest = $skin_path . '/skin.json';
+
             $skin_parent_exists = false;
 
-            if (is_readable($xml_file)) {
-                $xml = simplexml_load_file($xml_file);
+            if (is_readable($json_file_dest)) {
+                $json_file_content = json_decode(file_get_contents($json_file_dest));
 
-                if (isset($xml->parent->skin[0]) && !empty($xml->parent->skin[0])) {
+                if (isset($json_file_content->parent) && !empty($json_file_content->parent)) {
                     $skin_parent_exists = true;
                 }
             }
 
             if ($skin_parent_exists) {
-                $content = self::_getContentFromSkinFile($source, (string) $xml->parent->skin[0]);
+                $content = self::_getContentFromSkinFile($source, $json_file_content->parent);
             } else {
                 header("HTTP/1.1 404 Not Found");
                 header("Connection: Close");

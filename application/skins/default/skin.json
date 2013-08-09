@@ -1,0 +1,43 @@
+{
+	"name": "Standard Skin",
+	"author": "Christian Kehres",
+	"copyright": "2013, webtischlerei",
+
+	"pagetitle": {
+		"suffix": " | moraso CMS"
+	},
+
+	"viewport": "width=device-width",
+	"charset": "utf-8",
+
+	"geo": {
+		"geo.region": "DE-NI",
+		"geo.placename": "Hoya",
+		"geo.position": "52.80912;9.14234",
+		"ICBM": "52.80912;9.14234"
+	},
+
+	"js": {
+		"top": {
+			"prefixfree": "js/vendor/prefixfree.min.js",
+			"modernizr": "js/vendor/custom.modernizr.js"
+			},
+		"bottom": {
+			"jquery": "//ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js",
+			"foundation": "js/foundation.min.js",
+			"comments": "js/comments.js",
+			"init": "js/init.js"
+		}
+	},
+
+	"google": {
+		"fonts": {
+			"Raleway": "400,700"
+		}
+	},
+
+	"css": {
+		"foundation": "css/foundation.min.css",
+		"app": "css/app.css"
+	}
+}

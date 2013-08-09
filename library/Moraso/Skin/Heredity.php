@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Skin_Heredity {
-
-    public static function build() {
-
+class Moraso_Skin_Heredity
+{
+    public static function build()
+    {
         $cachedSkinHeredity = Aitsu_Core_Cache::getInstance('skinHeredity_Client' . Moraso_Config::get('sys.client'));
 
         if ($cachedSkinHeredity->isValid()) {
@@ -22,8 +22,8 @@ class Moraso_Skin_Heredity {
         return $heredity;
     }
 
-    private static function _build(& $heredity = null, $skin = null) {
-
+    private static function _build(& $heredity = null, $skin = null)
+    {
         if (empty($heredity)) {
             $heredity = array();
         }
@@ -34,19 +34,18 @@ class Moraso_Skin_Heredity {
 
         $heredity[] = $skin;
 
-        $xml_file = APPLICATION_PATH . '/skins/' . $skin . '/skin.xml';
+        $json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
-        if (is_readable($xml_file)) {
-            $xml = simplexml_load_file($xml_file);
+        if (is_readable($json_file_dest)) {
+            $json_file_content = json_decode(file_get_contents($json_file_dest));
 
-            $parentSkin = (string) $xml->parent->skin[0];
+            $parent = $json_file_content->parent;
 
-            if (!empty($parentSkin)) {
-                self::_build($heredity, $parentSkin);
+            if (!empty($parent)) {
+                self::_build($heredity, $parent);
             }
         }
 
         return $heredity;
     }
-
 }

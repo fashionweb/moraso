@@ -20,13 +20,13 @@ class Moraso_Module_Navigation_Sub_Class extends Moraso_Module_Abstract
             return '';
         }
 
-        $nav = Aitsu_Persistence_View_Category::nav2($bc[$firstLevel]['idcat']);
+        $nav = Moraso_Navigation_Frontend::getTree($bc[$firstLevel]['idcat']);
 
-        if (empty($nav) || !$nav->haschildren) {
+        if (empty($nav) || !$nav[0]['hasChildren']) {
             $this->_withoutView = true;
             return '';
         }
 
-        $this->_view->nav = $nav;
+        $this->_view->nav = $nav[0]['children'];
     }
 }

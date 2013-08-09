@@ -1,5 +1,5 @@
 {
-    "description": "Hier handelt es sich um die Basis-Konfiguration die für jedes Modul greift.",
+    "description": "Hier handelt es sich um die Basis-Konfiguration welche für jedes Modul greift.",
     "defaults": {
         "idart": "##this.article.idart##",
         "idlang": "##this.article.idlang##",
@@ -7,13 +7,10 @@
         "idcat": "##this.article.idcat##",
         "template": "index",
         "caching": "eternal",
+        "ajax_sleep_before_rendering": 0,
+        "ajax_sleep_after_rendering": 0,
         "configurable": {
-            "idart": false,
-            "idlang": false,
-            "idartlang": false,
-            "idcat": false,
-            "template": true,
-            "caching": false
+            "template": true
         }
     }
 }

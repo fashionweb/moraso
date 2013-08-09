@@ -72,10 +72,19 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             'source' => Aitsu_Translate::_('Source')
             );
 
+        if ((!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') && (isset($instance->defaults['ajax_sleep_before_rendering']) && !empty($instance->defaults['ajax_sleep_before_rendering']))) {
+            sleep($instance->defaults['ajax_sleep_before_rendering']);
+        }
+
         $output_raw = $instance->_init();
 
         if ($instance->_cachingPeriod() > 0) {
             if ($instance->_get($context['className'], $output_raw)) {
+
+                if ((!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') && (isset($instance->defaults['ajax_sleep_after_rendering']) && !empty($instance->defaults['ajax_sleep_after_rendering']))) {
+                    sleep($instance->defaults['ajax_sleep_after_rendering']);
+                }
+
                 return $output_raw;
             }
         }
@@ -120,9 +129,11 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
 
-            //if (in_array($instance->_view->template, $instance->_getTemplates())) {
-            $output_raw .= $instance->_view->render($instance->_view->template);
-            //}
+            $availableTemplates = $instance->_getTemplates();
+
+            if ((!is_array($availableTemplates) || empty($availableTemplates)) || in_array(str_replace('.phtml', '', $instance->_view->template), $availableTemplates)) {
+                $output_raw .= $instance->_view->render($instance->_view->template);
+            }
         }
 
         $output = $instance->_transformOutput($output_raw);
@@ -174,6 +185,10 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             return '' .
             '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .
             '<div>' . $output . '</div>';
+        }
+
+        if ((!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') && (isset($instance->defaults['ajax_sleep_after_rendering']) && !empty($instance->defaults['ajax_sleep_after_rendering']))) {
+            sleep($instance->defaults['ajax_sleep_after_rendering']);
         }
 
         return $output;

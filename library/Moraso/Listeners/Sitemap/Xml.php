@@ -8,7 +8,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
 {
     public static function notify(Aitsu_Event_Abstract $event)
     {
-        if ($_GET['create'] === 'sitemap') {
+        if (isset($_GET['create']) && $_GET['create'] === 'sitemap') {
             if ($_GET['format'] === 'xml') {
                 header("Content-Type:text/xml");
 

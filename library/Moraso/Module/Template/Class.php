@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_Template_Class extends Moraso_Module_Abstract {
-
-    protected static function _getDefaultTemplate($index, $params) {
-
+class Moraso_Module_Template_Class extends Moraso_Module_Abstract
+{
+    protected static function _getDefaultTemplate($index, $params)
+    {
         if (isset(Moraso_Article_Config::factory()->module->template->$index->defaultTemplate)) {
             $defaultTemplate = Moraso_Article_Config::factory()->module->template->$index->defaultTemplate;
         }
@@ -27,8 +27,8 @@ class Moraso_Module_Template_Class extends Moraso_Module_Abstract {
         return $defaultTemplate->default;
     }
 
-    protected function _init() {
-
+    protected function _init()
+    {
         if (isset($_REQUEST['renderOnly'])) {
             return '<script type="application/x-moraso" src="' . $_REQUEST['renderOnly'] . '">' . (isset($_REQUEST['params']) ? $_REQUEST['params'] : '') . '</script>';
         }
@@ -39,8 +39,6 @@ class Moraso_Module_Template_Class extends Moraso_Module_Abstract {
         $parameters = $this->_params;
         $params = Aitsu_Content_Config_Hidden::set($index, 'Template_params', $parameters);
 
-        $idartlang = Aitsu_Registry::get()->env->idartlang;
-
         $startTag = '';
         $endTag = '';
         $output = '';
@@ -48,19 +46,19 @@ class Moraso_Module_Template_Class extends Moraso_Module_Abstract {
         $keys = array();
 
         if (isset($params->template)) {
-
             $data = (array) $params->template;
 
             foreach ($data as $key => $line) {
                 $keyValuePairs[$line->name] = $key;
                 $keys[] = $key;
             }
+
             $template = Aitsu_Content_Config_Radio::set($index, 'SubTemplate', '', $keyValuePairs, 'Template');
 
             if (Aitsu_Registry::isEdit()) {
                 $edit = (isset($params->hoverEdit) && $params->hoverEdit) || !isset($params->hoverEdit) ? ' no-edit' : ' ';
 
-                $startTag = '<div id="Template-' . $index . '-' . $idartlang . '" class="aitsu_editable on-demand' . $edit . '"><div class="aitsu_hover">';
+                $startTag = '<div id="Template-' . $index . '-' . $this->_defaults['idartlang'] . '" class="aitsu_editable on-demand' . $edit . '"><div class="aitsu_hover">';
                 $startTag .= '<div class="show-on-demand" style="cursor:pointer; background-color:black; color:white; padding:10px; margin-bottom:5px; display:none; z-index: 999999; position: relative;">Edit template area <strong>' . $index . '</strong></div>';
                 $endTag = '</div></div>';
             }
@@ -115,5 +113,4 @@ class Moraso_Module_Template_Class extends Moraso_Module_Abstract {
 
         return $startTag . $code . $output . $endTag;
     }
-
 }

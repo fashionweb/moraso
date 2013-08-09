@@ -10,6 +10,6 @@ class Moraso_Module_Article_Categorization_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {
-        $view->categories = Moraso_Categorize::get($this->_defaults['idart']);
+        $this->_view->categories = Moraso_Categorize::get($this->_defaults['idart']);
     }
 }

@@ -29,30 +29,36 @@ class Moraso_Listeners_Html_Skin_JavaScript implements Aitsu_Event_Listener_Inte
 		$topJS = array();
 		$bottomJS = array();
 
-		$topJS[] = "\n\t\t<!-- JavaScript (Top) :: Start -->\n\t";
-		$bottomJS[] = "\n\t\t<!-- JavaScript (Bottom) :: Start -->\n\t";
+		if (!empty($skin_js->top)) {
+			$topJS[] = "\n\t\t<!-- JavaScript (Top) :: Start -->\n\t";
 
-		foreach ($skin_js->top as $key => $value) {
-			if (strpos($value, '/') !== 0) {
-				$topJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
-			} else {
-				$topJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
+			foreach ($skin_js->top as $key => $value) {
+				if (strpos($value, '/') !== 0) {
+					$topJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
+				} else {
+					$topJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
+				}
 			}
-		}
-		
-		foreach ($skin_js->bottom as $key => $value) {
-			if (strpos($value, '/') !== 0) {
-				$bottomJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
-			} else {
-				$bottomJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
-			}
+
+			$topJS[] = "\t<!-- JavaScript (Top) :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("</head>", implode('', $topJS) . "\t</head>", $event->bootstrap->pageContent);
 		}
 
-		$topJS[] = "\t<!-- JavaScript (Top) :: End -->\n";
+		if (!empty($skin_js->bottom)) {
+			$bottomJS[] = "\n\t\t<!-- JavaScript (Bottom) :: Start -->\n\t";
 
-		$bottomJS[] = "\t<!-- JavaScript (Bottom) :: End -->\n";
+			foreach ($skin_js->bottom as $key => $value) {
+				if (strpos($value, '/') !== 0) {
+					$bottomJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
+				} else {
+					$bottomJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
+				}
+			}
 
-		$event->bootstrap->pageContent = str_replace("</head>", implode('', $topJS) . "\t</head>", $event->bootstrap->pageContent);
-		$event->bootstrap->pageContent = str_replace("</body>", implode('', $bottomJS) . "\t</body>", $event->bootstrap->pageContent);
+			$bottomJS[] = "\t<!-- JavaScript (Bottom) :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("</body>", implode('', $bottomJS) . "\t</body>", $event->bootstrap->pageContent);
+		}
 	}
 }

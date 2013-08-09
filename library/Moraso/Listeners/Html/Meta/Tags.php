@@ -17,14 +17,17 @@ class Moraso_Listeners_Html_Meta_Tags implements Aitsu_Event_Listener_Interface
 		unset($metas['idartlang']);
 
 		$metaTags = array();
-		$metaTags[] = "\n\t\t<!-- Meta Tags :: Start -->\n";
-		foreach ($metas as $name => $content) {
-			if (!empty($content)) {
-				$metaTags[] = "\t\t" . '<meta name="' . $name . '" content="' . $content . '" />' . "\n\t";
-			}
-		}
-		$metaTags[] = "\t<!-- Meta Tags :: End -->\n";
 
-		$event->bootstrap->pageContent = str_replace("<head>", "<head>\t" . implode('', $metaTags), $event->bootstrap->pageContent);
+		if (!empty($metas)) {
+			$metaTags[] = "\n\t\t<!-- Meta Tags :: Start -->\n";
+			foreach ($metas as $name => $content) {
+				if (!empty($content)) {
+					$metaTags[] = "\t\t" . '<meta name="' . $name . '" content="' . $content . '" />' . "\n\t";
+				}
+			}
+			$metaTags[] = "\t<!-- Meta Tags :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("<head>", "<head>\t" . implode('', $metaTags), $event->bootstrap->pageContent);
+		}
 	}
 }

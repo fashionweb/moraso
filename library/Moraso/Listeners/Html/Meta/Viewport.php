@@ -28,6 +28,8 @@ class Moraso_Listeners_Html_Meta_Viewport implements Aitsu_Event_Listener_Interf
 			}
 		}
 		
-		$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Viewport :: Start -->' . "\n\t\t" . '<meta name="viewport" content="' . $viewport . '" />' . "\n\t\t" . '<!-- Viewport :: End -->' . "\n", $event->bootstrap->pageContent);
+		if (!empty($viewport)) {
+			$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Viewport :: Start -->' . "\n\t\t" . '<meta name="viewport" content="' . $viewport . '" />' . "\n\t\t" . '<!-- Viewport :: End -->' . "\n", $event->bootstrap->pageContent);
+		}
 	}
 }

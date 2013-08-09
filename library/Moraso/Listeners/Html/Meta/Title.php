@@ -35,6 +35,8 @@ class Moraso_Listeners_Html_Meta_Title implements Aitsu_Event_Listener_Interface
 
 		$pageTitle = Aitsu_Core_Article::factory()->pagetitle;
 		
-		$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Title :: Start -->' . "\n\t\t" . '<title>' . $prefix . $pageTitle . $suffix . '</title>' . "\n\t\t" . '<!-- Title :: End -->' . "\n", $event->bootstrap->pageContent);
+		if (!empty($prefix) || !empty($suffix)) {
+			$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Title :: Start -->' . "\n\t\t" . '<title>' . $prefix . $pageTitle . $suffix . '</title>' . "\n\t\t" . '<!-- Title :: End -->' . "\n", $event->bootstrap->pageContent);
+		}
 	}
 }

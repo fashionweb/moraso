@@ -26,12 +26,15 @@ class Moraso_Listeners_Html_Meta_Geo implements Aitsu_Event_Listener_Interface
 		}
 
 		$geo = array();
-		$geo[] = "\n\t\t<!-- Meta Geo Tags :: Start -->\n\t";
-		foreach ($geoTags as $key => $value) {
-			$geo[$key] = "\t" . '<meta name="' . $key . '" content="' . $value . '" />' . "\n\t";
-		}
-		$geo[] = "\t<!-- Meta Geo Tags :: End -->\n";
-		
-		$event->bootstrap->pageContent = str_replace("</head>", implode('', $geo) . "\t</head>", $event->bootstrap->pageContent);
+
+		if (count((array) $geoTags) > 0) {		
+			$geo[] = "\n\t\t<!-- Meta Geo Tags :: Start -->\n\t";
+			foreach ($geoTags as $key => $value) {
+				$geo[$key] = "\t" . '<meta name="' . $key . '" content="' . $value . '" />' . "\n\t";
+			}
+			$geo[] = "\t<!-- Meta Geo Tags :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("</head>", implode('', $geo) . "\t</head>", $event->bootstrap->pageContent);
+		}	
 	}
 }

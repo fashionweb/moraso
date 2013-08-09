@@ -6,61 +6,7 @@
  */
 class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 {
-    protected function _getDefaults()
-    {
-        $defaults = array(
-            'mapTypeControl' => true,
-            'mapTypeControlOptions_position' => 'DEFAULT',
-            'mapTypeControlOptions_style' => 'DEFAULT',
-            'mapTypeId' => 'HYBRID',
-            'maxZoom' => 20,
-            'minZoom' => 0,
-            'overviewMapControl' => true,
-            'overviewMapControlOptions_opened' => true,
-            'overviewMapControl' => true,
-            'overviewMapControlOptions_position' => 'DEFAULT',
-            'panControl' => true,
-            'panControlOptions_position' => 'DEFAULT',
-            'rotateControl' => true,
-            'rotateControlOptions_position' => 'DEFAULT',
-            'scaleControl' => true,
-            'scaleControlOptions_position' => 'DEFAULT',
-            'scaleControlOptions_style' => 'DEFAULT',
-            'scrollwheel' => true,
-            'zoom' => 18,
-            'zoomControl' => true,
-            'zoomControlOptions_position' => 'DEFAULT'
-        );
-
-        $defaults['configurable'] = array(
-            'mapTypeControl' => true,
-            'mapTypeControlOptions_position' => true,
-            'mapTypeControlOptions_style' => true,
-            'mapTypeId' => true,
-            'maxZoom' => true,
-            'minZoom' => true,
-            'overviewMapControl' => true,
-            'overviewMapControlOptions_opened' => true,
-            'panControl' => true,
-            'panControlOptions_position' => true,
-            'rotateControl' => true,
-            'rotateControlOptions_position' => true,
-            'scaleControl' => true,
-            'scaleControlOptions_position' => true,
-            'scaleControlOptions_style' => true,
-            'scrollwheel' => true,
-            'zoom' => true,
-            'zoomControl' => true,
-            'zoomControlOptions_position' => true
-        );
-
-        $defaults['name'] = 'webtischlerei';
-        $defaults['address'] = 'Von-Kronenfeldt-Str. 20, 27318 Hoya, Deutschland';
-        $defaults['configurable']['name'] = true;
-        $defaults['configurable']['address'] = true;
-
-        return $defaults;
-    }
+    protected $_newRenderingMethode = true;
 
     protected function _init()
     {
@@ -83,7 +29,7 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'Elements are positioned in the center of the top row.' => 'TOP_CENTER',
             'Elements are positioned in the top left and flow towards the middle.' => 'TOP_LEFT',
             'Elements are positioned in the top right and flow towards the middle.' => 'TOP_RIGHT'
-        );
+            );
     }
 
     protected function _trueFalseArray()
@@ -92,227 +38,217 @@ class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
             'default' => '',
             'true' => 'true',
             'false' => 'false'
-        );
+            );
     }
 
     protected function _main()
     {
-        $defaults = $this->_moduleConfigDefaults;
-
         /* Name */
-        if ($defaults['configurable']['name']) {
-            $name = Aitsu_Content_Config_Text::set($this->_index, 'name', Aitsu_Translate::translate('Name'), Aitsu_Translate::_('Configuration'));
+        if ($this->_defaults['configurable']['name']) {
+            $name = Aitsu_Content_Config_Text::set($this->_index, 'name', Aitsu_Translate::translate('Name'), $this->_translation['configuration']);
         }
 
-        $name = !empty($name) ? $name : $defaults['name'];
+        $name = !empty($name) ? $name : $this->_defaults['name'];
 
         /* Address */
-        if ($defaults['configurable']['address']) {
-            $address = Aitsu_Content_Config_Text::set($this->_index, 'address', Aitsu_Translate::translate('Address'), Aitsu_Translate::_('Configuration'));
+        if ($this->_defaults['configurable']['address']) {
+            $address = Aitsu_Content_Config_Text::set($this->_index, 'address', Aitsu_Translate::translate('Address'), $this->_translation['configuration']);
         }
 
-        $address = !empty($address) ? $address : $defaults['address'];
+        $address = !empty($address) ? $address : $this->_defaults['address'];
 
         /* MapTypeId */
-        if ($defaults['configurable']['mapTypeId']) {
+        if ($this->_defaults['configurable']['mapTypeId']) {
             $mapTypeIdSelect = array(
                 'default' => '',
                 'This map type displays a transparent layer of major streets on satellite images.' => 'HYBRID',
                 'This map type displays a normal street map.' => 'ROADMAP',
                 'This map type displays satellite images.' => 'SATELLITE',
                 'This map type displays maps with physical features such as terrain and vegetation.' => 'TERRAIN'
-            );
+                );
 
-            $mapTypeId = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeId', 'mapTypeId', $mapTypeIdSelect, Aitsu_Translate::_('Configuration'));
+            $mapTypeId = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeId', 'mapTypeId', $mapTypeIdSelect, $this->_translation['configuration']);
         }
 
-        $mapTypeId = !empty($mapTypeId) ? $mapTypeId : $defaults['mapTypeId'];
+        $mapTypeId = !empty($mapTypeId) ? $mapTypeId : $this->_defaults['mapTypeId'];
 
         /* mapTypeControl */
-        if ($defaults['configurable']['mapTypeControl']) {
+        if ($this->_defaults['configurable']['mapTypeControl']) {
             $mapTypeControl = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeControl', 'active', $this->_trueFalseArray(), 'mapTypeControl');
         }
 
-        $mapTypeControl = !empty($mapTypeControl) ? filter_var($mapTypeControl, FILTER_VALIDATE_BOOLEAN) : $defaults['mapTypeControl'];
+        $mapTypeControl = !empty($mapTypeControl) ? filter_var($mapTypeControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['mapTypeControl'];
 
         /* mapTypeControlOptions */
         $mapTypeControlOptions = new stdClass();
 
         /* mapTypeControlOptions_position */
-        if ($defaults['configurable']['mapTypeControlOptions_position']) {
+        if ($this->_defaults['configurable']['mapTypeControlOptions_position']) {
             $mapTypeControlOptions_position = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeControlOptions_position', 'position', $this->_positionArray(), 'mapTypeControl');
         }
 
-        $mapTypeControlOptions->position = !empty($mapTypeControlOptions_position) ? $mapTypeControlOptions_position : $defaults['mapTypeControlOptions_position'];
+        $mapTypeControlOptions->position = !empty($mapTypeControlOptions_position) ? $mapTypeControlOptions_position : $this->_defaults['mapTypeControlOptions_position'];
 
         /* mapTypeControlOptions_style */
-        if ($defaults['configurable']['mapTypeControlOptions_style']) {
+        if ($this->_defaults['configurable']['mapTypeControlOptions_style']) {
             $mapTypeControlOptions_style_select = array(
                 'default' => '',
                 'Uses the default map type control. The control which DEFAULT maps to will vary according to window size and other factors. It may change in future versions of the API.' => 'DEFAULT',
                 'A dropdown menu for the screen realestate conscious.' => 'DROPDOWN_MENU',
                 'The standard horizontal radio buttons bar.' => 'HORIZONTAL_BAR',
-            );
+                );
 
             $mapTypeControlOptions_style = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeControlOptions_style', 'style', $mapTypeControlOptions_style_select, 'mapTypeControl');
         }
 
-        $mapTypeControlOptions->style = !empty($mapTypeControlOptions_style) ? $mapTypeControlOptions_style : $defaults['mapTypeControlOptions_style'];
+        $mapTypeControlOptions->style = !empty($mapTypeControlOptions_style) ? $mapTypeControlOptions_style : $this->_defaults['mapTypeControlOptions_style'];
 
         /* maxZoom */
-        if ($defaults['configurable']['maxZoom']) {
+        if ($this->_defaults['configurable']['maxZoom']) {
             $maxZoom = Aitsu_Content_Config_Text::set($this->_index, 'maxZoom', 'maxZoom', 'zoom');
         }
 
-        $maxZoom = !empty($maxZoom) ? $maxZoom : $defaults['maxZoom'];
+        $maxZoom = !empty($maxZoom) ? $maxZoom : $this->_defaults['maxZoom'];
 
         /* minZoom */
-        if ($defaults['configurable']['minZoom']) {
+        if ($this->_defaults['configurable']['minZoom']) {
             $minZoom = Aitsu_Content_Config_Text::set($this->_index, 'minZoom', 'minZoom', 'zoom');
         }
 
-        $minZoom = !empty($minZoom) ? $minZoom : $defaults['minZoom'];
+        $minZoom = !empty($minZoom) ? $minZoom : $this->_defaults['minZoom'];
 
         /* overviewMapControl */
-        if ($defaults['configurable']['overviewMapControl']) {
+        if ($this->_defaults['configurable']['overviewMapControl']) {
             $overviewMapControl = Aitsu_Content_Config_Select::set($this->_index, 'overviewMapControl', 'active', $this->_trueFalseArray(), 'overviewMapControl');
         }
 
-        $overviewMapControl = !empty($overviewMapControl) ? filter_var($overviewMapControl, FILTER_VALIDATE_BOOLEAN) : $defaults['overviewMapControl'];
+        $overviewMapControl = !empty($overviewMapControl) ? filter_var($overviewMapControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['overviewMapControl'];
 
         /* overviewMapControlOptions */
         $overviewMapControlOptions = new stdClass();
 
         /* overviewMapControlOptions_opened */
-        if ($defaults['configurable']['mapTypeControlOptions_position']) {
+        if ($this->_defaults['configurable']['mapTypeControlOptions_position']) {
             $overviewMapControlOptions_opened = Aitsu_Content_Config_Select::set($this->_index, 'overviewMapControlOptions_opened', 'opened', $this->_trueFalseArray(), 'overviewMapControl');
         }
 
-        $overviewMapControlOptions->opened = (!empty($overviewMapControlOptions_opened) ? filter_var($overviewMapControlOptions_opened, FILTER_VALIDATE_BOOLEAN) : $defaults['overviewMapControlOptions_opened']) ? 'true' : 'false';
+        $overviewMapControlOptions->opened = (!empty($overviewMapControlOptions_opened) ? filter_var($overviewMapControlOptions_opened, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['overviewMapControlOptions_opened']) ? 'true' : 'false';
 
         /* panControl */
-        if ($defaults['configurable']['panControl']) {
+        if ($this->_defaults['configurable']['panControl']) {
             $panControl = Aitsu_Content_Config_Select::set($this->_index, 'panControl', 'active', $this->_trueFalseArray(), 'panControl');
         }
 
-        $panControl = !empty($panControl) ? filter_var($panControl, FILTER_VALIDATE_BOOLEAN) : $defaults['panControl'];
+        $panControl = !empty($panControl) ? filter_var($panControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['panControl'];
 
         /* panControlOptions */
         $panControlOptions = new stdClass();
 
         /* panControlOptions_position */
-        if ($defaults['configurable']['panControlOptions_position']) {
+        if ($this->_defaults['configurable']['panControlOptions_position']) {
             $panControlOptions_position = Aitsu_Content_Config_Select::set($this->_index, 'panControlOptions_position', 'position', $this->_positionArray(), 'panControl');
         }
 
-        $panControlOptions->position = !empty($panControlOptions_position) ? $panControlOptions_position : $defaults['panControlOptions_position'];
+        $panControlOptions->position = !empty($panControlOptions_position) ? $panControlOptions_position : $this->_defaults['panControlOptions_position'];
 
         /* rotateControl */
-        if ($defaults['configurable']['rotateControl']) {
+        if ($this->_defaults['configurable']['rotateControl']) {
             $rotateControl = Aitsu_Content_Config_Select::set($this->_index, 'rotateControl', 'active', $this->_trueFalseArray(), 'rotateControl');
         }
 
-        $rotateControl = !empty($rotateControl) ? filter_var($rotateControl, FILTER_VALIDATE_BOOLEAN) : $defaults['rotateControl'];
+        $rotateControl = !empty($rotateControl) ? filter_var($rotateControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['rotateControl'];
 
         /* rotateControlOptions */
         $rotateControlOptions = new stdClass();
 
         /* rotateControlOptions_position */
-        if ($defaults['configurable']['rotateControlOptions_position']) {
+        if ($this->_defaults['configurable']['rotateControlOptions_position']) {
             $rotateControlOptions_position = Aitsu_Content_Config_Select::set($this->_index, 'rotateControlOptions_position', 'position', $this->_positionArray(), 'rotateControl');
         }
 
-        $rotateControlOptions->position = !empty($rotateControlOptions_position) ? $rotateControlOptions_position : $defaults['rotateControlOptions_position'];
+        $rotateControlOptions->position = !empty($rotateControlOptions_position) ? $rotateControlOptions_position : $this->_defaults['rotateControlOptions_position'];
 
         /* scaleControl */
-        if ($defaults['configurable']['scaleControl']) {
+        if ($this->_defaults['configurable']['scaleControl']) {
             $scaleControl = Aitsu_Content_Config_Select::set($this->_index, 'scaleControl', 'active', $this->_trueFalseArray(), 'scaleControl');
         }
 
-        $scaleControl = !empty($scaleControl) ? filter_var($scaleControl, FILTER_VALIDATE_BOOLEAN) : $defaults['scaleControl'];
+        $scaleControl = !empty($scaleControl) ? filter_var($scaleControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['scaleControl'];
 
         /* scaleControlOptions */
         $scaleControlOptions = new stdClass();
 
         /* scaleControlOptions_position */
-        if ($defaults['configurable']['scaleControlOptions_position']) {
+        if ($this->_defaults['configurable']['scaleControlOptions_position']) {
             $scaleControlOptions_position = Aitsu_Content_Config_Select::set($this->_index, 'scaleControlOptions_position', 'position', $this->_positionArray(), 'scaleControl');
         }
 
-        $scaleControlOptions->position = !empty($scaleControlOptions_position) ? $scaleControlOptions_position : $defaults['scaleControlOptions_position'];
+        $scaleControlOptions->position = !empty($scaleControlOptions_position) ? $scaleControlOptions_position : $this->_defaults['scaleControlOptions_position'];
 
         /* scaleControlOptions_style */
-        if ($defaults['configurable']['scaleControlOptions_style']) {
+        if ($this->_defaults['configurable']['scaleControlOptions_style']) {
             $scaleControlOptions_position_style = array(
                 'default' => '',
                 'The standard scale control.' => 'DEFAULT'
-            );
+                );
 
             $scaleControlOptions_style = Aitsu_Content_Config_Select::set($this->_index, 'scaleControlOptions_style', 'style', $scaleControlOptions_position_style, 'scaleControl');
         }
 
-        $scaleControlOptions->style = !empty($scaleControlOptions_style) ? $scaleControlOptions_style : $defaults['scaleControlOptions_style'];
+        $scaleControlOptions->style = !empty($scaleControlOptions_style) ? $scaleControlOptions_style : $this->_defaults['scaleControlOptions_style'];
 
         /* scrollwheel */
-        if ($defaults['configurable']['scrollwheel']) {
+        if ($this->_defaults['configurable']['scrollwheel']) {
             $scrollwheel = Aitsu_Content_Config_Select::set($this->_index, 'scrollwheel', 'active', $this->_trueFalseArray(), 'scrollwheel');
         }
 
-        $scrollwheel = !empty($scrollwheel) ? filter_var($scrollwheel, FILTER_VALIDATE_BOOLEAN) : $defaults['scrollwheel'];
+        $scrollwheel = !empty($scrollwheel) ? filter_var($scrollwheel, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['scrollwheel'];
 
         /* zoom */
-        if ($defaults['configurable']['zoom']) {
+        if ($this->_defaults['configurable']['zoom']) {
             $zoom = Aitsu_Content_Config_Text::set($this->_index, 'zoom', 'zoom', 'zoom');
         }
 
-        $zoom = !empty($zoom) ? $zoom : $defaults['zoom'];
+        $zoom = !empty($zoom) ? $zoom : $this->_defaults['zoom'];
 
         /* zoomControl */
-        if ($defaults['configurable']['zoomControl']) {
+        if ($this->_defaults['configurable']['zoomControl']) {
             $zoomControl = Aitsu_Content_Config_Select::set($this->_index, 'zoomControl', 'active', $this->_trueFalseArray(), 'zoomControl');
         }
 
-        $zoomControl = !empty($zoomControl) ? filter_var($zoomControl, FILTER_VALIDATE_BOOLEAN) : $defaults['zoomControl'];
+        $zoomControl = !empty($zoomControl) ? filter_var($zoomControl, FILTER_VALIDATE_BOOLEAN) : $this->_defaults['zoomControl'];
 
         /* zoomControlOptions */
         $zoomControlOptions = new stdClass();
 
         /* zoomControlOptions_position */
-        if ($defaults['configurable']['zoomControlOptions_position']) {
+        if ($this->_defaults['configurable']['zoomControlOptions_position']) {
             $zoomControlOptions_position = Aitsu_Content_Config_Select::set($this->_index, 'zoomControlOptions_position', 'position', $this->_positionArray(), 'zoomControl');
         }
 
-        $zoomControlOptions->position = !empty($zoomControlOptions_position) ? $zoomControlOptions_position : $defaults['zoomControlOptions_position'];
+        $zoomControlOptions->position = !empty($zoomControlOptions_position) ? $zoomControlOptions_position : $this->_defaults['zoomControlOptions_position'];
 
-        /* create View */
-        $view = $this->_getView();
+        $this->_view->index = $this->_index;
+        $this->_view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
+        $this->_view->mapTypeControlOptions = $mapTypeControlOptions;
+        $this->_view->mapTypeId = $mapTypeId;
+        $this->_view->maxZoom = $maxZoom;
+        $this->_view->minZoom = $minZoom;
+        $this->_view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
+        $this->_view->overviewMapControlOptions = $overviewMapControlOptions;
+        $this->_view->panControl = $panControl ? 'true' : 'false';
+        $this->_view->panControlOptions = $panControlOptions;
+        $this->_view->rotateControl = $rotateControl ? 'true' : 'false';
+        $this->_view->rotateControlOptions = $rotateControlOptions;
+        $this->_view->scaleControl = $scaleControl ? 'true' : 'false';
+        $this->_view->scaleControlOptions = $scaleControlOptions;
+        $this->_view->scrollwheel = $scrollwheel ? 'true' : 'false';
+        $this->_view->zoom = $zoom;
+        $this->_view->zoomControl = $zoomControl ? 'true' : 'false';
+        $this->_view->zoomControlOptions = $zoomControlOptions;
+        $this->_view->name = $name;
+        $this->_view->address = $address;
 
-        $view->index = $this->_index;
-        $view->mapTypeControl = $mapTypeControl ? 'true' : 'false';
-        $view->mapTypeControlOptions = $mapTypeControlOptions;
-        $view->mapTypeId = $mapTypeId;
-        $view->maxZoom = $maxZoom;
-        $view->minZoom = $minZoom;
-        $view->overviewMapControl = $overviewMapControl ? 'true' : 'false';
-        $view->overviewMapControlOptions = $overviewMapControlOptions;
-        $view->panControl = $panControl ? 'true' : 'false';
-        $view->panControlOptions = $panControlOptions;
-        $view->rotateControl = $rotateControl ? 'true' : 'false';
-        $view->rotateControlOptions = $rotateControlOptions;
-        $view->scaleControl = $scaleControl ? 'true' : 'false';
-        $view->scaleControlOptions = $scaleControlOptions;
-        $view->scrollwheel = $scrollwheel ? 'true' : 'false';
-        $view->zoom = $zoom;
-        $view->zoomControl = $zoomControl ? 'true' : 'false';
-        $view->zoomControlOptions = $zoomControlOptions;
-        $view->name = $name;
-        $view->address = $address;
-
-        Aitsu_Util_Javascript::add($view->render('js.phtml'));
-
-        $template = isset($this->_params->template) && !empty($this->_params->template) ? $this->_params->template : 'index';
-
-        return $view->render($template . '.phtml');
+        Aitsu_Util_Javascript::add($this->_view->render('js.phtml'));
     }
-
 }

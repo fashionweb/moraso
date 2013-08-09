@@ -88,10 +88,12 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
         }
 
-        if ($instance->_defaults['newRenderingMethode']) {
+        $availableTemplates = $instance->_getTemplates();
+
+        if (isset($instance->_defaults['newRenderingMethode']) && $instance->_defaults['newRenderingMethode']) {
             if (!$instance->_withoutView) {
                 if ($instance->_defaults['configurable']['template']) {
-                    $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
+                    $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $availableTemplates, $instance->_translation['configuration']);
 
                     if (!empty($template)) {
                         $instance->_view->template = $template . '.phtml';
@@ -123,12 +125,10 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
         }
 
-        if ($instance->_defaults['newRenderingMethode'] && !$instance->_withoutView) {
+        if ((isset($instance->_defaults['newRenderingMethode']) && $instance->_defaults['newRenderingMethode']) && !$instance->_withoutView) {
             if (!isset($instance->_view->template) || empty($instance->_view->template)) {
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
-
-            $availableTemplates = $instance->_getTemplates();
 
             if ((!is_array($availableTemplates) || empty($availableTemplates)) || in_array(str_replace('.phtml', '', $instance->_view->template), $availableTemplates)) {
                 $output_raw .= $instance->_view->render($instance->_view->template);

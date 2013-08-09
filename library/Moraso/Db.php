@@ -97,6 +97,8 @@ class Moraso_Db extends Aitsu_Db
             if ($limit === 1) {
                 if (is_array($select)) {
                     return Moraso_Db::fetchRow('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                } elseif ($select === 'all') {
+                    return Moraso_Db::fetchRow('SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
                 }
 
                 return Moraso_Db::fetchOne('SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
@@ -105,7 +107,11 @@ class Moraso_Db extends Aitsu_Db
                     $select = str_split($select);
                 }
 
-                return Moraso_Db::fetchAll('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                if ($select === 'all') {
+                    return Moraso_Db::fetchAll('SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                } else {
+                    return Moraso_Db::fetchAll('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                }
             }
         } else {
             if ($limit === 1) {
@@ -113,13 +119,21 @@ class Moraso_Db extends Aitsu_Db
                     return Moraso_Db::fetchRowC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
                 }
 
-                return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                if ($select === 'all') {
+                    return Moraso_Db::fetchOneC($caching, 'SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                } else {
+                    return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                }
             } else {
                 if (!is_array($select)) {
                     $select = str_split($select);
                 }
 
-                return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                if ($select === 'all') {
+                    return Moraso_Db::fetchAllC($caching, 'SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                } else {
+                    return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
+                }
             }
         }
     }

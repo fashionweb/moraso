@@ -6,8 +6,6 @@
  */
 class Moraso_Module_List_Comments_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _main()
     {
         $parent_node_id = $this->_getParentNodeId($this->_defaults['idartlang']);

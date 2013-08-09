@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Contact_Form_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _main()
     {
         if ($this->_defaults['configurable']['spam_protect_time']) {

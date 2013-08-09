@@ -27,7 +27,7 @@ class Moraso_Listeners_Html_Skin_GoogleFonts implements Aitsu_Event_Listener_Int
 
 		$fonts = array();
 
-		if (!empty((array) $google_fonts)) {		
+		if (count((array) $google_fonts) > 0) {		
 			$fonts[] = "\n\t\t<!-- GoogleFonts :: Start -->\n";
 			foreach ($google_fonts as $font => $width) {
 				if (!empty($width)) {

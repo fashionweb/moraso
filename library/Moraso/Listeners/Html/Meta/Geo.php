@@ -27,7 +27,7 @@ class Moraso_Listeners_Html_Meta_Geo implements Aitsu_Event_Listener_Interface
 
 		$geo = array();
 
-		if (!empty((array) $geoTags)) {
+		if (count((array) $geoTags) > 0 {		
 			$geo[] = "\n\t\t<!-- Meta Geo Tags :: Start -->\n\t";
 			foreach ($geoTags as $key => $value) {
 				$geo[$key] = "\t" . '<meta name="' . $key . '" content="' . $value . '" />' . "\n\t";

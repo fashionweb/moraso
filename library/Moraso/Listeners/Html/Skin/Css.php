@@ -27,7 +27,7 @@ class Moraso_Listeners_Html_Skin_Css implements Aitsu_Event_Listener_Interface
 
 		$css = array();
 
-		if (!empty((array) $css_collection)) {		
+		if (count((array) $css_collection) > 0 {		
 			$css[] = "\n\t\t<!-- CSS :: Start -->\n\t";
 			foreach ($css_collection as $key => $value) {
 				$css[$key] = "\t" . '<link rel="stylesheet" href="/skin/' . $value . '" />' . "\n\t";

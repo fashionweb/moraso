@@ -28,6 +28,8 @@ class Moraso_Listeners_Html_Meta_Charset implements Aitsu_Event_Listener_Interfa
 			}
 		}
 		
-		$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Charset :: Start -->' . "\n\t\t" . '<meta charset="' . $charset . '" />' . "\n\t\t" . '<!-- Charset :: End -->' . "\n", $event->bootstrap->pageContent);
+		if (!empty($charset)) {
+			$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Charset :: Start -->' . "\n\t\t" . '<meta charset="' . $charset . '" />' . "\n\t\t" . '<!-- Charset :: End -->' . "\n", $event->bootstrap->pageContent);
+		}
 	}
 }

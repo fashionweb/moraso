@@ -26,12 +26,15 @@ class Moraso_Listeners_Html_Skin_Css implements Aitsu_Event_Listener_Interface
 		}
 
 		$css = array();
-		$css[] = "\n\t\t<!-- CSS :: Start -->\n\t";
-		foreach ($css_collection as $key => $value) {
-			$css[$key] = "\t" . '<link rel="stylesheet" href="/skin/' . $value . '" />' . "\n\t";
-		}
-		$css[] = "\t<!-- CSS :: End -->\n";
 
-		$event->bootstrap->pageContent = str_replace("</head>", implode('', $css) . "\t</head>", $event->bootstrap->pageContent);
+		if (!empty($css_collection)) {		
+			$css[] = "\n\t\t<!-- CSS :: Start -->\n\t";
+			foreach ($css_collection as $key => $value) {
+				$css[$key] = "\t" . '<link rel="stylesheet" href="/skin/' . $value . '" />' . "\n\t";
+			}
+			$css[] = "\t<!-- CSS :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("</head>", implode('', $css) . "\t</head>", $event->bootstrap->pageContent);
+		}
 	}
 }

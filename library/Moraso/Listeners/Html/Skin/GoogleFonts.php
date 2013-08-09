@@ -26,14 +26,17 @@ class Moraso_Listeners_Html_Skin_GoogleFonts implements Aitsu_Event_Listener_Int
 		}
 
 		$fonts = array();
-		$fonts[] = "\n\t\t<!-- GoogleFonts :: Start -->\n";
-		foreach ($google_fonts as $font => $width) {
-			if (!empty($width)) {
-				$fonts[] = "\t\t" . "<link href='http://fonts.googleapis.com/css?family=" . $font . ":" . $width . "' rel='stylesheet' type='text/css'>" . "\n\t";
-			}
-		}
-		$fonts[] = "\t<!-- GoogleFonts :: End -->\n";
 
-		$event->bootstrap->pageContent = str_replace("</head>", implode('', $fonts) . "\t</head>" , $event->bootstrap->pageContent);
+		if (!empty($google_fonts)) {		
+			$fonts[] = "\n\t\t<!-- GoogleFonts :: Start -->\n";
+			foreach ($google_fonts as $font => $width) {
+				if (!empty($width)) {
+					$fonts[] = "\t\t" . "<link href='http://fonts.googleapis.com/css?family=" . $font . ":" . $width . "' rel='stylesheet' type='text/css'>" . "\n\t";
+				}
+			}
+			$fonts[] = "\t<!-- GoogleFonts :: End -->\n";
+
+			$event->bootstrap->pageContent = str_replace("</head>", implode('', $fonts) . "\t</head>" , $event->bootstrap->pageContent);
+		}
 	}
 }

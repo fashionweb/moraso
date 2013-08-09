@@ -1,25 +1,2 @@
 <!-- Standard -->
-<?php
-$startLevel = 0;
-$levels = 2;
-
-echo Aitsu_Html_Helper_Navigation_Ul :: get($this->nav, $startLevel, $levels, array (
-	0 => array (
-		'ul' => 'main',
-		'li' => array (
-			'first' => 'first',
-			'active' => 'active',
-			'parent' => 'parent',
-			'inactive' => 'inactive'
-			)
-		),
-	1 => array (
-		'ul' => 'sub',
-		'li' => array (
-			'first' => 'first',
-			'active' => 'active',
-			'parent' => 'parent',
-			'inactive' => 'inactive'
-			)
-		)
-	), false);
+<?php echo Moraso_Html_Helper_Navigation::getHtml($this->nav); ?>

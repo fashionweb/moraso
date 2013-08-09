@@ -5,9 +5,7 @@
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
 class Moraso_Module_Navigation_Sub_Class extends Moraso_Module_Abstract
-{
-    protected $_newRenderingMethode = true;
-    protected $type = 'navigation';
+{    protected $type = 'navigation';
 
     protected function _main()
     {

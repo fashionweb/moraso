@@ -5,8 +5,7 @@
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
 class Moraso_Module_Navigation_BreadCrumb_Class extends Moraso_Module_Abstract
-{
-    protected $_newRenderingMethode = true;
+{   
     protected $type = 'navigation';
 
     protected function _main()
@@ -23,10 +22,10 @@ class Moraso_Module_Navigation_BreadCrumb_Class extends Moraso_Module_Abstract
         $lastCategory = end($breadcrumbs);
         if ($lastCategory->startidartlang !== $article->idartlang) {
             $breadcrumbs[] = (object) array(
-                        'idart' => $article->idart,
-                        'name' => $article->pagetitle,
-                        'url' => $lastCategory->url . '/' . $article->urlname . '.html'
-            );
+                'idart' => $article->idart,
+                'name' => $article->pagetitle,
+                'url' => $lastCategory->url . '/' . $article->urlname . '.html'
+                );
         }
         
         $this->_view->breadcrumbs = (object) $breadcrumbs;

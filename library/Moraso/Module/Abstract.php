@@ -9,7 +9,6 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
     protected $_renderOnMobile = true;
     protected $_renderOnTablet = true;
     protected $_moduleConfigDefaults = array();
-    protected $_newRenderingMethode = false;
     protected $_withoutView = false;
 
     protected static function _getInstance($className)
@@ -89,7 +88,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             }
         }
 
-        if ($instance->_newRenderingMethode) {
+        if ($instance->_defaults['newRenderingMethode']) {
             if (!$instance->_withoutView) {
                 if ($instance->_defaults['configurable']['template']) {
                     $template = Aitsu_Content_Config_Select::set($instance->_index, 'template', Aitsu_Translate::_('Template'), $instance->_getTemplates(), $instance->_translation['configuration']);
@@ -124,7 +123,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
             Aitsu_Content_Edit::noEdit($instance->_moduleName, true);
         }
 
-        if ($instance->_newRenderingMethode && !$instance->_withoutView) {
+        if ($instance->_defaults['newRenderingMethode'] && !$instance->_withoutView) {
             if (!isset($instance->_view->template) || empty($instance->_view->template)) {
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
@@ -241,9 +240,14 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
         }
 
         $defaults = array();
+        $defaults['newRenderingMethode'] = false;
 
-        foreach ($modulePaths as $modulePath) {
+        foreach ($modulePaths as $key => $modulePath) {
             if (file_exists($modulePath . 'module.json')) {
+                if ($key >= 1) {
+                    $defaults['newRenderingMethode'] = true;
+                }
+
                 $module_config = json_decode(file_get_contents($modulePath . 'module.json'));
 
                 if (isset($module_config->defaults) && !empty($module_config->defaults)) {

@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Article_Include_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _main()
     {
         if ($this->_defaults['idart'] == Aitsu_Registry::get()->env->idart || empty($this->_defaults['idart'])) {

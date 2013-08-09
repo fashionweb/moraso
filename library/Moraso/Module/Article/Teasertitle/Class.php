@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Article_Teasertitle_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _main()
     {
         $teasertitle = Aitsu_Content_Text::get('Teasertitle', 0);

@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Article_Categorization_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _main()
     {
         $this->_view->categories = Moraso_Categorize::get($this->_defaults['idart']);

@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Google_Maps_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
-
     protected function _init()
     {
         Aitsu_Util_Javascript::addReference('https://maps.googleapis.com/maps/api/js?v=3.9&sensor=false&language=de');

@@ -6,7 +6,6 @@
  */
 class Moraso_Module_Navigation_Class extends Moraso_Module_Abstract
 {
-    protected $_newRenderingMethode = true;
     protected $type = 'navigation';
 
     protected function _main()

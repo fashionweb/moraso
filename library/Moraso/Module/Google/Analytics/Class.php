@@ -5,9 +5,7 @@
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
 class Moraso_Module_Google_Analytics_Class extends Moraso_Module_Abstract
-{
-    protected $_newRenderingMethode = true;
-    protected $_allowEdit = false;
+{    protected $_allowEdit = false;
 
     protected function _main()
     {

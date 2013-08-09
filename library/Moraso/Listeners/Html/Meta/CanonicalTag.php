@@ -33,7 +33,7 @@ class Moraso_Listeners_Html_Meta_CanonicalTag implements Aitsu_Event_Listener_In
 			$href = '{ref:idart-' . $art->idart . '}';
 		}
 
-		$canonicalTag = "\n\t\t<!-- CanonicalTag::Start -->\n\t\t<link rel=\"canonical\" href=\"" . $href . "\" />\n\t\t<!-- CanonicalTag::End -->\n";
+		$canonicalTag = "\n\t\t<!-- CanonicalTag :: Start -->\n\t\t<link rel=\"canonical\" href=\"" . $href . "\" />\n\t\t<!-- CanonicalTag :: End -->\n";
 		
 		$event->bootstrap->pageContent = str_replace("<head>", "<head>\t" . $canonicalTag, $event->bootstrap->pageContent);
 	}

@@ -21,7 +21,7 @@ class Moraso_Module_Google_Maps_Static_Class extends Moraso_Module_Abstract
     {
         $this->_view->index = $this->_index;
 
-        var_dump($this->_defaults);
+        print_r($this->_defaults);
 
         /* MapTypeId */
         if ($this->_defaults['configurable']['MapTypeId']) {

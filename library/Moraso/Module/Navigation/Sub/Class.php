@@ -16,10 +16,18 @@ class Moraso_Module_Navigation_Sub_Class extends Moraso_Module_Abstract
         $firstLevel = (int) $this->_defaults['firstLevel'];
 
         if (!isset($bc[$firstLevel])) {
+            $this->_withoutView = true;
             return '';
         }
-        
-        $this->_view->nav = Aitsu_Persistence_View_Category::nav2($bc[$firstLevel]['idcat']);
+
+        $nav = Aitsu_Persistence_View_Category::nav2($bc[$firstLevel]['idcat']);
+
+        if (empty($nav) || !$nav->haschildren) {
+            $this->_withoutView = true;
+            return '';
+        }
+
+        $this->_view->nav = $nav;
     }
 
     protected function _cachingPeriod()

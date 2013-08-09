@@ -273,6 +273,9 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                                 case '##secondsUntilEndOf.day##':
                                 $value = Aitsu_Util_Date::secondsUntilEndOf('day');
                                 break;
+                                case '##secondsUntilEndOf.year##':
+                                $value = Aitsu_Util_Date::secondsUntilEndOf('year');
+                                break;
                             }
 
                             $defaults[$key] = $value;

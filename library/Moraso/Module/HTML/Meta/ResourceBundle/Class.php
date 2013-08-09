@@ -11,6 +11,9 @@ class Moraso_Module_HTML_Meta_ResourceBundle_Class extends Moraso_Module_Abstrac
     protected $_disableCacheArticleRelation = true;
 
     protected function _init() {
+        if (Aitsu_Application_Status::isEdit()) {
+            echo '>>> MODUL DEPRECTED <<< Dieses Modul (HTML.Meta.ResourceBundle) wird nicht länger unterstützt, bitte entfernen! DANKE';
+        }
 
         $this->_idSuffix = Aitsu_Config :: get('skin');
     }

@@ -1,0 +1,13 @@
+{
+	"name": "Image",
+	"defaults": {
+		"width": "200",
+		"height": "200",
+		"render": "0",
+		"attr": "",
+		"all": false,
+		"customFields": "2",
+		"style": "",
+		"float": ""
+	}
+}

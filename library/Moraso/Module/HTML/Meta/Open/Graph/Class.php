@@ -10,33 +10,27 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {
-        $idart = Aitsu_Registry::get()->env->idart;
-        $idcat = Aitsu_Registry::get()->env->idcat;
-        $idartlang = Aitsu_Registry::get()->env->idartlang;
-
         // get Data
-        $article = Aitsu_Persistence_Article::factory($idart);
-        $articleProperty = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
+        $article = Aitsu_Persistence_Article::factory($this->_defaults['idart']);
+        $articleProperty = Aitsu_Persistence_ArticleProperty::factory($this->_defaults['idartlang'])->load();
 
         $open_graph = (object) $articleProperty->open_graph;
 
-        if ($article->isIndex()) {
-            $url = Moraso_Rewrite_Standard::getInstance()->rewriteOutput('{ref:idcat-' . $idcat . '}');
-        } else {
-            $url = Moraso_Rewrite_Standard::getInstance()->rewriteOutput('{ref:idart-' . $idart . '}');
-        }
+        $rewrite = $article->isIndex() ? '{ref:idcat-' . $this->_defaults['idcat'] . '}' : '{ref:idart-' . $this->_defaults['idart'] . '}';
+
+        $url = Moraso_Rewrite_Standard::getInstance()->rewriteOutput($rewrite);
 
         // set Graph Data
         $data = array(
             'og:title' => $article->pagetitle . $this->_params->title_suffix,
             'og:type' => 'website',
-            'og:image' => Moraso_Html_Helper_Image::getPath($idart, $article->mainimage, 500, 500, 2),
+            'og:image' => Moraso_Html_Helper_Image::getPath($this->_defaults['idart'], $article->mainimage, 500, 500, 2),
             'og:image:width' => 500,
             'og:image:height' => 500,
             'og:url' => $url,
             'og:locale' => 'de_DE',
             'og:country-name' => 'GER'
-        );
+            );
 
         /*
          * Standard-Werte wenn gegeben überschreiben
@@ -178,14 +172,6 @@ class Moraso_Module_HTML_Meta_Open_Graph_Class extends Moraso_Module_Abstract
         }
 
         // create View
-        $view = $this->_getView();
-        $view->data = $data;
-        return $view->render('index.phtml');
+        $this->_view->data = $data;
     }
-
-    protected function _cachingPeriod()
-    {
-        return Aitsu_Util_Date::secondsUntilEndOf('year');
-    }
-
 }

@@ -1,3 +1,6 @@
 {
-    "name": "Article Pagetitle"
+    "name": "Article Pagetitle",
+    "defaults": {
+    	"tag": ""
+    }
 }

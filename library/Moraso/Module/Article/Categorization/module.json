@@ -1,7 +1,4 @@
 {
 	"name": "Article Categorization",
-	"description": "Dieses Modul zeigt an welchen Kategorien ein Artikel zugewiesen ist.",
-	"defaults": {
-		"caching": "eternal"
-	}
+	"description": "Dieses Modul zeigt an welchen Kategorien ein Artikel zugewiesen ist."
 }

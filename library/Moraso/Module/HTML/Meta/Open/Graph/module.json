@@ -1,0 +1,6 @@
+{
+    "name": "Canonical Tag",
+    "defaults": {
+    	"caching": "##secondsUntilEndOf.year##"
+    }
+}

@@ -29,7 +29,7 @@ class Moraso_Module_Google_Maps_Static_Class extends Moraso_Module_Abstract
                 'This map type displays maps with physical features such as terrain and vegetation.' => 'TERRAIN'
                 );
 
-            $mapTypeId = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeId', 'mapTypeId', $mapTypeIdSelect, $this->_translations['configuration']);
+            $mapTypeId = Aitsu_Content_Config_Select::set($this->_index, 'mapTypeId', 'mapTypeId', $mapTypeIdSelect, $this->_translation['configuration']);
         }
 
         $this->_view->mapTypeId = !empty($mapTypeId) ? $mapTypeId : $this->_defaults['mapTypeId'];

@@ -1,0 +1,9 @@
+{
+	"name": "Link",
+	"defaults": {
+		"target": "_blank",
+		"configurable": {
+			"target": true
+		}
+	}
+}

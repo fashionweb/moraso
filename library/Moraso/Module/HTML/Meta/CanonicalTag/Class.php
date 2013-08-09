@@ -4,18 +4,19 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Module_HTML_Meta_CanonicalTag_Class extends Moraso_Module_Abstract {
-
+class Moraso_Module_HTML_Meta_CanonicalTag_Class extends Moraso_Module_Abstract
+{
+    protected $_withoutView = true;
     protected $_allowEdit = false;
 
-    protected function _main() {
+    protected function _main()
+    {
+        $art = Aitsu_Persistence_Article::factory($this->_defaults['idart'], $this->_defaults['idlang'])->load();
 
-        $art = Aitsu_Persistence_Article :: factory(Aitsu_Registry :: get()->env->idart, Aitsu_Registry :: get()->env->idlang)->load();
-
-        $base = substr(Aitsu_Config :: get('sys.webpath'), 0, -1);
-        $canonicalPath = Aitsu_Config :: get('sys.canonicalpath');
+        $base = substr(Aitsu_Config::get('sys.webpath'), 0, -1);
+        $canonicalPath = Aitsu_Config::get('sys.canonicalpath');
         if ($canonicalPath != null) {
-            $base = substr(Aitsu_Config :: get('sys.canonicalpath'), 0, -1);
+            $base = substr(Aitsu_Config::get('sys.canonicalpath'), 0, -1);
         }
 
         if ($art->idcat == Aitsu_Config::get('sys.startcat')) {
@@ -33,10 +34,4 @@ class Moraso_Module_HTML_Meta_CanonicalTag_Class extends Moraso_Module_Abstract 
 
         return '<link rel="canonical" href="' . $href . '" />';
     }
-
-    protected function _cachingPeriod() {
-
-        return 'eternal';
-    }
-
 }

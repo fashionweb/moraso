@@ -156,6 +156,10 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                     $moduleName = 'UNKNOWN';
                 }
 
+                if ($context['index'] === 'sub') {
+                    echo 'Hier bin ich angekommen!';
+                }
+
                 if ($instance->_isBlock) {
                     return '' .
                     '<code class="aitsu_params" style="display:none;">' . $context['params'] . '</code>' .

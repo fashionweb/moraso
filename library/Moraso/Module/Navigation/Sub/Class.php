@@ -29,9 +29,4 @@ class Moraso_Module_Navigation_Sub_Class extends Moraso_Module_Abstract
 
         $this->_view->nav = $nav;
     }
-
-    protected function _cachingPeriod()
-    {
-        return Aitsu_Util_Date::secondsUntilEndOf('day');
-    }
 }

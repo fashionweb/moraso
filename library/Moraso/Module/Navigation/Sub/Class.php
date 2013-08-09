@@ -20,7 +20,7 @@ class Moraso_Module_Navigation_Sub_Class extends Moraso_Module_Abstract
             return '';
         }
 
-        $nav = Moraso_Navigation_Frontend::getTree($bc[$firstLevel]['idcat']);
+        $nav = Moraso_Navigation_Frontend::getTree($bc[$firstLevel]['idcat'], $firstLevel);
 
         if (empty($nav) || !$nav[0]['hasChildren']) {
             $this->_withoutView = true;

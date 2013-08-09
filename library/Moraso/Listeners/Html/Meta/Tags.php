@@ -16,9 +16,8 @@ class Moraso_Listeners_Html_Meta_Tags implements Aitsu_Event_Listener_Interface
 
 		unset($metas['idartlang']);
 
-		$metaTags = array();
-
 		if (!empty($metas)) {
+			$metaTags = array();
 			$metaTags[] = "\n\t\t<!-- Meta Tags :: Start -->\n";
 			foreach ($metas as $name => $content) {
 				if (!empty($content)) {

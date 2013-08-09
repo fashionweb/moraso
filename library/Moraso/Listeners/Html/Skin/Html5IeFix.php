@@ -12,6 +12,6 @@ class Moraso_Listeners_Html_Skin_Html5IeFix implements Aitsu_Event_Listener_Inte
 			return;
 		}
 		
-		$event->bootstrap->pageContent = str_replace("</head>", "\n\t\t<!-- IE HTML 5 Fix :: Start -->\n\t\t<!--[if lt IE 9]>\n\t\t\t<script src=\"http://html5shiv.googlecode.com/svn/trunk/html5.js\"></script>\n\t\t<![endif]-->\n\t\t<!-- IE HTML 5 Fix :: Start -->\n</head>\n", $event->bootstrap->pageContent);
+		$event->bootstrap->pageContent = str_replace("</head>", "\n\t\t<!-- IE HTML 5 Fix :: Start -->\n\t\t<!--[if lt IE 9]>\n\t\t\t<script src=\"http://html5shiv.googlecode.com/svn/trunk/html5.js\"></script>\n\t\t<![endif]-->\n\t\t<!-- IE HTML 5 Fix :: Start -->\n\t</head>", $event->bootstrap->pageContent);
 	}
 }

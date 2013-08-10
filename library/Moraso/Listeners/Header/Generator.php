@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Html_Meta_Generator implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_Generator implements Aitsu_Event_Listener_Interface
 {
     public static function notify(Aitsu_Event_Abstract $event)
     {
@@ -22,8 +22,9 @@ class Moraso_Listeners_Html_Meta_Generator implements Aitsu_Event_Listener_Inter
             'build' => $matches[4][0]
             );
 
-        $generator = "\n\t\t<!-- Generator :: Start -->\n\t\t<meta name=\"generator\" content=\"moraso cms - v" . $version['major'] . "." . $version['minor'] . "." . $version['revision'] . "-" . $version['build'] . "\" />\n\t\t<!-- Generator :: End -->\n";
-        
-        $event->bootstrap->pageContent = str_replace("<head>", "<head>\t" . $generator, $event->bootstrap->pageContent);
+        Aitsu_Registry::get()->header->generator = (object) array(
+            "name" => "Generator",
+            "tag" => "<meta name=\"generator\" content=\"moraso cms - v" . $version['major'] . "." . $version['minor'] . "." . $version['revision'] . "-" . $version['build'] . "\" />"
+            );
     }
 }

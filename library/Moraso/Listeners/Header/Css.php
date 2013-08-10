@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Html_Skin_Css implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_Css implements Aitsu_Event_Listener_Interface
 {
 	public static function notify(Aitsu_Event_Abstract $event)
 	{
@@ -26,15 +26,15 @@ class Moraso_Listeners_Html_Skin_Css implements Aitsu_Event_Listener_Interface
 		}
 
 		$css = array();
-
 		if (count((array) $css_collection) > 0) {		
-			$css[] = "\n\t\t<!-- CSS :: Start -->\n\t";
 			foreach ($css_collection as $key => $value) {
-				$css[$key] = "\t" . '<link rel="stylesheet" href="/skin/' . $value . '" />' . "\n\t";
+				$css[$key] = '<link rel="stylesheet" href="/skin/' . $value . '" />';
 			}
-			$css[] = "\t<!-- CSS :: End -->\n";
 
-			$event->bootstrap->pageContent = str_replace("</head>", implode('', $css) . "\t</head>", $event->bootstrap->pageContent);
+			Aitsu_Registry::get()->header->css = (object) array(
+				"name" => "CSS",
+				"tags" => $css
+				);
 		}
 	}
 }

@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Html_Skin_GoogleFonts implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_GoogleFonts implements Aitsu_Event_Listener_Interface
 {
 	public static function notify(Aitsu_Event_Abstract $event)
 	{
@@ -25,18 +25,18 @@ class Moraso_Listeners_Html_Skin_GoogleFonts implements Aitsu_Event_Listener_Int
 			}
 		}
 
-		$fonts = array();
-
 		if (count((array) $google_fonts) > 0) {		
-			$fonts[] = "\n\t\t<!-- GoogleFonts :: Start -->\n";
+			$fonts = array();
 			foreach ($google_fonts as $font => $width) {
 				if (!empty($width)) {
-					$fonts[] = "\t\t" . "<link href='http://fonts.googleapis.com/css?family=" . $font . ":" . $width . "' rel='stylesheet' type='text/css'>" . "\n\t";
+					$fonts[] = "<link href='http://fonts.googleapis.com/css?family=" . $font . ":" . $width . "' rel='stylesheet' type='text/css'>";
 				}
 			}
-			$fonts[] = "\t<!-- GoogleFonts :: End -->\n";
 
-			$event->bootstrap->pageContent = str_replace("</head>", implode('', $fonts) . "\t</head>" , $event->bootstrap->pageContent);
+			Aitsu_Registry::get()->header->google_fonts = (object) array(
+				"name" => "GoogleFonts",
+				"tags" => $fonts
+				);
 		}
 	}
 }

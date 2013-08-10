@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Html_Skin_JavaScript implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interface
 {
 	public static function notify(Aitsu_Event_Abstract $event)
 	{
@@ -27,38 +27,36 @@ class Moraso_Listeners_Html_Skin_JavaScript implements Aitsu_Event_Listener_Inte
 		}
 
 		$topJS = array();
-		$bottomJS = array();
-
 		if (!empty($skin_js->top)) {
-			$topJS[] = "\n\t\t<!-- JavaScript (Top) :: Start -->\n\t";
-
 			foreach ($skin_js->top as $key => $value) {
 				if (strpos($value, '/') !== 0) {
-					$topJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
+					$topJS[$key] = '<script src="/skin/' . $value . '"></script>';
 				} else {
-					$topJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
+					$topJS[$key] = '<script src="' . $value . '"></script>';
 				}
 			}
 
-			$topJS[] = "\t<!-- JavaScript (Top) :: End -->\n";
-
-			$event->bootstrap->pageContent = str_replace("</head>", implode('', $topJS) . "\t</head>", $event->bootstrap->pageContent);
+			Aitsu_Registry::get()->header->javascript_top = (object) array(
+				"name" => "JavaScript (Top)",
+				"tags" => $topJS
+				);
 		}
 
+		$bottomJS = array();
 		if (!empty($skin_js->bottom)) {
-			$bottomJS[] = "\n\t\t<!-- JavaScript (Bottom) :: Start -->\n\t";
-
 			foreach ($skin_js->bottom as $key => $value) {
 				if (strpos($value, '/') !== 0) {
-					$bottomJS[$key] = "\t" . '<script src="/skin/' . $value . '"></script>' . "\n\t";
+					$bottomJS[$key] = '<script src="/skin/' . $value . '"></script>';
 				} else {
-					$bottomJS[$key] = "\t" . '<script src="' . $value . '"></script>' . "\n\t";
+					$bottomJS[$key] = '<script src="' . $value . '"></script>';
 				}
 			}
 
-			$bottomJS[] = "\t<!-- JavaScript (Bottom) :: End -->\n";
-
-			$event->bootstrap->pageContent = str_replace("</body>", implode('', $bottomJS) . "\t</body>", $event->bootstrap->pageContent);
+			Aitsu_Registry::get()->header->javascript_bottom = (object) array(
+				"name" => "JavaScript (Bottom)",
+				"tags" => $bottomJS,
+				"position" => "bottom"
+				);
 		}
 	}
 }

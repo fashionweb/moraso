@@ -15,9 +15,11 @@
             id: 'session-clock',
             text: ''
         },
-        '<a href="http://www.moraso-cms.de" target="_blank">moraso CMS</a> <?php echo Moraso_Status::version(); ?>',
+        '<a href="http://www.moraso-cms.de" target="_blank">moraso cms</a> <?= Moraso_Status::version(); ?>',
         '-',
-        'powered by <a href="http://www.aitsu.org" target="_blank">aitsu CMSF</a> <?php echo Aitsu_Application_Status::version(); ?>',
+        '<a href="https://bitbucket.org/webtischlerei/moraso-cms" target="_blank">aktuelle Version</a> <?= Moraso_Status::latestVersion(); ?>',
+        '-',
+        'powered by <a href="http://www.aitsu.org" target="_blank">aitsu CMSF</a> <?= Aitsu_Application_Status::version(); ?>',
         '-',
         '&copy; 2013 <a href="http://www.webtischlerei.de" target="_blank">webtischlerei</a>',
         '-',

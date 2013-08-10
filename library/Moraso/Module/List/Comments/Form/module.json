@@ -1,0 +1,9 @@
+{
+	"name": "List Comments Form",
+	"defaults": {
+		"spam_protect_time": "10",
+		"configurable": {
+			"spam_protect_time": true
+		}
+	}
+}

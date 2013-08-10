@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Html_Meta_Title implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_Title implements Aitsu_Event_Listener_Interface
 {
 	public static function notify(Aitsu_Event_Abstract $event)
 	{
@@ -12,11 +12,10 @@ class Moraso_Listeners_Html_Meta_Title implements Aitsu_Event_Listener_Interface
 			return;
 		}
 
-		$prefix = '';
-		$suffix = '';
-
 		$heredity = Moraso_Skin_Heredity::build();
 
+		$prefix = '';
+		$suffix = '';
 		foreach (array_reverse($heredity) as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
@@ -33,10 +32,13 @@ class Moraso_Listeners_Html_Meta_Title implements Aitsu_Event_Listener_Interface
 			}
 		}
 
-		$pageTitle = Aitsu_Core_Article::factory()->pagetitle;
-		
 		if (!empty($prefix) || !empty($suffix)) {
-			$event->bootstrap->pageContent = str_replace("<head>", "<head>\n\t\t" . '<!-- Title :: Start -->' . "\n\t\t" . '<title>' . $prefix . $pageTitle . $suffix . '</title>' . "\n\t\t" . '<!-- Title :: End -->' . "\n", $event->bootstrap->pageContent);
+			$pageTitle = Aitsu_Core_Article::factory()->pagetitle;
+
+			Aitsu_Registry::get()->header->title = (object) array(
+				"name" => "Title",
+				"tag" => '<title>' . $prefix . $pageTitle . $suffix . '</title>'
+				);
 		}
 	}
 }

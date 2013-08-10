@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Navigation_Frontend {
-
-    public static function getTree($idcat = null, $level = 1) {
-
+class Moraso_Navigation_Frontend
+{
+    public static function getTree($idcat = null, $level = 1)
+    {
         $idlang = Aitsu_Registry::get()->env->idlang;
         $user = Aitsu_Adm_User::getInstance();
         $currentCat = Aitsu_Registry::get()->env->idcat;
@@ -15,54 +15,54 @@ class Moraso_Navigation_Frontend {
         return self::_getCategorieChilds($idcat, $level, $idlang, $user, $currentCat);
     }
 
-    private static function _getCategorieChilds($idcat, $level, $idlang, $user, $currentCat) {
-
-        $categories = Aitsu_Db::fetchAll('' .
-                        'select ' .
+    private static function _getCategorieChilds($idcat, $level, $idlang, $user, $currentCat)
+    {
+        $categories = Moraso_Db::fetchAll('' .
+                        'SELECT ' .
                         '   o.idcat, ' .
                         '   catlng.name, ' .
                         '   catlng.claim, ' .
-                        '   catlng.public as isPublic, ' .
-                        '   if (child.idcat is null, false, if(child.idcat = o.idcat, false, true)) as isParent, ' .
-                        '   count(p.idcat)-1 as level ' .
-                        'from ' .
-                        '   _cat as n, ' .
-                        '   _cat as p, ' .
-                        '   _cat as o ' .
-                        'left join ' .
-                        '   _cat_lang as catlng on ( ' .
+                        '   catlng.public AS isPublic, ' .
+                        '   IF (child.idcat IS NULL, false, IF(child.idcat = o.idcat, false, true)) AS isParent, ' .
+                        '   COUNT(p.idcat)-1 AS level ' .
+                        'FROM ' .
+                        '   _cat AS n, ' .
+                        '   _cat AS p, ' .
+                        '   _cat AS o ' .
+                        'LEFT JOIN ' .
+                        '   _cat_lang AS catlng on ( ' .
                         '       catlng.idcat = o.idcat ' .
-                        '       and ' .
+                        '       AND ' .
                         '       catlng.idlang =:idlang ' .
                         '   ) ' .
-                        'left join ' .
-                        '   _art_lang as artlng on ( ' .
+                        'LEFT JOIN ' .
+                        '   _art_lang AS artlng on ( ' .
                         '       artlng.idartlang = catlng.startidartlang ' .
                         '   ) ' .
-                        'left join ' .
-                        '   _cat as child on ( ' .
+                        'LEFT JOIN ' .
+                        '   _cat AS child on ( ' .
                         '       child.idcat =:currentCat ' .
-                        '       and ' .
-                        '       child.lft between o.lft and o.rgt ' .
+                        '       AND ' .
+                        '       child.lft BETWEEN o.lft AND o.rgt ' .
                         '   ) ' .
-                        'where ' .
-                        '   o.lft between p.lft and p.rgt ' .
-                        'and ' .
-                        '   o.lft between n.lft and n.rgt ' .
-                        'and ' .
+                        'WHERE ' .
+                        '   o.lft BETWEEN p.lft AND p.rgt ' .
+                        'AND ' .
+                        '   o.lft BETWEEN n.lft AND n.rgt ' .
+                        'AND ' .
                         '   n.idcat =:id ' .
-                        'and ' .
+                        'AND ' .
                         '   ( ' .
                         '       artlng.online =:online ' .
-                        '       and ' .
+                        '       AND ' .
                         '       catlng.visible =:visible ' .
                         '   ) ' .
-                        'group by ' .
+                        'GROUP BY ' .
                         '   o.lft ' .
-                        'having ' .
+                        'HAVING ' .
                         '   level =:level ' .
-                        'order by ' .
-                        '   o.lft asc', array(
+                        'ORDER BY ' .
+                        '   o.lft ASC', array(
                     ':id' => $idcat,
                     ':level' => $level,
                     ':idlang' => $idlang,
@@ -110,5 +110,4 @@ class Moraso_Navigation_Frontend {
 
         return $categories;
     }
-
 }

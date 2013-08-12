@@ -14,14 +14,16 @@ class Moraso_Listeners_Header_GoogleFonts implements Aitsu_Event_Listener_Interf
 
 		$heredity = Moraso_Skin_Heredity::build();
 
-		$google_fonts = (object) array();
+		$google_fonts = new stdClass();
 		foreach (array_reverse($heredity) as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
 			if (is_readable($json_file_dest)) {
 				$json_file_content = json_decode(file_get_contents($json_file_dest));
 
-				$google_fonts = (object) array_merge((array) $google_fonts, (array) $json_file_content->google->fonts);
+				if (isset($json_file_content->google->fonts) && !empty($json_file_content->google->fonts)) {
+					$google_fonts = (object) array_merge((array) $google_fonts, (array) $json_file_content->google->fonts);
+				}
 			}
 		}
 

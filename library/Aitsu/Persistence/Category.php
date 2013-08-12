@@ -222,7 +222,7 @@ class Aitsu_Persistence_Category extends Aitsu_Persistence_Abstract {
 		}
 	}
 
-	public function insert($idlang) {
+	public function insert($idlang, $name) {
 
 		$idcat = $this->_id;
 
@@ -314,10 +314,10 @@ class Aitsu_Persistence_Category extends Aitsu_Persistence_Abstract {
 			'insert into _cat_lang ' .
 			'(idcat, idlang, name, visible, public, created, lastmodified, urlname) ' .
 			'values ' .
-			'(@idcat, :idlang, concat(:newname, @idcat), 0, 1, now(), now(), concat(:newurlname, @idcat)) ', array (
+			'(@idcat, :idlang, :newname, 0, 1, now(), now(), :newurlname) ', array (
 				':idlang' => $idlang,
-				':newname' => 'New category ',
-				':newurlname' => 'new-category-'
+				':newname' => $name,
+				':newurlname' => Moraso_Util_String::slugify($name)
 			));
 
 			$this->_checkConsistency();

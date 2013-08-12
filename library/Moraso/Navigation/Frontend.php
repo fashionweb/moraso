@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Navigation_Frontend {
-
-    public static function getTree($idcat = null, $level = 1) {
-
+class Moraso_Navigation_Frontend
+{
+    public static function getTree($idcat = null, $level = 1)
+    {
         $idlang = Aitsu_Registry::get()->env->idlang;
         $user = Aitsu_Adm_User::getInstance();
         $currentCat = Aitsu_Registry::get()->env->idcat;
@@ -15,54 +15,45 @@ class Moraso_Navigation_Frontend {
         return self::_getCategorieChilds($idcat, $level, $idlang, $user, $currentCat);
     }
 
-    private static function _getCategorieChilds($idcat, $level, $idlang, $user, $currentCat) {
-
-        $categories = Aitsu_Db::fetchAll('' .
-                        'select ' .
+    private static function _getCategorieChilds($idcat, $level, $idlang, $user, $currentCat)
+    {
+        $categories = Moraso_Db::fetchAll('' .
+                        'SELECT ' .
                         '   o.idcat, ' .
                         '   catlng.name, ' .
                         '   catlng.claim, ' .
-                        '   catlng.public as isPublic, ' .
-                        '   if (child.idcat is null, false, if(child.idcat = o.idcat, false, true)) as isParent, ' .
-                        '   count(p.idcat)-1 as level ' .
-                        'from ' .
-                        '   _cat as n, ' .
-                        '   _cat as p, ' .
-                        '   _cat as o ' .
-                        'left join ' .
-                        '   _cat_lang as catlng on ( ' .
-                        '       catlng.idcat = o.idcat ' .
-                        '       and ' .
-                        '       catlng.idlang =:idlang ' .
-                        '   ) ' .
-                        'left join ' .
-                        '   _art_lang as artlng on ( ' .
-                        '       artlng.idartlang = catlng.startidartlang ' .
-                        '   ) ' .
-                        'left join ' .
-                        '   _cat as child on ( ' .
-                        '       child.idcat =:currentCat ' .
-                        '       and ' .
-                        '       child.lft between o.lft and o.rgt ' .
-                        '   ) ' .
-                        'where ' .
-                        '   o.lft between p.lft and p.rgt ' .
-                        'and ' .
-                        '   o.lft between n.lft and n.rgt ' .
-                        'and ' .
+                        '   catlng.public AS isPublic, ' .
+                        '   IF (o.lft + 1 = o.rgt, false, true) AS hasChildren, ' .
+                        '   IF (catlng.public, true, false) AS isAccessible, ' .
+                        '   IF (child.idcat = o.idcat, true, false) AS isCurrent, ' .
+                        '   IF (child.idcat IS NULL, false, IF(child.idcat = o.idcat, false, true)) AS isParent, ' .
+                        '   COUNT(p.idcat)-1 AS level ' .
+                        'FROM ' .
+                        '   _cat AS n, ' .
+                        '   _cat AS p, ' .
+                        '   _cat AS o ' .
+                        'LEFT JOIN ' .
+                        '   _cat_lang AS catlng ON (catlng.idcat = o.idcat AND catlng.idlang =:idlang) ' .
+                        'LEFT JOIN ' .
+                        '   _art_lang AS artlng ON artlng.idartlang = catlng.startidartlang ' .
+                        'LEFT JOIN ' .
+                        '   _cat AS child ON (child.idcat =:currentCat AND child.lft BETWEEN o.lft AND o.rgt) ' .
+                        'WHERE ' .
+                        '   o.lft BETWEEN p.lft AND p.rgt ' .
+                        'AND ' .
+                        '   o.lft BETWEEN n.lft AND n.rgt ' .
+                        'AND ' .
                         '   n.idcat =:id ' .
-                        'and ' .
-                        '   ( ' .
-                        '       artlng.online =:online ' .
-                        '       and ' .
-                        '       catlng.visible =:visible ' .
-                        '   ) ' .
-                        'group by ' .
+                        'AND ' .
+                        '   artlng.online =:online ' .
+                        'AND ' .
+                        '   catlng.visible =:visible ' .
+                        'GROUP BY ' .
                         '   o.lft ' .
-                        'having ' .
+                        'HAVING ' .
                         '   level =:level ' .
-                        'order by ' .
-                        '   o.lft asc', array(
+                        'ORDER BY ' .
+                        '   o.lft ASC', array(
                     ':id' => $idcat,
                     ':level' => $level,
                     ':idlang' => $idlang,
@@ -71,44 +62,41 @@ class Moraso_Navigation_Frontend {
                     ':currentCat' => $currentCat
         ));
 
-        foreach ($categories as $key => $category) {
-            $isAccessible = true;
+        foreach ($categories as &$category) {
+            $category['isPublic'] = (bool) $category['isPublic'];
+            $category['hasChildren'] = (bool) $category['hasChildren'];
+            $category['isAccessible'] = (bool) $category['isAccessible'];
+            $category['isCurrent'] = (bool) $category['isCurrent'];
+            $category['isParent'] = (bool) $category['isParent'];
 
-            if (!$category['isPublic']) {
-                $isAccessible = false;
-
-                if ($user != null) {
-                    $isAccessible = $user->isAllowed(array(
-                        'language' => $idlang,
-                        'resource' => array(
-                            'type' => 'cat',
-                            'id' => $category['idcat']
-                        )
-                    ));
-                }
+            if (!$category['isPublic'] && $user != null) {
+                $category['isAccessible'] = $user->isAllowed(array(
+                    'language' => $idlang,
+                    'resource' => array(
+                        'type' => 'cat',
+                        'id' => $category['idcat']
+                    )
+                ));
             }
 
-            if ($isAccessible) {
-                $categories[$key]['isCurrent'] = $currentCat == $category['idcat'] ? true : false;
-                $categories[$key]['isParent'] = (bool) $categories[$key]['isParent'];
+            if (!$category['isAccessible']) {
+                unset($category);
+                continue;
+            }
+            
+            if ($category['hasChildren']) {
+                $category['children'] = self::_getCategorieChilds($category['idcat'], $category['level'] + 1, $idlang, $user, $currentCat);
 
-                $children = self::_getCategorieChilds($category['idcat'], $category['level'] + 1, $idlang, $user, $currentCat);
-
-                if (empty($children)) {
-                    $categories[$key]['hasChildren'] = false;
-                } else {
-                    $categories[$key]['hasChildren'] = true;
-                    $categories[$key]['children'] = $children;
-                }
-            } else {
-                unset($categories[$key]);
+                if (empty($category['children'])) {
+                    $category['hasChildren'] = false;
+                } 
             }
 
-            unset($categories[$key]['isPublic']);
-            unset($categories[$key]['level']);
+            unset($category['isPublic']);
+            unset($category['isAccessible']);
+            unset($category['level']);
         }
 
         return $categories;
     }
-
 }

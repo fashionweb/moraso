@@ -9,7 +9,8 @@ class Moraso_Module_List_Comments_Class extends Moraso_Module_Abstract
     protected function _main()
     {
         $parent_node_id = $this->_getParentNodeId($this->_defaults['idartlang']);
-
+        $user = Aitsu_Adm_User::getInstance();
+        
         $comments = Moraso_Comments::getComments($parent_node_id, Aitsu_Adm_User::getInstance() !== NULL ? false : true, $this->_defaults['startLevel'], $this->_defaults['maxLevel']);
 
         $this->_view->parent_node_id = $parent_node_id;

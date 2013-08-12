@@ -14,14 +14,16 @@ class Moraso_Listeners_Header_Geo implements Aitsu_Event_Listener_Interface
 
 		$heredity = Moraso_Skin_Heredity::build();
 
-		$geoTags = (object) array();
+		$geoTags = new stdClass();
 		foreach (array_reverse($heredity) as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
 			if (is_readable($json_file_dest)) {
 				$json_file_content = json_decode(file_get_contents($json_file_dest));
 
-				$geoTags = (object) array_merge((array) $geoTags, (array) $json_file_content->geo);
+				if (isset($json_file_content->geo) && !empty($json_file_content->geo)) {
+					$geoTags = (object) array_merge((array) $geoTags, (array) $json_file_content->geo);
+				}
 			}
 		}
 

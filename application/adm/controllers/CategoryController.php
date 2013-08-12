@@ -71,9 +71,12 @@ class CategoryController extends Zend_Controller_Action {
 
 		try {
 			$id = $this->getRequest()->getParam('idcat');
-			$idcat = Aitsu_Persistence_Category :: factory($id)->insert(Aitsu_Registry :: get()->session->currentLanguage);
+			$name = $this->getRequest()->getParam('name');
+
+			$idcat = Aitsu_Persistence_Category::factory($id)->insert(Aitsu_Registry::get()->session->currentLanguage, $name);
 			Aitsu_Event :: raise('backend.category.new.end', array (
-				'idcat' => $id
+				'idcat' => $idcat,
+				'name' => $name
 			));
 		} catch (Exception $e) {
 			$this->_helper->json((object) array (

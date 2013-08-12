@@ -20,12 +20,14 @@ class Moraso_Module_Navigation_BreadCrumb_Class extends Moraso_Module_Abstract
         $article = Aitsu_Core_Article::factory($this->_defaults['idartlang']);
 
         $lastCategory = end($breadcrumbs);
-        if ($lastCategory->startidartlang !== $article->idartlang) {
-            $breadcrumbs[] = (object) array(
-                'idart' => $article->idart,
-                'name' => $article->pagetitle,
-                'url' => $lastCategory->url . '/' . $article->urlname . '.html'
-                );
+        if (isset($lastCategory) && !empty($lastCategory)) {
+            if ($lastCategory->startidartlang !== $article->idartlang) {
+                $breadcrumbs[] = (object) array(
+                    'idart' => $article->idart,
+                    'name' => $article->pagetitle,
+                    'url' => $lastCategory->url . '/' . $article->urlname . '.html'
+                    );
+            }
         }
         
         $this->_view->breadcrumbs = (object) $breadcrumbs;

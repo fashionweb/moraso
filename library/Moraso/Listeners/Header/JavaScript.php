@@ -14,15 +14,21 @@ class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interfa
 
 		$heredity = Moraso_Skin_Heredity::build();
 
-		$skin_js = (object) array();
+		$skin_js = new stdClass();
+
 		foreach (array_reverse($heredity) as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
 			if (is_readable($json_file_dest)) {
 				$json_file_content = json_decode(file_get_contents($json_file_dest));
 
-				$skin_js->top = (object) array_merge((array) $skin_js->top, (array) $json_file_content->js->top);
-				$skin_js->bottom = (object) array_merge((array) $skin_js->bottom, (array) $json_file_content->js->bottom);
+				if (isset($json_file_content->js->top) && !empty($json_file_content->js->top)) {
+					$skin_js->top = (object) (empty($skin_js->top) ? $json_file_content->js->top : array_merge((array) $skin_js->top, (array) $json_file_content->js->top));
+				}
+
+				if (isset($json_file_content->js->bottom) && !empty($json_file_content->js->bottom)) {
+					$skin_js->bottom = (object) (empty($skin_js->bottom) ? $json_file_content->js->bottom : array_merge((array) $skin_js->bottom, (array) $json_file_content->js->bottom));
+				}
 			}
 		}
 

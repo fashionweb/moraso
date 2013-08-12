@@ -77,7 +77,11 @@ class Moraso_Cart
 
     public function getProperty($key)
     {
-        return $this->_cart->properties[$key];
+        if (isset($this->_cart->properties[$key])) {
+            return $this->_cart->properties[$key];
+        }
+        
+        return null;
     }
 
     public function getProperties()

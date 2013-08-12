@@ -69,6 +69,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                 $urlset = new SimpleXMLElement('<urlset/>');
                 $urlset->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
                 $urlset->addAttribute('ns:xmlns:image', 'http://www.google.com/schemas/sitemap-image/1.1');
+                $urlset->addAttribute('ns:xmlns:news', 'http://www.google.com/schemas/sitemap-news/0.9');
 
                 foreach ($categories as $category) {
                     $url = $urlset->addChild('url');

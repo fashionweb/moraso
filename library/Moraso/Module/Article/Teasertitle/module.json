@@ -1,3 +1,6 @@
 {
-    "name": "Article Teasertitle"
+    "name": "Article Teasertitle",
+    "defaults": {
+    	"tag": ""
+    }
 }

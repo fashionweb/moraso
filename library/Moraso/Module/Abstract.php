@@ -130,9 +130,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
                 $instance->_view->template = $instance->_defaults['template'] . '.phtml';
             }
 
-            if ((!is_array($availableTemplates) || empty($availableTemplates)) || in_array(str_replace('.phtml', '', $instance->_view->template), $availableTemplates)) {
-                $output_raw .= $instance->_view->render($instance->_view->template);
-            }
+            $output_raw .= $instance->_view->render($instance->_view->template);
         }
 
         $output = $instance->_transformOutput($output_raw);

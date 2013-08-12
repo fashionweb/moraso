@@ -75,11 +75,23 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     $url->addChild('loc', $rewriting->rewriteOutput('{ref:idcat-' . $category['idcat'] . '}'));
                     $url->addChild('lastmod', date('c', strtotime($category['lastmodified'])));
 
-                    // Alle Bilder des Startartikel auslesen
-                    /*$image = $url->addChild('ns:image:image');
-                    $image->addChild('ns:image:loc', 'http://image.jpg');
-                    $image->addChild('ns:image:title', 'Title');
-                    $image->addChild('ns:image:caption', 'Caption');*/
+                    $startidartlang = Aitsu_Persistence_Category::factory($category['idcat'])->load()->startidartlang;
+
+                    $images = Moraso_Persistence_View_Media::ofSpecifiedArticle(Moraso_Util::getIdArt($startidartlang));
+
+                    if (!empty($images)) {
+                        foreach ($images as $image) {
+                            $imageNode = $url->addChild('ns:image:image');
+                            $imageNode->addChild('ns:image:loc', Moraso_Config::get('sys.webpath') . 'file/' . $image['idart'] . '/' . $image['filename']);
+                            if (!empty($image['name'])) {
+                                $imageNode->addChild('ns:image:title', $image['name']);
+                            }
+
+                            if (!empty($image['subline'])) {
+                                $imageNode->addChild('ns:image:caption', $image['subline']);
+                            }
+                        }
+                    }
                 }
 
                 foreach ($articles as $article) {
@@ -87,11 +99,21 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     $url->addChild('loc', $rewriting->rewriteOutput('{ref:idart-' . $article['idart'] . '}'));
                     $url->addChild('lastmod', date('c', strtotime($article['lastmodified'])));
 
-                    // Alle Bilder dieses Artikels auslesen
-                    /*$image = $url->addChild('image');
-                    $image->addChild('loc', 'http://image.jpg');
-                    $image->addChild('title', 'Title');
-                    $image->addChild('caption', 'Caption');*/
+                    $images = Moraso_Persistence_View_Media::ofSpecifiedArticle($article['idart']);
+
+                    if (!empty($images)) {
+                        foreach ($images as $image) {
+                            $imageNode = $url->addChild('ns:image:image');
+                            $imageNode->addChild('ns:image:loc', Moraso_Config::get('sys.webpath') . 'file/' . $image['idart'] . '/' . $image['filename']);
+                            if (!empty($image['name'])) {
+                                $imageNode->addChild('ns:image:title', $image['name']);
+                            }
+
+                            if (!empty($image['subline'])) {
+                                $imageNode->addChild('ns:image:caption', $image['subline']);
+                            }
+                        }
+                    }
                 }
 
                 echo $urlset->asXML();

@@ -41,7 +41,7 @@ $newVersion = $new['major'] . '.' . $new['minor'] . '.' . $new['revision'] . '-'
 $applicationStatusFile = realpath(dirname(__FILE__) . '/../library/Moraso/Status.php');
 file_put_contents($applicationStatusFile, str_replace($matches[0], '\'$/major/' . $new['major'] . '/minor/' . $new['minor'] . '/revision/' . $new['revision'] . '/build/' . $new['build'] . '$\'', file_get_contents($applicationStatusFile)));
 
-$readmeFile = realpath(dirname(__FILE__) . '/../README.textile');
+$readmeFile = realpath(dirname(__FILE__) . '/../README.md');
 file_put_contents($readmeFile, preg_replace('@^moraso version\\:\\s*\\*[^\\*]*\\*@m', "moraso version: *$newVersion*", file_get_contents($readmeFile)));
 
 passthru('git commit -am "Update: ' . $oldVersion . ' to ' . $newVersion . '"');

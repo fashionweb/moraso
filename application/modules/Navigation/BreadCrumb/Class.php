@@ -6,7 +6,7 @@
  * @copyright Copyright &copy; 2011, w3concepts AG
  */
 
-class Module_Navigation_BreadCrumb_Class extends Aitsu_Module_Tree_Abstract {
+class Module_Navigation_BreadCrumb_Class extends Aitsu_Module_Abstract {
 
 	protected $type = 'navigation';
 	protected $_allowEdit = false;

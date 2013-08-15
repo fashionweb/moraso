@@ -33,7 +33,7 @@ class Moraso_Cart
 
     final private function __clone()
     {
-        
+
     }
 
     public function addArticle($id, $qty = 1)
@@ -113,18 +113,18 @@ class Moraso_Cart
         $payment = $this->getProperty('payment');
 
         $this->_cart->order_id = Moraso_Db::put('_cart_order', 'order_id', array(
-                    'payment_method' => $payment['method'],
-                    'timestamp' => date('Y-m-d H:i:s')
-        ));
+            'payment_method' => $payment['method'],
+            'timestamp' => date('Y-m-d H:i:s')
+            ));
 
         $articles = $this->getArticles();
 
         foreach ($articles as $id => $qty) {
             $id = Moraso_Db::put('_cart_order_has_article', 'id', array(
-                        'order_id' => $this->_cart->order_id,
-                        'article_id' => $id,
-                        'qty' => $qty
-            ));
+                'order_id' => $this->_cart->order_id,
+                'article_id' => $id,
+                'qty' => $qty
+                ));
         }
 
         $this->_cart->customer_id = 29;
@@ -135,7 +135,7 @@ class Moraso_Cart
         Moraso_Db::put('_cart_order', 'order_id', array(
             'order_id' => $this->_cart->order_id,
             'ordered' => true
-        ));
+            ));
 
         $this->saveCustomerInformations();
 
@@ -176,7 +176,7 @@ class Moraso_Cart
             'billing_telephone' => $billing['telephone'],
             'billing_fax' => $billing['fax'],
             'billing_email' => $billing['email']
-        ));
+            ));
     }
 
     public function sendMail()
@@ -184,74 +184,13 @@ class Moraso_Cart
         $delivery = $this->getProperty('delivery');
         $billing = $this->getProperty('billing');
 
-        $receiver = isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing;
-
-        if ($receiver['title'] === 'Herr') {
-            $anrede = 'Sehr geehrter';
-        } elseif ($receiver['title'] === 'Frau') {
-            $anrede = 'Sehr geehrte';
-        }
-
-        $emailmessage = $anrede . ' ' . $receiver['title'] . ' ' . $receiver['name']['last'] . '<br />';
-        $emailmessage.= '<br />';
-        $emailmessage.= 'vielen Dank für Ihre Bestellung.<br />';
-        $emailmessage.= '<br />';
-        $emailmessage.= 'Ihre Bestellnummer lautet ' . $this->_cart->order_id . '.<br /><br />';
-        $emailmessage.= 'Ihre Bestellung nochmals in der Übersicht:<br />';
-        
-        $nf = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
-        
-        $amount_total = 0;
-        $amount_total_tax = array();
-        $tax_total = 0;
-        
-        foreach ($this->getArticles() as $idart => $qty) {
-            $articleInfo = Aitsu_Persistence_Article::factory($idart)->load();
-
-            $idartlang = Moraso_Util::getIdArtLang($idart);
-
-            $articleProperties = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
-
-            $articlePropertyCart = (object) $articleProperties->cart;
-
-            $price_total = bcmul($articlePropertyCart->price->value, $qty, 2);
-
-            $emailmessage.= $qty . 'x ' . $articleInfo->pagetitle . ' (' . $articlePropertyCart->sku->value . ') für ' . $nf->formatCurrency($price_total, 'EUR') . '<br />';
-            
-            $amount_total = bcadd($amount_total, $price_total, 2);
-
-            $tax_class = (int) $articlePropertyCart->tax_class->value;
-
-            if (isset($amount_total_tax[$tax_class])) {
-                $amount_total_tax[$tax_class] = $amount_total_tax[$tax_class] + ($price_total - ($price_total / ((100 + $tax_class) / 100)));
-            } else {
-                $amount_total_tax[$tax_class] = $price_total - ($price_total / ((100 + $tax_class) / 100));
-            }
-        }
-        
-        foreach ($amount_total_tax as $tax_class => $tax_value) {
-            $amount_total_tax[$tax_class] = $nf->formatCurrency($tax_value, 'EUR');
-            
-            $tax_total = $tax_total + $tax_value;
-        }
-
-        $emailmessage.= '<br />';
-        $emailmessage.= 'Gesamtsumme: ' . $nf->formatCurrency($amount_total, 'EUR') . '<br />';
-        $emailmessage.= 'enthaltende MwSt.: ' . $nf->formatCurrency($tax_total, 'EUR') . '<br />';
-        
-        $transport = new Zend_Mail_Transport_Smtp(Aitsu_Config::get('email.config.host'), array(
-            'auth' => Aitsu_Config::get('email.config.auth'),
-            'username' => Aitsu_Config::get('email.config.username'),
-            'password' => Aitsu_Config::get('email.config.password')
-        ));
-        
-        $mail = new Zend_Mail('UTF-8');
-        $mail->setFrom(Aitsu_Config::get('email.config.sender.mail'), Aitsu_Config::get('email.config.sender.name'));
-        $mail->addTo($receiver['email'], $receiver['name']['first'] . ' ' . $receiver['name']['last']);
-        $mail->addBcc(Aitsu_Config::get('email.config.sender.mail'));
-        $mail->setSubject('Ihre Bestellung');
-        $mail->setBodyHtml($emailmessage);
-        $mail->send($transport);
+        Aitsu_Event::raise('frontend.cart.checkout', array(
+            'delivery' => $delivery,
+            'billing' => $billing,
+            'receiver' => isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing,
+            'cart' => $this->_cart,
+            'articles' => $this->getArticles()
+            ));
     }
 
     public function getOrderId()
@@ -265,7 +204,7 @@ class Moraso_Cart
             'order_id' => $order_id,
             'payed' => $paymentData['status'] === 'SUCCESS' ? true : false,
             'additional_info' => serialize($paymentData)
-        ));
+            ));
     }
 
     public static function getPaymentStatus($order_id)
@@ -282,19 +221,19 @@ class Moraso_Cart
     {
         if (!is_null($order_id)) {
             $payment_method = Moraso_Db::fetchOne('SELECT payment_method FROM _cart_order WHERE order_id =:order_id', array(
-                        ':order_id' => $order_id
-            ));
+                ':order_id' => $order_id
+                ));
         }
 
         switch ($payment_method) {
             case 'paypal':
-                $paymentStrategy = new Moraso_Cart_Payment_Strategy_Paypal();
-                break;
+            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Paypal();
+            break;
             case 'creditcard':
-                $paymentStrategy = new Moraso_Cart_Payment_Strategy_Wirecard();
-                break;
+            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Wirecard();
+            break;
             default:
-                $paymentStrategy = new Moraso_Cart_Payment_Strategy_Cash();
+            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Cash();
         }
 
         return $paymentStrategy;
@@ -311,5 +250,4 @@ class Moraso_Cart
 
         return $strategies;
     }
-
 }

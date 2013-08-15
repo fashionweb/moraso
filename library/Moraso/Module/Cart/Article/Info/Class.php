@@ -10,35 +10,22 @@ class Moraso_Module_Cart_Article_Info_Class extends Moraso_Module_Abstract
 
     protected function _main()
     {
-        $idartlang = Aitsu_Registry::get()->env->idartlang;
         $nf = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
 
-        /* get Data */
-        $article = Aitsu_Persistence_ArticleProperty::factory($idartlang)->load();
+        $article = Aitsu_Persistence_ArticleProperty::factory($this->_defaults['idartlang'])->load();
 
         $cart = (object) $article->cart;
 
         $price = $cart->price->value;
-        $tax = $cart->tax_class->value * $price / 100;
 
-        $data = (object) array(
+        $view->this->_cart = (object) array(
                     'sku' => $cart->sku->value,
                     'price' => $nf->formatCurrency($price, 'EUR'),
                     'tax_class' => $cart->tax_class->value,
-                    'tax' => $nf->formatCurrency($tax, 'EUR'),
+                    'tax' => $nf->formatCurrency($cart->tax_class->value * $price / 100, 'EUR'),
                     'price_net' => $nf->formatCurrency($price - $tax, 'EUR')
         );
 
-        /* create View */
-        $view = $this->_getView();
-        $view->cart = $data;
-        $view->idartlang = $idartlang;
-        return $view->render('index.phtml');
+        $view->this->_idartlang = $this->_defaults['idartlang'];
     }
-
-    protected function _cachingPeriod()
-    {
-        return 0;
-    }
-
 }

@@ -19,12 +19,12 @@ class Moraso_Module_Cart_Article_Info_Class extends Moraso_Module_Abstract
         $price = $cart->price->value;
 
         $view->this->_cart = (object) array(
-                    'sku' => $cart->sku->value,
-                    'price' => $nf->formatCurrency($price, 'EUR'),
-                    'tax_class' => $cart->tax_class->value,
-                    'tax' => $nf->formatCurrency($cart->tax_class->value * $price / 100, 'EUR'),
-                    'price_net' => $nf->formatCurrency($price - $tax, 'EUR')
-        );
+            'sku' => $cart->sku->value,
+            'price' => $nf->formatCurrency($price, 'EUR'),
+            'tax_class' => $cart->tax_class->value,
+            'tax' => $nf->formatCurrency($cart->tax_class->value * $price / 100, 'EUR'),
+            'price_net' => $nf->formatCurrency($price - $tax, 'EUR')
+            );
 
         $view->this->_idartlang = $this->_defaults['idartlang'];
     }

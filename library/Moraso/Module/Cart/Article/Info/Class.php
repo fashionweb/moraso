@@ -6,8 +6,6 @@
  */
 class Moraso_Module_Cart_Article_Info_Class extends Moraso_Module_Abstract
 {
-    protected $_allowEdit = false;
-
     protected function _main()
     {
         $nf = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);

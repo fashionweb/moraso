@@ -23,12 +23,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateMainCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'main',
-                'urlname' => 'main'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->mainIdCat = $this->_createCategory($catInfo);
+            Aitsu_Registry::get()->session->createStructure->mainIdCat = $this->_createCategory('main');
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -42,12 +37,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateMetaCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'meta',
-                'urlname' => 'meta'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->metaIdCat = $this->_createCategory($catInfo);
+            Aitsu_Registry::get()->session->createStructure->metaIdCat = $this->_createCategory('meta');
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -61,12 +51,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateSystemCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'system',
-                'urlname' => 'system'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->systemIdCat = $this->_createCategory($catInfo);
+            Aitsu_Registry::get()->session->createStructure->systemIdCat = $this->_createCategory('system');
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -80,12 +65,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateImprintCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'Impressum',
-                'urlname' => 'impressum'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->imprintIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->metaIdCat);
+            Aitsu_Registry::get()->session->createStructure->imprintIdCat = $this->_createCategory('Impressum', Aitsu_Registry::get()->session->createStructure->metaIdCat);
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -99,12 +79,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateContactCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'Kontakt',
-                'urlname' => 'kontakt'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->contactIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->metaIdCat);
+            Aitsu_Registry::get()->session->createStructure->contactIdCat = $this->_createCategory('Kontakt', Aitsu_Registry::get()->session->createStructure->metaIdCat);
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -118,12 +93,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateLoginCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'Login',
-                'urlname' => 'login'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->loginIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->metaIdCat);
+            Aitsu_Registry::get()->session->createStructure->loginIdCat = $this->_createCategory('Login', Aitsu_Registry::get()->session->createStructure->metaIdCat);
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -137,12 +107,7 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
     public function doCreateErrorCategory()
     {
         try {
-            $catInfo = array(
-                'name' => 'Error',
-                'urlname' => 'error'
-            );
-
-            Aitsu_Registry::get()->session->createStructure->errorIdCat = $this->_createCategory($catInfo, Aitsu_Registry::get()->session->createStructure->systemIdCat);
+            Aitsu_Registry::get()->session->createStructure->errorIdCat = $this->_createCategory('Error', Aitsu_Registry::get()->session->createStructure->systemIdCat);
         } catch (Exception $e) {
             trigger_error($e->getMessage());
             return (object) array(
@@ -266,19 +231,15 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
         return Aitsu_Adm_Script_Response::factory(Aitsu_Translate::translate('Script finished!'));
     }
 
-    public function _createCategory($catInfo, $createInIdCat = 0)
+    public function _createCategory($name, $createInIdCat = 0)
     {
         Aitsu_Db::startTransaction();
 
-        $idcat = Aitsu_Persistence_Category::factory($createInIdCat)->insert(Aitsu_Registry::get()->session->currentLanguage);
+        $idcat = Aitsu_Persistence_Category::factory($createInIdCat)->insert(Aitsu_Registry::get()->session->currentLanguage, $name);
 
         $category = Aitsu_Persistence_Category::factory($idcat);
         $category->load();
-
-        $catInfo['visible'] = 1;
-
-        $category->setValues($catInfo);
-
+        $category->visible = true;
         $category->save();
 
         Aitsu_Db::commit();
@@ -304,5 +265,4 @@ class Adm_Script_Create_Basic_Structure extends Aitsu_Adm_Script_Abstract
 
         return $art->idart;
     }
-
 }

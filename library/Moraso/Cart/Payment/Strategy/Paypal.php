@@ -15,19 +15,25 @@ class Moraso_Cart_Payment_Strategy_Paypal implements Moraso_Cart_Payment_Strateg
     {
         $cart = Moraso_Cart::getInstance();
 
+        $amount_with_shipping = $cart->getAmount();
+        $amount_without_shipping = $cart->getAmount(false);
+
+        $shippingCosts = $amount_with_shipping - $amount_without_shipping;
+
         $hiddenFormFields = array(
             'cmd' => '_xclick',
             'business' => Moraso_Config::get('moraso.shop.payment.paypal.business'),
             'item_name' => sprintf(Moraso_Config::get('moraso.shop.checkout.orderDescription'), (int) $cart->getOrderId()),
             'item_number' => sprintf(Moraso_Config::get('moraso.shop.checkout.displayText'), (int) $cart->getOrderId()),
-            'amount' => str_replace(',', '.', $cart->getAmount()),
-            'no_shipping' => '0',
+            'amount' => str_replace(',', '.', $amount_without_shipping),
+            'no_shipping' => '1',
             'no_note' => '1',
             'currency_code' => Moraso_Config::get('moraso.shop.currency'),
             'lc' => Moraso_Config::get('moraso.shop.language'),
             'bn' => 'PP-BuyNowBF',
             'return' => Moraso_Config::get('sys.webpath') . 'de/?confirmPayment',
-            'order_id' => $cart->getOrderId()
+            'order_id' => $cart->getOrderId(),
+            'shipping' => str_replace(',', '.', $shippingCosts)
         );
 
         return $hiddenFormFields;

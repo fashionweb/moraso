@@ -89,7 +89,7 @@ class Moraso_Cart
         return $this->_cart->properties;
     }
 
-    public function getAmount($withShippingCosts = false)
+    public function getAmount($withShippingCosts = true)
     {
         $amount = 0;
         $amount_without_tax = 0;
@@ -107,7 +107,7 @@ class Moraso_Cart
 
             if ($withShippingCosts) {
                 $tax_class = (int) $articlePropertyCart->tax_class->value;
-                
+
                 $amount_without_tax = $amount_without_tax + (($amount / (100+$tax_class)) * 100);
             }
         }

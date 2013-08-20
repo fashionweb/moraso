@@ -4,55 +4,46 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract {
-
-    protected function _main() {
-
+class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract
+{
+    protected function _main()
+    {
         $selectedAssets = Fashionweb_Content_Config_Assets::set($this->_index, 'assets', 'Assets');
 
         $assets = array();
 
         foreach ($selectedAssets as $key => $id) {
-
-            $asset = Aitsu_Db::fetchRow('' .
-                            'select ' .
-                            '   * ' .
-                            'from ' .
-                            '   _assets ' .
-                            'where ' .
-                            '   id =:id', array(
-                        ':id' => $id
-            ));
+            $asset = Moraso_Db::simpleFetch('all', '_assets', array('id' => $id));
 
             if ($asset['active']) {
                 $assets[$key] = $asset;
 
-                $assetMedia = Aitsu_Db::fetchCol('' .
-                                'select ' .
-                                '   mediaid ' .
-                                'from ' .
-                                '   _assets_have_media ' .
-                                'where ' .
-                                '   idasset =:id', array(
-                            ':id' => $id
-                ));
+                $assetMedia = Moraso_Db::fetchCol('' .
+                    'SELECT ' .
+                    '   mediaid ' .
+                    'FROM ' .
+                    '   _assets_have_media ' .
+                    'WHERE ' .
+                    '   idasset =:id', array(
+                        ':id' => $id
+                        ));
 
                 $data = array();
                 foreach ($assetMedia as $mediaid) {
-                    $data[] = Aitsu_Db::fetchRow('' .
-                                    'select ' .
-                                    '   media.idart as idart, ' .
-                                    '   media.filename as filename, ' .
-                                    '   description.name as name ' .
-                                    'from ' .
-                                    '   _media as media ' .
-                                    'left join ' .
-                                    '   _media_description as description on media.mediaid = description.mediaid and description.idlang = :idlang ' .
-                                    'where ' .
-                                    '   media.mediaid =:mediaid', array(
-                                ':mediaid' => $mediaid,
-                                ':idlang' => Aitsu_Registry::get()->env->idlang
-                    ));
+                    $data[] = Moraso_Db::fetchRow('' .
+                        'SELECT ' .
+                        '   media.idart AS idart, ' .
+                        '   media.filename AS filename, ' .
+                        '   description.name AS name ' .
+                        'FROM ' .
+                        '   _media AS media ' .
+                        'LEFT JOIN ' .
+                        '   _media_description AS description ON media.mediaid = description.mediaid AND description.idlang = :idlang ' .
+                        'WHERE ' .
+                        '   media.mediaid =:mediaid', array(
+                            ':mediaid' => $mediaid,
+                            ':idlang' => Aitsu_Registry::get()->env->idlang
+                            ));
                 }
 
                 if (!empty($data)) {
@@ -62,19 +53,10 @@ class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract {
         }
 
         if (empty($assets)) {
+            $this->_withoutView = true;
             return '';
         }
 
-        $view = $this->_getView();
-
-        $view->assets = $assets;
-
-        return $view->render('index.phtml');
+        $this->_view->assets = $assets;
     }
-
-    protected function _cachingPeriod() {
-
-        return Aitsu_Util_Date::secondsUntilEndOf('day');
-    }
-
 }

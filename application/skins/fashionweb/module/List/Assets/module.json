@@ -1,0 +1,6 @@
+{
+	"name": "List.Assets",
+	"defaults": {
+		"caching": "##secondsUntilEndOf.day##"
+	}
+}

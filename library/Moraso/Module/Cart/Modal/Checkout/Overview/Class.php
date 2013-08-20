@@ -57,14 +57,6 @@ class Moraso_Module_Cart_Modal_Checkout_Overview_Class extends Moraso_Module_Abs
             }
         }
 
-        $amount_total_without_tax = $amount_total - $tax_total;
-
-        $shippingCosts = $cart->getShippingCosts($amount_total_without_tax);
-
-        $amount_total = $amount_total + $shippingCosts;
-
-        $amount_total_tax[0] = isset($amount_total_tax[0]) ? $amount_total_tax[0] + $shippingCosts : $shippingCosts;
-
         $cart->createOrder();
 
         $paymentStrategy = Moraso_Cart::getPaymentStrategy(null, $properties['payment']['method']);
@@ -75,9 +67,19 @@ class Moraso_Module_Cart_Modal_Checkout_Overview_Class extends Moraso_Module_Abs
         $hiddenFields = $payment->getHiddenFormFields();
 
         foreach ($amount_total_tax as $tax_class => $tax_value) {
-            $amount_total_tax[$tax_class] = $nf->formatCurrency($tax_value, 'EUR');
-            
             $tax_total = $tax_total + $tax_value;
+        }
+
+        $amount_total_without_tax = $amount_total - $tax_total;
+
+        $shippingCosts = $cart->getShippingCosts($amount_total_without_tax);
+
+        $amount_total = $amount_total + $shippingCosts;
+
+        $amount_total_tax[0] = isset($amount_total_tax[0]) ? $amount_total_tax[0] + $shippingCosts : $shippingCosts;
+
+        foreach ($amount_total_tax as $tax_class => $tax_value) {
+            $amount_total_tax[$tax_class] = $nf->formatCurrency($tax_value, 'EUR');
         }
 
         /* create View */
@@ -92,5 +94,4 @@ class Moraso_Module_Cart_Modal_Checkout_Overview_Class extends Moraso_Module_Abs
         $view->shippingCosts = $nf->formatCurrency($shippingCosts, 'EUR');
         echo $view->render('index.phtml');
     }
-
 }

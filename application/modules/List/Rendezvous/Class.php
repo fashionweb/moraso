@@ -4,7 +4,7 @@
  * @author Andreas Kummer <a.kummer@wdrei.ch>
  * @copyright (c) 2013, w3concepts AG 
  */
-class Module_List_Rendezvous_Class extends Aitsu_Module_Tree_Abstract {
+class Module_List_Rendezvous_Class extends Aitsu_Module_Abstract {
 
     protected $_cacheIfLoggedIn = true;
     protected $_isVolatile = true;

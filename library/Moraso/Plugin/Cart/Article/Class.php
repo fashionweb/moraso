@@ -18,18 +18,19 @@ class Moraso_Plugin_Cart_Article_Controller extends Moraso_Adm_Plugin_Controller
     public static function register($idart)
     {
         return (object) array(
-                    'name' => 'cart',
-                    'tabname' => Aitsu_Registry::get()->Zend_Translate->translate('Cart'),
-                    'enabled' => self::getPosition($idart, 'cart'),
-                    'position' => self::getPosition($idart, 'cart'),
-                    'id' => self::ID
-        );
+            'name' => 'cart',
+            'tabname' => Aitsu_Registry::get()->Zend_Translate->translate('Cart'),
+            'enabled' => self::getPosition($idart, 'cart'),
+            'position' => self::getPosition($idart, 'cart'),
+            'id' => self::ID
+            );
     }
 
     public function indexAction()
     {
         $idart = $this->getRequest()->getParam('idart');
         $idlang = Aitsu_Registry::get()->session->currentLanguage;
+        $idartlang = Moraso_Util::getIdArtLang($idart, $idlang);
 
         $classExplode = explode('_', __CLASS__);
 
@@ -42,34 +43,35 @@ class Moraso_Plugin_Cart_Article_Controller extends Moraso_Adm_Plugin_Controller
         $options = array();
         foreach ($tax_classes as $key => $value) {
             $options[] = (object) array(
-                        'name' => $key,
-                        'value' => $value
-            );
+                'name' => $key,
+                'value' => $value
+                );
         }
         $form->setOptions('tax_class', $options);
 
         /* set Values */
-        $article = Aitsu_Persistence_ArticleProperty::factory(Moraso_Util::getIdArtLang($idart, $idlang))->load();
-
-        $cart = (object) $article->cart;
-
-        $data = array(
-            'idart' => $idart,
-            'sku' => $cart->sku->value,
-            'price' => $cart->price->value,
-            'tax_class' => $cart->tax_class->value
-        );
-
-        if (!empty($data)) {
-
-            if (empty($data['sku'])) {
-                $data['sku'] = 'SKU' . (10000 + $idart);
-            }
-
-            $form->setValues($data);
-        }
+        $article = Aitsu_Persistence_ArticleProperty::factory($idartlang);  
+        $article->load();
 
         if ($this->getRequest()->getParam('loader')) {
+            $data = array(
+                'idart' => $idart
+                );
+
+            if (isset($article->cart)) {
+                $cart = (object) $article->cart;
+
+                $data['sku'] = $cart->sku->value;
+                $data['price'] = $cart->price->value;
+                $data['tax_class'] = $cart->tax_class->value;
+            }
+            
+            if (!isset($data['sku']) || empty($data['sku'])) {
+                $data['sku'] = 'SKU' . (10000 + $idart);
+            } 
+
+            $form->setValues($data);
+
             $this->view->form = $form;
             header("Content-type: text/javascript");
             return;
@@ -85,21 +87,21 @@ class Moraso_Plugin_Cart_Article_Controller extends Moraso_Adm_Plugin_Controller
                 $article->save();
 
                 $this->_helper->json((object) array(
-                            'success' => true,
-                            'data' => (object) $data
-                ));
+                    'success' => true,
+                    'data' => (object) $data
+                    ));
             } else {
                 $this->_helper->json((object) array(
-                            'success' => false,
-                            'errors' => $form->getErrors()
-                ));
+                    'success' => false,
+                    'errors' => $form->getErrors()
+                    ));
             }
         } catch (Exception $e) {
             $this->_helper->json((object) array(
-                        'success' => false,
-                        'exception' => true,
-                        'message' => $e->getMessage()
-            ));
+                'success' => false,
+                'exception' => true,
+                'message' => $e->getMessage()
+                ));
         }
     }
 

@@ -65,6 +65,7 @@ abstract class Moraso_Module_Abstract extends Aitsu_Module_Abstract
 
         $instance->_defaults = $instance->_getModulConfigDefaults(str_replace('_', '.', strtolower($instance->_moduleName)));
         $instance->_view = $instance->_getView();
+        $instance->_view->index = $instance->_index;
 
         $instance->_translation = array(
             'configuration' => Aitsu_Translate::_('Configuration'),

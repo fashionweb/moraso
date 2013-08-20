@@ -13,7 +13,7 @@
  * @copyright Copyright &copy; 2011, w3concepts AG
  */
 
-class Module_HTML_Content_Tunnel_Class extends Aitsu_Module_Tree_Abstract {
+class Module_HTML_Content_Tunnel_Class extends Aitsu_Module_Abstract {
 
 	protected function _init() {
 

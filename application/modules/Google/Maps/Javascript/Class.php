@@ -11,7 +11,7 @@
  * @link http://code.google.com/apis/maps/documentation/javascript/overlays.html Google Maps Overlays
  */
 
-class Module_Google_Maps_Javascript_Class extends Aitsu_Module_Tree_Abstract {
+class Module_Google_Maps_Javascript_Class extends Aitsu_Module_Abstract {
 
 	protected function _init() {
 

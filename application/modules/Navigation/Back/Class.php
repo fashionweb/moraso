@@ -12,7 +12,7 @@
  * @author Andreas Kummer, w3concepts AG
  * @copyright Copyright &copy; 2011, w3concepts AG
  */
-class Module_Navigation_Back_Class extends Aitsu_Module_Tree_Abstract {
+class Module_Navigation_Back_Class extends Aitsu_Module_Abstract {
 
 	protected $_allowEdit = false;
 

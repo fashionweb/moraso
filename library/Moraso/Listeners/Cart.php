@@ -50,5 +50,4 @@ class Moraso_Listeners_Cart implements Aitsu_Event_Listener_Interface
             }
         }
     }
-
 }

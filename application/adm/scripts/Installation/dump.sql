@@ -66,7 +66,6 @@ INSERT INTO `ait_acl_privilege` VALUES (137,'plugin.tags.article');
 INSERT INTO `ait_acl_privilege` VALUES (138,'plugin.revisionprogression.article');
 INSERT INTO `ait_acl_privilege` VALUES (139,'plugin.todo.article');
 INSERT INTO `ait_acl_privilege` VALUES (140,'plugin.cart.article');
-<<<<<<< HEAD
 INSERT INTO `ait_acl_privilege` VALUES (143,'plugin.assets.dashboard');
 INSERT INTO `ait_acl_privilege` VALUES (144,'plugin.assets.generic');
 INSERT INTO `ait_acl_privilege` VALUES (145,'plugin.bookingsystem.dashboard');
@@ -76,8 +75,6 @@ INSERT INTO `ait_acl_privilege` VALUES (148,'plugin.events.generic');
 INSERT INTO `ait_acl_privilege` VALUES (149,'plugin.quotes.generic');
 INSERT INTO `ait_acl_privilege` VALUES (150,'plugin.guestbook.generic');
 INSERT INTO `ait_acl_privilege` VALUES (151,'plugin.members.generic');
-=======
->>>>>>> b9825c302db48dab3d9a884c8c167740b7bf3683
 CREATE TABLE `ait_acl_privileges` (  `roleid` int(10) unsigned NOT NULL,  `privilegeid` int(10) unsigned NOT NULL,  PRIMARY KEY (`roleid`,`privilegeid`),  KEY `fk_roleid_roleid` (`roleid`),  KEY `fk_privilegeid_privilegeid` (`privilegeid`),  CONSTRAINT `ait_acl_privileges_ibfk_2` FOREIGN KEY (`privilegeid`) REFERENCES `ait_acl_privilege` (`privilegeid`) ON DELETE CASCADE,  CONSTRAINT `ait_acl_privileges_ibfk_1` FOREIGN KEY (`roleid`) REFERENCES `ait_acl_role` (`roleid`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Since 2.2.1.0';
 INSERT INTO `ait_acl_privileges` VALUES (18,47);
 INSERT INTO `ait_acl_privileges` VALUES (18,48);
@@ -142,7 +139,6 @@ INSERT INTO `ait_acl_privileges` VALUES (18,137);
 INSERT INTO `ait_acl_privileges` VALUES (18,138);
 INSERT INTO `ait_acl_privileges` VALUES (18,139);
 INSERT INTO `ait_acl_privileges` VALUES (18,140);
-<<<<<<< HEAD
 INSERT INTO `ait_acl_privileges` VALUES (18,143);
 INSERT INTO `ait_acl_privileges` VALUES (18,144);
 INSERT INTO `ait_acl_privileges` VALUES (18,145);
@@ -152,8 +148,6 @@ INSERT INTO `ait_acl_privileges` VALUES (18,148);
 INSERT INTO `ait_acl_privileges` VALUES (18,149);
 INSERT INTO `ait_acl_privileges` VALUES (18,150);
 INSERT INTO `ait_acl_privileges` VALUES (18,151);
-=======
->>>>>>> b9825c302db48dab3d9a884c8c167740b7bf3683
 CREATE TABLE `ait_acl_resource` (  `resourceid` int(10) unsigned NOT NULL AUTO_INCREMENT,  `name` varchar(255) NOT NULL COMMENT 'Name of the resource.',  `resourcetype` enum('cat','art','other') NOT NULL COMMENT 'Type. Either cat, art or other.',  `specifictype` varchar(255) NOT NULL COMMENT 'Holds the type identifier, if other is set on type.',  `identifier` int(10) unsigned NOT NULL COMMENT 'ID of the resource. I.e. idart or idcat.',  `removeable` tinyint(4) NOT NULL DEFAULT '1' COMMENT 'Indicates whether or not the entity might be deleted.',  PRIMARY KEY (`resourceid`),  KEY `id` (`identifier`),  KEY `identifier` (`identifier`),  KEY `specifictype` (`specifictype`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='Since 2.2.1.0';
 INSERT INTO `ait_acl_resource` VALUES (1,'Root','cat','',0,0);
 CREATE TABLE `ait_acl_resources` (  `roleid` int(10) unsigned NOT NULL,  `resourceid` int(10) unsigned NOT NULL,  PRIMARY KEY (`roleid`,`resourceid`),  KEY `fk_roleid_roleid` (`roleid`),  KEY `fk_resourceid_resourceid` (`resourceid`),  CONSTRAINT `ait_acl_resources_ibfk_2` FOREIGN KEY (`resourceid`) REFERENCES `ait_acl_resource` (`resourceid`) ON DELETE CASCADE,  CONSTRAINT `ait_acl_resources_ibfk_1` FOREIGN KEY (`roleid`) REFERENCES `ait_acl_role` (`roleid`) ON DELETE CASCADE) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Since 2.2.1.0';

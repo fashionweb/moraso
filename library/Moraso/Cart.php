@@ -89,9 +89,10 @@ class Moraso_Cart
         return $this->_cart->properties;
     }
 
-    public function getAmount($withoutShipping = false)
+    public function getAmount($withShippingCosts = false)
     {
         $amount = 0;
+        $amount_without_tax = 0;
 
         $articles = $this->getArticles();
 
@@ -103,22 +104,28 @@ class Moraso_Cart
             $articlePropertyCart = (object) $articleProperties->cart;
 
             $amount = bcadd($amount, bcmul($articlePropertyCart->price->value, $qty, 2), 2);
+
+            if ($withShippingCosts) {
+                $tax_class = (int) $articlePropertyCart->tax_class->value;
+                
+                $amount_without_tax = $amount_without_tax + (($amount / (100+$tax_class)) * 100);
+            }
         }
 
-        if (!$withoutShipping) {
-            return bcadd($amount, $this->getShippingCosts($amount), 2);
+        if ($withShippingCosts && !empty($amount_without_tax)) {
+            return bcadd($amount, $this->getShippingCosts($amount_without_tax), 2);
         }
         
         return $amount;
     }
 
-    public function getShippingCosts($amount = null)
+    public function getShippingCosts($amount_without_tax)
     {
-        if (is_null($amount)) {
-            $amount = $this->getAmount(true);
-        }
+        $delivery = $this->getProperty('delivery');
 
-        return $amount > 100 ? 0 : '4.90';
+        $shippingCosts = strcasecmp($delivery['country'], "Deutschland") == 0 ? '4.95' : '9.95';
+
+        return $amount_without_tax >= 100 ? 0 : $shippingCosts;
     }
 
     public function createOrder()
@@ -190,77 +197,77 @@ class Moraso_Cart
             'billing_fax' => $billing['fax'],
             'billing_email' => $billing['email']
             ));
-    }
+}
 
-    public function sendMail()
-    {        
-        $delivery = $this->getProperty('delivery');
-        $billing = $this->getProperty('billing');
+public function sendMail()
+{        
+    $delivery = $this->getProperty('delivery');
+    $billing = $this->getProperty('billing');
 
-        Aitsu_Event::raise('frontend.cart.checkout', array(
-            'delivery' => $delivery,
-            'billing' => $billing,
-            'receiver' => isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing,
-            'cart' => $this->_cart,
-            'articles' => $this->getArticles()
+    Aitsu_Event::raise('frontend.cart.checkout', array(
+        'delivery' => $delivery,
+        'billing' => $billing,
+        'receiver' => isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing,
+        'cart' => $this->_cart,
+        'articles' => $this->getArticles()
+        ));
+}
+
+public function getOrderId()
+{
+    return $this->_cart->order_id;
+}
+
+public static function setPaymentStatus($order_id, $paymentData)
+{
+    Moraso_Db::put('_cart_order', 'order_id', array(
+        'order_id' => $order_id,
+        'payed' => $paymentData['status'] === 'SUCCESS' ? true : false,
+        'additional_info' => serialize($paymentData)
+        ));
+}
+
+public static function getPaymentStatus($order_id)
+{
+    return Aitsu_Db::fetchOne('SELECT payed FROM _cart_order WHERE order_id =:order_id', array('::order_id' => $order_id));
+}
+
+public function flush()
+{
+    unset($this->_cart->articles);
+}
+
+public static function getPaymentStrategy($order_id = null, $payment_method = null)
+{
+    if (!is_null($order_id)) {
+        $payment_method = Moraso_Db::fetchOne('SELECT payment_method FROM _cart_order WHERE order_id =:order_id', array(
+            ':order_id' => $order_id
             ));
     }
 
-    public function getOrderId()
-    {
-        return $this->_cart->order_id;
+    switch ($payment_method) {
+        case 'paypal':
+        $paymentStrategy = new Moraso_Cart_Payment_Strategy_Paypal();
+        break;
+        case 'creditcard':
+        $paymentStrategy = new Moraso_Cart_Payment_Strategy_Wirecard();
+        break;
+        default:
+        $paymentStrategy = new Moraso_Cart_Payment_Strategy_Cash();
     }
 
-    public static function setPaymentStatus($order_id, $paymentData)
-    {
-        Moraso_Db::put('_cart_order', 'order_id', array(
-            'order_id' => $order_id,
-            'payed' => $paymentData['status'] === 'SUCCESS' ? true : false,
-            'additional_info' => serialize($paymentData)
-            ));
+    return $paymentStrategy;
+}
+
+public static function getPaymentStrategies()
+{
+    $paymentStrategies = Aitsu_Util_Dir::scan(LIBRARY_PATH . '/Moraso/Cart/Payment/Strategy', '*.php');
+
+    $strategies = array();
+    foreach ($paymentStrategies as $paymentStrategy) {
+        $strategies[] = pathinfo($paymentStrategy, PATHINFO_FILENAME);
     }
 
-    public static function getPaymentStatus($order_id)
-    {
-        return Aitsu_Db::fetchOne('SELECT payed FROM _cart_order WHERE order_id =:order_id', array('::order_id' => $order_id));
-    }
-
-    public function flush()
-    {
-        unset($this->_cart->articles);
-    }
-
-    public static function getPaymentStrategy($order_id = null, $payment_method = null)
-    {
-        if (!is_null($order_id)) {
-            $payment_method = Moraso_Db::fetchOne('SELECT payment_method FROM _cart_order WHERE order_id =:order_id', array(
-                ':order_id' => $order_id
-                ));
-        }
-
-        switch ($payment_method) {
-            case 'paypal':
-            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Paypal();
-            break;
-            case 'creditcard':
-            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Wirecard();
-            break;
-            default:
-            $paymentStrategy = new Moraso_Cart_Payment_Strategy_Cash();
-        }
-
-        return $paymentStrategy;
-    }
-
-    public static function getPaymentStrategies()
-    {
-        $paymentStrategies = Aitsu_Util_Dir::scan(LIBRARY_PATH . '/Moraso/Cart/Payment/Strategy', '*.php');
-
-        $strategies = array();
-        foreach ($paymentStrategies as $paymentStrategy) {
-            $strategies[] = pathinfo($paymentStrategy, PATHINFO_FILENAME);
-        }
-
-        return $strategies;
-    }
+    return $strategies;
+}
 }

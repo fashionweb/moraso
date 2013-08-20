@@ -203,13 +203,15 @@ public function sendMail()
 {        
     $delivery = $this->getProperty('delivery');
     $billing = $this->getProperty('billing');
+    $payment = $this->getProperty('payment');
 
     Aitsu_Event::raise('frontend.cart.checkout', array(
         'delivery' => $delivery,
         'billing' => $billing,
         'receiver' => isset($billing['same_than_delivery']) && $billing['same_than_delivery'] === 'on' ? $delivery : $billing,
         'cart' => $this->_cart,
-        'articles' => $this->getArticles()
+        'articles' => $this->getArticles(),
+        'payment' => $payment
         ));
 }
 

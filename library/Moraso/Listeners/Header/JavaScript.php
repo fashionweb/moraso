@@ -35,10 +35,14 @@ class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interfa
 		$topJS = array();
 		if (!empty($skin_js->top)) {
 			foreach ($skin_js->top as $key => $value) {
-				if (strpos($value, '/') !== 0) {
+				if (strpos($value, '//') !== 0 && strpos($value, '<') !== 0 && strpos($value, 'http') !== 0) {
 					$topJS[$key] = '<script src="/skin/' . $value . '"></script>';
 				} else {
-					$topJS[$key] = '<script src="' . $value . '"></script>';
+					if (strpos($value, 'http') === 0 || strpos($value, '//') === 0) {
+						$topJS[$key] = '<script src="' . $value . '"></script>';
+					} else {
+						$topJS[$key] = $value;
+					}
 				}
 			}
 
@@ -51,10 +55,14 @@ class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interfa
 		$bottomJS = array();
 		if (!empty($skin_js->bottom)) {
 			foreach ($skin_js->bottom as $key => $value) {
-				if (strpos($value, '/') !== 0) {
+				if (strpos($value, '//') !== 0 && strpos($value, '<') !== 0 && strpos($value, 'http') !== 0) {
 					$bottomJS[$key] = '<script src="/skin/' . $value . '"></script>';
 				} else {
-					$bottomJS[$key] = '<script src="' . $value . '"></script>';
+					if (strpos($value, 'http') === 0 || strpos($value, '//') === 0) {
+						$bottomJS[$key] = '<script src="' . $value . '"></script>';
+					} else {
+						$bottomJS[$key] = $value;
+					}
 				}
 			}
 

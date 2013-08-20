@@ -144,21 +144,15 @@ class Fashionweb_Html_Helper_Navigation
             $aClasses[] = $options[$level]['aClassIfHasChildren'];
         }
 
-        $li = '<li';
-
-        if (!empty($liClasses)) {
-            $li.= ' class="' . implode(' ', $liClasses) . '"';
-        }
-
-        $li.= '>';
+        $li = !empty($liClasses) ? '<li data-desc="' . $row['claim'] . '" class="' . implode(' ', $liClasses) . '">' : '<li>';
 
         if (isset($options[$level]['noLink']) && !empty($options[$level]['noLink'])) {
             $li.= $row['name'];
         } else {
             if (empty($aClasses)) {
-                $li.= '<a href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+                $li.= '<a data-desc="' . $row['claim'] . '" href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
             } else {
-                $li.= '<a class="' . implode(' ', $aClasses) . '" href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+                $li.= '<a data-desc="' . $row['claim'] . '" class="' . implode(' ', $aClasses) . '" href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
             } 
         }
 

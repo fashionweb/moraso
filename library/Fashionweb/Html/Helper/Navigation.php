@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Fashionweb_Html_Helper_Navigation {
-
-    public static function getHtml(array $nav, array $ulIds = array(), array $ulClasses = array(), array $options = array()) {
-
+class Fashionweb_Html_Helper_Navigation
+{
+    public static function getHtml(array $nav, array $ulIds = array(), array $ulClasses = array(), array $options = array())
+    {
         $self = new self();
 
         $optionDefaults = array(
@@ -19,6 +19,12 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
                 'liClassIfIsFirst' => 'first',
+                'aClassIfIsActive' => '',
+                'aClassIfIsCurrent' => '',
+                'aClassIfIsParent' => '',
+                'aClassIfHasChildren' => '',
+                'aClassIfIsLast' => '',
+                'aClassIfIsFirst' => '',
                 'divider' => false
             ),
             2 => array(
@@ -29,6 +35,12 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
                 'liClassIfIsFirst' => 'first',
+                'aClassIfIsActive' => '',
+                'aClassIfIsCurrent' => '',
+                'aClassIfIsParent' => '',
+                'aClassIfHasChildren' => '',
+                'aClassIfIsLast' => '',
+                'aClassIfIsFirst' => '',
                 'divider' => false
             ),
             3 => array(
@@ -39,6 +51,12 @@ class Fashionweb_Html_Helper_Navigation {
                 'liClassIfHasChildren' => 'hasChildren',
                 'liClassIfIsLast' => 'last',
                 'liClassIfIsFirst' => 'first',
+                'aClassIfIsActive' => '',
+                'aClassIfIsCurrent' => '',
+                'aClassIfIsParent' => '',
+                'aClassIfHasChildren' => '',
+                'aClassIfIsLast' => '',
+                'aClassIfIsFirst' => '',
                 'divider' => false
             )
         );
@@ -48,8 +66,8 @@ class Fashionweb_Html_Helper_Navigation {
         return $self->_createUl($nav, $ulIds, $ulClasses, $options);
     }
 
-    private function _array_merge_custom() {
-
+    private function _array_merge_custom()
+    {
         $array = array();
         $arguments = func_get_args();
 
@@ -64,8 +82,8 @@ class Fashionweb_Html_Helper_Navigation {
         return $array;
     }
 
-    private function _createUl($nav, $ulIds = null, $ulClasses = null, $options = null, $level = 1) {
-
+    private function _createUl($nav, $ulIds = null, $ulClasses = null, $options = null, $level = 1)
+    {
         $ul = '<ul';
 
         if (isset($ulIds[$level]) && !empty($ulIds[$level])) {
@@ -91,32 +109,39 @@ class Fashionweb_Html_Helper_Navigation {
         return $ul;
     }
 
-    private function _createLi($row, $ulIds, $ulClasses, $options, $level, $isLast, $isFirst) {
-
+    private function _createLi($row, $ulIds, $ulClasses, $options, $level, $isLast, $isFirst)
+    {
         $liClasses = array();
+        $aClasses = array();
 
         if ($row['isCurrent'] || $row['isParent']) {
-            $liClasses[] = $options[$level]['liClassIfActive'];
+            $liClasses[] = $options[$level]['liClassIfIsActive'];
+            $aClasses[] = $options[$level]['aClassIfIsActive'];
 
             if ($row['isCurrent']) {
                 $liClasses[] = $options[$level]['liClassIfIsCurrent'];
+                $aClasses[] = $options[$level]['aClassIfIsCurrent'];
             }
 
             if ($row['isParent']) {
                 $liClasses[] = $options[$level]['liClassIfIsParent'];
+                $aClasses[] = $options[$level]['aClassIfIsParent'];
             }
         }
 
         if ($isLast) {
             $liClasses[] = $options[$level]['liClassIfIsLast'];
+            $aClasses[] = $options[$level]['aClassIfIsLast'];
         }
         
         if ($isFirst) {
             $liClasses[] = $options[$level]['liClassIfIsFirst'];
+            $aClasses[] = $options[$level]['aClassIfIsFirst'];
         }
 
         if (isset($row['hasChildren']) && $row['hasChildren']) {
             $liClasses[] = $options[$level]['liClassIfHasChildren'];
+            $aClasses[] = $options[$level]['aClassIfHasChildren'];
         }
 
         $li = '<li';
@@ -130,7 +155,11 @@ class Fashionweb_Html_Helper_Navigation {
         if (isset($options[$level]['noLink']) && !empty($options[$level]['noLink'])) {
             $li.= $row['name'];
         } else {
-            $li.= '<a href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+            if (empty($aClasses)) {
+                $li.= '<a href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+            } else {
+                $li.= '<a class="' . implode(' ', $aClasses) . '" href="{ref:idcat-' . $row['idcat'] . '}">' . $row['name'] . '</a>';
+            } 
         }
 
         if (isset($row['hasChildren']) && $row['hasChildren']) {
@@ -145,5 +174,4 @@ class Fashionweb_Html_Helper_Navigation {
 
         return $li;
     }
-
 }

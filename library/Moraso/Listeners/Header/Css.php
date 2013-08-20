@@ -30,7 +30,15 @@ class Moraso_Listeners_Header_Css implements Aitsu_Event_Listener_Interface
 		$css = array();
 		if (count((array) $css_collection) > 0) {		
 			foreach ($css_collection as $key => $value) {
-				$css[$key] = '<link rel="stylesheet" href="/skin/' . $value . '" />';
+				if (strpos($value, '//') !== 0 && strpos($value, '<') !== 0 && strpos($value, 'http') !== 0) {
+					$css[$key] = '<link rel="stylesheet" href="/skin/' . $value . '" />';
+				} else {
+					if (strpos($value, 'http') === 0 || strpos($value, '//') === 0) {
+						$css[$key] = '<link rel="stylesheet" href="' . $value . '" />';
+					} else {
+						$css[$key] = $value;
+					}
+				}
 			}
 
 			Aitsu_Registry::get()->header->css = (object) array(

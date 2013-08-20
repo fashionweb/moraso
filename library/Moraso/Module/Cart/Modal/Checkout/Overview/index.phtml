@@ -70,6 +70,13 @@
                         <td class="text-right"><?php echo $article->price_total ?></td>
                     </tr>
                 <?php endforeach; ?>
+                 <tr>
+                    <td><?= Aitsu_Translate::_('Shipping costs') ?></td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td class="text-right"><?= $this->shippingCosts ?></td>
+                </tr>
             </tbody>
             <tfoot>                    
                 <tr>

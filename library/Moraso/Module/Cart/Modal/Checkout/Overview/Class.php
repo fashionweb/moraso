@@ -57,6 +57,16 @@ class Moraso_Module_Cart_Modal_Checkout_Overview_Class extends Moraso_Module_Abs
             }
         }
 
+        $shippingCosts = $cart->getShippingCosts($amount_total);
+
+        $amount_total = $amount_total + $shippingCosts;
+
+        if (isset($amount_total_tax[0])) {
+            $amount_total_tax[0] = $amount_total_tax[0] + $shippingCosts;
+        } else {
+            $amount_total_tax[0] = $shippingCosts;
+        }
+
         $cart->createOrder();
 
         $paymentStrategy = Moraso_Cart::getPaymentStrategy(null, $properties['payment']['method']);
@@ -81,6 +91,7 @@ class Moraso_Module_Cart_Modal_Checkout_Overview_Class extends Moraso_Module_Abs
         $view->amount_total = $nf->formatCurrency($amount_total, 'EUR');
         $view->amount_total_tax = $amount_total_tax;
         $view->amount_total_without_tax = $nf->formatCurrency($amount_total - $tax_total, 'EUR');
+        $view->shippingCosts = $nf->formatCurrency($shippingCosts, 'EUR');
         echo $view->render('index.phtml');
     }
 

@@ -89,7 +89,7 @@ class Moraso_Cart
         return $this->_cart->properties;
     }
 
-    public function getAmount()
+    public function getAmount($withoutShipping = false)
     {
         $amount = 0;
 
@@ -105,7 +105,20 @@ class Moraso_Cart
             $amount = bcadd($amount, bcmul($articlePropertyCart->price->value, $qty, 2), 2);
         }
 
+        if (!$withoutShipping) {
+            return bcadd($amount, $this->getShippingCosts($amount), 2);
+        }
+        
         return $amount;
+    }
+
+    public function getShippingCosts($amount = null)
+    {
+        if (is_null($amount)) {
+            $amount = $this->getAmount(true);
+        }
+
+        return $amount > 100 ? 0 : '4.90';
     }
 
     public function createOrder()

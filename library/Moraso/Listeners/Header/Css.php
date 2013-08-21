@@ -41,10 +41,12 @@ class Moraso_Listeners_Header_Css implements Aitsu_Event_Listener_Interface
 				}
 			}
 
-			Aitsu_Registry::get()->header->css = (object) array(
-				"name" => "CSS",
-				"tags" => $css
-				);
+			if (!empty($css)) {
+				Aitsu_Registry::get()->header->css = (object) array(
+					"name" => "CSS",
+					"tags" => $css
+					);
+			}
 		}
 	}
 }

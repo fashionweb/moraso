@@ -46,10 +46,12 @@ class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interfa
 				}
 			}
 
-			Aitsu_Registry::get()->header->javascript_top = (object) array(
-				"name" => "JavaScript (Top)",
-				"tags" => $topJS
-				);
+			if (!empty($topJS)) {	
+				Aitsu_Registry::get()->header->javascript_top = (object) array(
+					"name" => "JavaScript (Top)",
+					"tags" => $topJS
+					);
+			}
 		}
 
 		$bottomJS = array();
@@ -65,12 +67,13 @@ class Moraso_Listeners_Header_JavaScript implements Aitsu_Event_Listener_Interfa
 					}
 				}
 			}
-
-			Aitsu_Registry::get()->header->javascript_bottom = (object) array(
-				"name" => "JavaScript (Bottom)",
-				"tags" => $bottomJS,
-				"position" => "bottom"
-				);
+			if (!empty($bottomJS)) {	
+				Aitsu_Registry::get()->header->javascript_bottom = (object) array(
+					"name" => "JavaScript (Bottom)",
+					"tags" => $bottomJS,
+					"position" => "bottom"
+					);
+			}
 		}
 	}
 }

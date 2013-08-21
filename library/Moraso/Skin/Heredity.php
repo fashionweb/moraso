@@ -22,6 +22,29 @@ class Moraso_Skin_Heredity
         return $heredity;
     }
 
+    public static function getJson()
+    {
+        $cachedSkinHeredityJson = Aitsu_Core_Cache::getInstance('skinHeredityJson_Client' . Moraso_Config::get('sys.client'));
+
+        if ($cachedSkinHeredityJson->isValid()) {
+            return unserialize($cachedSkinHeredityJson->load());
+        }
+
+        $heredity = self::build();
+
+        $json = '';
+        foreach (array_reverse($heredity) as $skin) {
+            $json_config = new Zend_Config_Json(APPLICATION_PATH . '/skins/' . $skin . '/skin.json');
+
+            $json = !empty($json) ? $json->merge($json_config) : $json_config;
+        }
+
+        $cachedSkinHeredityJson->setLifetime(60 * 60 * 24 * 365 * 10);
+        $cachedSkinHeredityJson->save(serialize($json), array('skin'));
+
+        return $json;
+    }
+
     private static function _build(& $heredity = null, $skin = null)
     {
         if (empty($heredity)) {

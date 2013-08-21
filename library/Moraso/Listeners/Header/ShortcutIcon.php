@@ -31,7 +31,7 @@ class Moraso_Listeners_Header_SortcutIcon implements Aitsu_Event_Listener_Interf
 		if (!empty($shortcut_icon)) {
 			Aitsu_Registry::get()->header->shortcut_icon = (object) array(
 				"name" => "ShortcutIcon",
-				"tag" => "<link rel=\"shortcut icon\" href=\"" . $shortcut_icon . "\" />
+				"tag" => "<link rel=\"shortcut icon\" href=\"" . $shortcut_icon . "\" />"
 				);
 		}
 	}

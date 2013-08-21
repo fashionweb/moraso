@@ -4,7 +4,7 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Listeners_Header_SortcutIcon implements Aitsu_Event_Listener_Interface
+class Moraso_Listeners_Header_ShortcutIcon implements Aitsu_Event_Listener_Interface
 {
 	public static function notify(Aitsu_Event_Abstract $event)
 	{

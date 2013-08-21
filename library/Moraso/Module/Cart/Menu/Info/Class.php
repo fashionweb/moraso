@@ -11,20 +11,16 @@ class Moraso_Module_Cart_Menu_Info_Class extends Aitsu_Module_Abstract
 
     protected function _init()
     {
-        Aitsu_Registry::setExpireTime(0);
-
-        /* prüfen ob es sich um einen Ajax Request handelt */
         if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
             header('Content-Type: application/json');
 
             $return = array();
-            $return['success'] = true; // false, wenn der Warenkorb geleert wird gibts ein false und dann wird er nicht aktualisiert, der letzte bleibt drin
+            $return['success'] = true;
             $return['qty'] = 0;
             $return['amount'] = 0;
 
             $nf = new NumberFormatter('de_DE', NumberFormatter::CURRENCY);
 
-            /* get Data */
             $cart = Moraso_Cart::getInstance();
 
             $cartArticles = $cart->getArticles();
@@ -37,14 +33,13 @@ class Moraso_Module_Cart_Menu_Info_Class extends Aitsu_Module_Abstract
 
                 $return['qty'] = $return['qty'] + $qty;
                 $return['amount'] = $return['amount'] + bcmul($articlePropertyCart->price->value, $qty, 2);
-
                 $return['success'] = true;
             }
 
             $return['amount'] = $nf->formatCurrency($return['amount'], 'EUR');
 
             echo json_encode($return);
+            exit();
         }
     }
-
 }

@@ -34,12 +34,12 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
 
     public function registerParams()
     {
-        if (substr($_GET['url'], -5) == '.html') {
+        if (isset($_GET['url']) && substr($_GET['url'], -5) === '.html') {
             $pathInfo = pathinfo($_GET['url']);
             $url = $pathInfo['dirname'];
             $urlname = $pathInfo['filename'];
         } else {
-            $url = substr($_GET['url'], -1) == '/' ? substr($_GET['url'], 0, -1) : $_GET['url'];
+            $url = isset($_GET['url']) && substr($_GET['url'], -1) == '/' ? substr($_GET['url'], 0, -1) : $_GET['url'];
             $urlname = null;
         }
 
@@ -53,8 +53,8 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                             '   artlang.idart, ' .
                             '   artlang.idlang, ' .
                             '   artlang.idartlang, ' .
-                            '	catlang.idcat, ' .
-                            '	cat.idclient ' .
+                            '   catlang.idcat, ' .
+                            '   cat.idclient ' .
                             'FROM ' .
                             '   _art_lang AS artlang ' .
                             'LEFT JOIN ' .
@@ -62,7 +62,7 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                             'LEFT JOIN ' .
                             '   _cat AS cat ON catlang.idcat = cat.idcat ' .
                             'WHERE ' .
-                            '	catlang.idcat =:idcat ' .
+                            '   catlang.idcat =:idcat ' .
                             'AND' .
                             '   artlang.idlang =:idlang', array(
                         ':idcat' => $idcat,
@@ -74,8 +74,8 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                             '   artlang.idart, ' .
                             '   artlang.idlang, ' .
                             '   artlang.idartlang, ' .
-                            '	catlang.idcat, ' .
-                            '	lang.idclient ' .
+                            '   catlang.idcat, ' .
+                            '   lang.idclient ' .
                             'FROM ' .
                             '   _art_lang AS artlang ' .
                             'LEFT JOIN ' .
@@ -83,7 +83,7 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                             'LEFT JOIN ' .
                             '   _lang AS lang ON catlang.idlang = lang.idlang ' .
                             'WHERE ' .
-                            '	catlang.idcat =:idcat ' .
+                            '   catlang.idcat =:idcat ' .
                             'AND ' .
                             '   lang.name =:langname ' .
                             'AND ' .
@@ -204,8 +204,8 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
         if (!empty($idarts)) {
             $results = Moraso_Db::fetchAll('' .
                             'SELECT ' .
-                            '	artlang.idart AS idart, ' .
-                            '	CONCAT(catlang.url, \'/\', artlang.urlname, \'.html\') AS url ' .
+                            '   artlang.idart AS idart, ' .
+                            '   CONCAT(catlang.url, \'/\', artlang.urlname, \'.html\') AS url ' .
                             'FROM ' .
                             '   _art_lang AS artlang ' .
                             'INNER JOIN ' .
@@ -213,7 +213,7 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                             'INNER JOIN ' .
                             '   _cat_lang AS catlang ON (artlang.idlang = catlang.idlang AND catart.idcat = catlang.idcat)' .
                             'WHERE ' .
-                            '	artlang.idart IN (' . implode(',', array_keys($idarts)) . ') ' .
+                            '   artlang.idart IN (' . implode(',', array_keys($idarts)) . ') ' .
                             'AND ' .
                             '   artlang.idlang =:idlang', array(
                         ':idlang' => Aitsu_Registry::get()->env->idlang
@@ -240,12 +240,12 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
         if (!empty($idcats)) {
             $results = Moraso_Db::fetchAll('' .
                             'SELECT ' .
-                            '	catlang.idcat AS idcat, ' .
-                            '	catlang.url AS url ' .
+                            '   catlang.idcat AS idcat, ' .
+                            '   catlang.url AS url ' .
                             'FROM ' .
                             '   _cat_lang AS catlang ' .
                             'WHERE ' .
-                            '	catlang.idcat IN (' . implode(',', array_keys($idcats)) . ') ' .
+                            '   catlang.idcat IN (' . implode(',', array_keys($idcats)) . ') ' .
                             'AND ' .
                             '   catlang.idlang =:idlang ', array(
                         ':idlang' => Aitsu_Registry::get()->env->idlang
@@ -296,10 +296,10 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
             Moraso_Db::query('' .
                     'UPDATE ' .
                     '   _cat_lang AS catlang, ' .
-                    '	( ' .
+                    '   ( ' .
                     '       SELECT ' .
                     '           child.idcat AS idcat, ' .
-                    '		GROUP_CONCAT(catlang.urlname ORDER BY parent.lft ASC SEPARATOR \'/\') AS url ' .
+                    '       GROUP_CONCAT(catlang.urlname ORDER BY parent.lft ASC SEPARATOR \'/\') AS url ' .
                     '       FROM ' .
                     '           _cat AS child ' .
                     '       LEFT JOIN ' .
@@ -310,11 +310,11 @@ class Moraso_Rewrite_Standard extends Aitsu_Rewrite_Abstract
                     '           catlang.idlang =:idlang ' .
                     '       GROUP BY ' .
                     '           child.idcat ' .
-                    '	) AS url ' .
+                    '   ) AS url ' .
                     'SET ' .
                     '   catlang.url = url.url ' .
                     'WHERE ' .
-                    '	catlang.idcat = url.idcat ' .
+                    '   catlang.idcat = url.idcat ' .
                     'AND ' .
                     '   catlang.idlang =:idlang', array(
                 ':idlang' => $idlang

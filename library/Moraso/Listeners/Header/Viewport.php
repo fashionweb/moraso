@@ -15,7 +15,7 @@ class Moraso_Listeners_Header_Viewport implements Aitsu_Event_Listener_Interface
 		$heredity = Moraso_Skin_Heredity::build();
 
 		$viewport = '';
-		foreach (array_reverse($heredity) as $skin) {
+		foreach ($heredity as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
 			if (is_readable($json_file_dest)) {
@@ -23,6 +23,7 @@ class Moraso_Listeners_Header_Viewport implements Aitsu_Event_Listener_Interface
 
 				if (isset($json_file_content->viewport) && !empty($json_file_content->viewport)) {
 					$viewport = $json_file_content->viewport;
+					break;
 				}
 			}
 		}

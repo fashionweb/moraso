@@ -27,7 +27,7 @@ class Moraso_Status
 
     public static function latestVersion()
     {
-        $applicationStatus = file_get_contents('https://bitbucket.org/webtischlerei/moraso-cms/raw/master/library/Moraso/Status.php');
+        $applicationStatus = @file_get_contents('https://bitbucket.org/webtischlerei/moraso-cms/raw/master/library/Moraso/Status.php');
 
         $matches = array();
         preg_match_all('@\'\\$/major/(\\d+)/minor/(\\d+)/revision/(\\d+)/build/(\\d+)\\$\'@', $applicationStatus, $matches);

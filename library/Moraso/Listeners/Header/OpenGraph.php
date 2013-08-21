@@ -16,6 +16,9 @@ class Moraso_Listeners_Header_OpenGraph implements Aitsu_Event_Listener_Interfac
 
 		$prefix = '';
 		$suffix = '';
+		$type = '';
+		$locale = '';
+		$country_name = '';
 		foreach (array_reverse($heredity) as $skin) {
 			$json_file_dest = APPLICATION_PATH . '/skins/' . $skin . '/skin.json';
 
@@ -28,6 +31,18 @@ class Moraso_Listeners_Header_OpenGraph implements Aitsu_Event_Listener_Interfac
 
 				if (isset($json_file_content->pagetitle->suffix) && !empty($json_file_content->pagetitle->suffix)) {
 					$suffix = $json_file_content->pagetitle->suffix;
+				}
+
+				if (isset($json_file_content->open_graph->type) && !empty($json_file_content->open_graph->type)) {
+					$type = $json_file_content->open_graph->type;
+				}
+
+				if (isset($json_file_content->open_graph->locale) && !empty($json_file_content->open_graph->locale)) {
+					$locale = $json_file_content->open_graph->locale;
+				}
+
+				if (isset($json_file_content->open_graph->country_name) && !empty($json_file_content->open_graph->country_name)) {
+					$country_name = $json_file_content->open_graph->country_name;
 				}
 			}
 		}
@@ -43,14 +58,26 @@ class Moraso_Listeners_Header_OpenGraph implements Aitsu_Event_Listener_Interfac
 		
 		$open_graphs = array(
 			'og:title' => $prefix . ' ' . $article->pagetitle . ' ' . $suffix,
-			'og:type' => 'website',
-			'og:image' => Moraso_Html_Helper_Image::getPath(Aitsu_Registry::get()->env->idart, $article->mainimage, 500, 500, 2),
-			'og:image:width' => 500,
-			'og:image:height' => 500,
-			'og:url' => $url,
-			'og:locale' => 'de_DE',
-			'og:country-name' => 'GER'
+			'og:url' => $url
 			);
+
+		if (!empty($type)) {
+			$open_graphs['og:type'] = $type;
+		}
+
+		if (!empty($locale)) {
+			$open_graphs['og:locale'] = $locale;
+		}
+
+		if (!empty($country_name)) {
+			$open_graphs['og:country-name'] = $country_name;
+		}
+
+		if (!empty($article->mainimage)) {
+			$open_graphs['og:image'] = Moraso_Html_Helper_Image::getPath(Aitsu_Registry::get()->env->idart, $article->mainimage, 500, 500, 2);
+			$open_graphs['og:image:width'] = 500;
+			$open_graphs['og:image:height'] = 500;
+		}
 
 		$openGraphs = array();
 		foreach ($open_graphs as $name => $content) {

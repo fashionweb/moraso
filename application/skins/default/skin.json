@@ -9,6 +9,7 @@
 
 	"viewport": "width=device-width",
 	"charset": "utf-8",
+	"shortcut_icon": "/skin/favicon.ico",
 
 	"geo": {
 		"geo.region": "DE-NI",
@@ -35,6 +36,12 @@
 		"fonts": {
 			"Raleway": "400,700"
 		}
+	},
+
+	"open_graph": {
+		"type": "website",
+		"locale": "de",
+		"country_name": "GER"
 	},
 
 	"css": {

@@ -35,10 +35,12 @@ class Moraso_Listeners_Header_GoogleFonts implements Aitsu_Event_Listener_Interf
 				}
 			}
 
-			Aitsu_Registry::get()->header->google_fonts = (object) array(
-				"name" => "GoogleFonts",
-				"tags" => $fonts
-				);
+			if (!empty($fonts)) {
+				Aitsu_Registry::get()->header->google_fonts = (object) array(
+					"name" => "GoogleFonts",
+					"tags" => $fonts
+					);
+			}
 		}
 	}
 }

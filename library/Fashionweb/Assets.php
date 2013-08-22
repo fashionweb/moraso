@@ -8,12 +8,12 @@ class Fashionweb_Assets
 {
     public static function getAssets()
     {
-        return Moraso_Db::simpleFetch(array('all'), '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
+        return Moraso_Db::simpleFetch('all', '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
     }
 
     public static function getAsset($id)
     {
-        return Moraso_Db::simpleFetch(array('all'), '_assets', array('id' => $id), 1);
+        return Moraso_Db::simpleFetch('all', '_assets', array('id' => $id), 1);
     }
     
     public static function deleteAsset($id)

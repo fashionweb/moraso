@@ -1,7 +1,7 @@
 [backend]
 setup.password = "123456789";
 
-database.adapter		= pdo_mysql
+database.adapter		    = pdo_mysql
 database.params.persistent	= false
 database.params.host		= localhost
 database.params.charset		= utf8

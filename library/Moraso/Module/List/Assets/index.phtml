@@ -1,0 +1,11 @@
+<?php foreach ($this->assets as $asset) : $asset = (object) $asset; ?>
+    <h3><?php echo $asset->headline; ?></h3>
+    <h4><?php echo $asset->subheadline; ?></h4>
+
+    <p><?php echo $asset->text_1; ?></p>
+    <p><?php echo $asset->text_2; ?></p>
+
+    <?php foreach ($asset->media as $media) : ?>
+        <?php print_r($media); ?>
+    <?php endforeach; ?>
+<?php endforeach; ?>

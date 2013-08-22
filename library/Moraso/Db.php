@@ -102,8 +102,6 @@ class Moraso_Db extends Aitsu_Db
 
         $query = 'SELECT ' . $select . ' FROM ' . $from . $where . $orderBy . ' LIMIT 0, ' . $limit;
         
-        echo '<pre>' . $query . '</pre>';
-
         if ($limit === 1) {
             return $cols > 1 ? Moraso_Db::fetchRowC($caching, $query, $whereValues) : Moraso_Db::fetchOneC($caching, $query, $whereValues);     
         } else {

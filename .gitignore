@@ -3,6 +3,6 @@
 !.gitignore
 !.description.txt
 !.database.xml
-.config.ini
-/nbproject
-/logs
+*~
+config.ini
+php.ini

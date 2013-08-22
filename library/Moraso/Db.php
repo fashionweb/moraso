@@ -68,7 +68,7 @@ class Moraso_Db extends Aitsu_Db
         $cols = PHP_INT_MAX;
 
         if (is_array($select)) {
-            $select = '`' . count($select) > 1 ? implode('`, `', $select) : $select[0]. '`';
+            $select = '`' . (count($select) > 1 ? implode('`, `', $select) : $select[0]) . '`';
         } else {
             if ($select !== 'all' && $select !== '*') {
                 $cols = 1;
@@ -76,7 +76,7 @@ class Moraso_Db extends Aitsu_Db
 
             $select = ($select === 'all' || $select === '*') ? '*' : '`' . $select . '`';
         }
-
+        
         $whereClause = array();
         $whereValues = array();
         foreach ($where as $key => $value) {

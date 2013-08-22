@@ -11,7 +11,6 @@ class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract
         $selectedAssets = Fashionweb_Content_Config_Assets::set($this->_index, 'assets', 'Assets');
 
         $assets = array();
-
         foreach ($selectedAssets as $key => $id) {
             $asset = Moraso_Db::simpleFetch('all', '_assets', array('id' => $id));
 

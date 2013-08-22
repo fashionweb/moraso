@@ -4,77 +4,52 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Fashionweb_Assets {
-
-    public static function getAssets() {
-
-        return Moraso_Db::fetchAll('' .
-                        'select ' .
-                        '   * ' .
-                        'from ' .
-                        '   _assets ' .
-                        'where ' .
-                        '   idclient =:idclient ' .
-                        'order by ' .
-                        '   created desc', array(
-                    ':idclient' => Aitsu_Registry::get()->session->currentClient
-        ));
+class Fashionweb_Assets
+{
+    public static function getAssets()
+    {
+        return Moraso_Db::simpleFetch('all', '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
     }
 
-    public static function getAsset($id) {
-
-        return Moraso_Db::fetchRow('' .
-                        'select ' .
-                        '   * ' .
-                        'from ' .
-                        '   _assets ' .
-                        'where ' .
-                        '   id =:id', array(
-                    ':id' => $id
-        ));
+    public static function getAsset($id)
+    {
+        return Moraso_Db::simpleFetch('all', '_assets', array('id' => $id), 1);
     }
     
-    public static function deleteAsset($id) {
-        
-        Moraso_Db::query('' .
-                    'delete from ' .
-                    '   _assets ' .
-                    'where ' .
-                    '   id =:id', array(
-                ':id' => $id
+    public static function deleteAsset($id)
+    {
+        Moraso_Db::delete('_assets', array('id' => $id));
+    }
+
+    public static function getMedia()
+    {
+        return Moraso_Db::fetchAll('' .
+            'SELECT ' .
+            '   media.mediaid as mediaid, ' .
+            '   description.name as name ' .
+            'FROM ' .
+            '   _media AS media ' .
+            'LEFT JOIN ' .
+            '   _media_description AS description ON media.mediaid = description.mediaid AND description.idlang = :idlang ' .
+            'WHERE ' .
+            '   (media.idart =:idart OR media.idart IS NULL)' .
+            'AND ' .
+            '   media.deleted IS NULL ' .
+            'AND ' .
+            '   media.mediaid IN (' .
+                '	SELECT ' .
+                '           MAX(media.mediaid) ' .
+                '	FROM ' .
+                '           _media as media ' .
+                '	WHERE ' .
+                '           (idart = :idart OR idart IS NULL)' .
+                '	GROUP BY' .
+                '           filename ' .
+                '   ) ' .
+        'ORDER BY ' .
+        '   description.name DESC', array(
+            ':idart' => Moraso_Config::get('assets.media.source'),
+            ':idlang' => Moraso_Util::getIdlang()
             ));
     }
-
-    public static function getMedia() {
-
-        return Moraso_Db::fetchAll('' .
-                        'select ' .
-                        '   media.mediaid as mediaid, ' .
-                        '   description.name as name ' .
-                        'from ' .
-                        '   _media as media ' .
-                        'left join ' .
-                        '   _media_description as description on media.mediaid = description.mediaid and description.idlang = :idlang ' .
-                        'where ' .
-                        '   (media.idart =:idart or media.idart is null)' .
-                        'and ' .
-                        '   media.deleted is null ' .
-                        'and ' .
-                        '   media.mediaid in (' .
-                        '	select ' .
-                        '           max(media.mediaid) ' .
-                        '	from ' .
-                        '           _media as media ' .
-                        '	where ' .
-                        '           (idart = :idart or idart is null)' .
-                        '	group by' .
-                        '           filename ' .
-                        '   ) ' .
-                        'order by ' .
-                        '   description.name desc', array(
-                    ':idart' => Moraso_Config::get('assets.media.source'),
-                    ':idlang' => Aitsu_Registry::get()->session->currentLanguage
-        ));
-    }
-
 }

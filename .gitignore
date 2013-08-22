@@ -3,5 +3,6 @@
 !.gitignore
 !.description.txt
 !.database.xml
+.config.ini
 /nbproject
 /logs

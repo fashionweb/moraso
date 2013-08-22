@@ -5,4 +5,5 @@
 !.database.xml
 *~
 config.json
+!/application/configs/config.json
 php.ini

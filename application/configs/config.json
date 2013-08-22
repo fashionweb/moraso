@@ -1,0 +1,27 @@
+{
+    "backend": {
+        "password": "123456789",
+        "database": {
+            "adapter": "pdo_mysql",
+            "params": {
+                "persistent": false,
+                "host": "localhost",
+                "charset": "utf8",
+                "tblprefix": "mor_",
+                "tblprefixbk": "bk_",
+                "username": "",
+                "password": "",
+                "dbname": ""
+            }
+        }
+    },
+    "default": {
+        "_extends": "backend"
+    },
+    "live": {
+        "_extends": "default"
+    },
+    "dev": {
+        "_extends": "live"
+    }
+}

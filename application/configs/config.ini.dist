@@ -7,14 +7,13 @@ database.params.host		= localhost
 database.params.charset		= utf8
 database.params.tblprefix	= mor_
 database.params.tblprefixbk	= bk_
+database.params.username	= ##USERNAME##
+database.params.password	= ##PASSWORD##
+database.params.dbname		= ##DBNAME##
 
 [default : backend]
 
 [live : default]
-database.params.host    	= 127.2.246.129
-database.params.username	= ckehres
-database.params.password	= ""
-database.params.dbname		= c9
 
 [prod : live]
 
@@ -23,6 +22,3 @@ database.params.dbname		= c9
 [preprod : staging]
 
 [dev : preprod]
-database.params.username	= root
-database.params.password	= "lollo1987"
-database.params.dbname		= moraso_master

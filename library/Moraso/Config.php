@@ -4,10 +4,10 @@
  * @author Christian Kehres <c.kehres@webtischlerei.de>
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
-class Moraso_Config extends Aitsu_Config {
-
-    public static function initConfig($ini = null, $env = null) {
-
+class Moraso_Config extends Aitsu_Config
+{
+    public static function initConfig($ini = null, $env = null)
+    {
         if (empty($ini)) {
             $ini = Aitsu_Mapping::getIni();
         }
@@ -16,9 +16,8 @@ class Moraso_Config extends Aitsu_Config {
             $env = Moraso_Util::getEnv();
         }
         
-        Aitsu_Registry::get()->config = Moraso_Config_Ini::getInstance('backend', $env);
-
+        Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance($env);
+        
         Moraso_Config_Db::setConfigFromDatabase($ini, false, $env);
     }
-
 }

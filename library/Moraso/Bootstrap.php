@@ -98,13 +98,13 @@ class Moraso_Bootstrap {
     protected function _ReadConfiguration() {
 
         if (substr($_SERVER['REQUEST_URI'], 1, 5) == 'admin' || substr($_SERVER['REQUEST_URI'], 1, 10) == 'skin/admin') {
-            Aitsu_Registry::get()->config = Moraso_Config_Ini::getInstance('admin');
+            Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance();
             $this->configured = true;
             return;
         }
 
         if (isset($_GET['edit']) || isset($_GET['preview'])) {
-            Aitsu_Registry::get()->config = Moraso_Config_Ini::getInstance('backend');
+            Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance();
 
             $ini = Moraso_Db::fetchOne('' .
                             'select ' .

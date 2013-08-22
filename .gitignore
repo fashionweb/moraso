@@ -4,6 +4,5 @@
 !.description.txt
 !.database.xml
 *~
-config.ini
-!config.ini.dist
+config.json
 php.ini

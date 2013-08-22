@@ -1,0 +1,39 @@
+<?php
+passthru('chmod 777 ./application/data -R');
+
+$config = array();
+
+if (is_readable('config.json')) {
+    $config = (array) json_decode(file_get_contents('config.json'));
+}
+
+$handle_env = fopen("php://stdin","r");
+$handle_database_host = fopen("php://stdin","r");
+$handle_database_dbname = fopen("php://stdin","r");
+$handle_database_username = fopen("php://stdin","r");
+$handle_database_password = fopen("php://stdin","r");
+
+echo "### UMGEBUNGS-KONFIGURATION ###\n";
+echo "In welcher Umgebung befinden Sie sich? (live oder dev): ";
+$env = rtrim(fgets($handle_env), "\n\r");
+
+echo "\n";
+
+echo "### DATENBANK-KONFIGURATION ###\n";
+echo "Host: ";
+$config[$env]['database']['params']['host'] = rtrim(fgets($handle_database_host), "\n\r");
+
+echo 'Name: ';
+$config[$env]['database']['params']['dbname'] = rtrim(fgets($handle_database_dbname), "\n\r");
+
+echo 'Benutzername: ';
+$config[$env]['database']['params']['username'] = rtrim(fgets($handle_database_username), "\n\r");
+
+echo 'Kennwort: ';
+$config[$env]['database']['params']['password'] = rtrim(fgets($handle_database_password), "\n\r");
+
+echo "\n";
+
+file_put_contents('config.json', json_encode($config));
+echo "Konfigurationsdatei wurde erfolgreich erzeugt!\n";
+?>

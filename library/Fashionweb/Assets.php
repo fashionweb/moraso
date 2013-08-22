@@ -38,9 +38,9 @@ class Fashionweb_Assets
             'AND ' .
             '   media.mediaid IN (' .
                 '	SELECT ' .
-                '       MAX(media.mediaid) ' .
+                '       MAX(mediaid) ' .
                 '	FROM ' .
-                '       _media AS media ' .
+                '       _media ' .
                 '	WHERE ' .
                 '       idart =:idart ' .
                 '	GROUP BY' .

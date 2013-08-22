@@ -1,9 +1,0 @@
-{
-	"name": "List.Assets",
-	"defaults": {
-		"all": false,
-		"orderBy": "created",
-		"orderType": "DESC",
-		"caching": "##secondsUntilEndOf.day##"
-	}
-}

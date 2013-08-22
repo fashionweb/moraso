@@ -5,4 +5,5 @@
 !.database.xml
 *~
 config.ini
+!config.ini.dist
 php.ini

@@ -8,7 +8,11 @@ class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract
 {
     protected function _main()
     {
-        $selectedAssets = Fashionweb_Content_Config_Assets::set($this->_index, 'assets', 'Assets');
+        if ($this->_defaults['all']) {
+            $selectedAssets = Fashionweb_Assets::getAssets($this->_defaults['orderBy'], $this->_defaults['orderType']);
+        } else {
+            $selectedAssets = Fashionweb_Content_Config_Assets::set($this->_index, 'assets', 'Assets');
+        }
 
         $assets = array();
         foreach ($selectedAssets as $key => $id) {

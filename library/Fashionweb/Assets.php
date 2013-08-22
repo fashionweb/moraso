@@ -6,14 +6,14 @@
  */
 class Fashionweb_Assets
 {
-    public static function getAssets()
+    public static function getAssets($orderBy = 'created', $orderType = 'DESC')
     {
-        return Moraso_Db::simpleFetch('all', '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
+        return Moraso_Db::simpleFetch('*', '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array($orderBy => $orderType));
     }
 
     public static function getAsset($id)
     {
-        return Moraso_Db::simpleFetch('all', '_assets', array('id' => $id), 1);
+        return Moraso_Db::simpleFetch('*', '_assets', array('id' => $id), 1);
     }
     
     public static function deleteAsset($id)
@@ -32,19 +32,19 @@ class Fashionweb_Assets
             'LEFT JOIN ' .
             '   _media_description AS description ON media.mediaid = description.mediaid AND description.idlang = :idlang ' .
             'WHERE ' .
-            '   (media.idart =:idart OR media.idart IS NULL)' .
+            '   media.idart =:idart ' .
             'AND ' .
             '   media.deleted IS NULL ' .
             'AND ' .
             '   media.mediaid IN (' .
                 '	SELECT ' .
-                '           MAX(media.mediaid) ' .
+                '       MAX(media.mediaid) ' .
                 '	FROM ' .
-                '           _media AS media ' .
+                '       _media AS media ' .
                 '	WHERE ' .
-                '           (idart = :idart OR idart IS NULL)' .
+                '       idart =:idart ' .
                 '	GROUP BY' .
-                '           filename ' .
+                '       filename ' .
                 '   ) ' .
         'ORDER BY ' .
         '   description.name DESC', array(

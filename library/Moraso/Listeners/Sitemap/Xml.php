@@ -46,7 +46,10 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
             $articles = Moraso_Db::fetchAll('' .
                 'SELECT ' .
                 '   artlang.idart, ' .
-                '   artlang.lastmodified ' .
+                '   artlang.idartlang, ' .
+                '   artlang.created, ' .
+                '   artlang.lastmodified, ' .
+                '   artlang.pagetitle ' .
                 'FROM ' .
                 '   _art_lang AS artlang ' .
                 'INNER JOIN ' .
@@ -75,7 +78,7 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     $url = $urlset->addChild('url');
                     $url->addChild('loc', $rewriting->rewriteOutput('{ref:idcat-' . $category['idcat'] . '}'));
                     $url->addChild('lastmod', date('c', strtotime($category['lastmodified'])));
-
+                    
                     $startidartlang = Aitsu_Persistence_Category::factory($category['idcat'])->load()->startidartlang;
 
                     $images = Moraso_Persistence_View_Media::ofSpecifiedArticle(Moraso_Util::getIdArt($startidartlang));
@@ -99,7 +102,27 @@ class Moraso_Listeners_Sitemap_Xml implements Aitsu_Event_Listener_Interface
                     $url = $urlset->addChild('url');
                     $url->addChild('loc', $rewriting->rewriteOutput('{ref:idart-' . $article['idart'] . '}'));
                     $url->addChild('lastmod', date('c', strtotime($article['lastmodified'])));
+                                        
+                    $articleProperty = Aitsu_Persistence_ArticleProperty::factory($article['idartlang']);  
+                    $articleProperty->load();
 
+                    if (isset($articleProperty->googlenews)) {
+                        $googlenews = (object) $articleProperty->googlenews;
+                        
+                        $newsNode = $url->addChild('ns:news:news');
+                        
+                        $newsPublicationNode = $newsNode->addChild('ns:news:publication');
+                        $newsPublicationNode->addChild('ns:news:name', Moraso_Config::get('google.news.name'));
+                        $newsPublicationNode->addChild('ns:news:language', Moraso_Config::get('google.news.language'));
+                        
+                        $newsNode->addChild('ns:news:access', $googlenews->access->value);
+                        $newsNode->addChild('ns:news:genres', $googlenews->genres->value);
+                        $newsNode->addChild('ns:news:publication_date', date("c", strtotime($article['created'])));
+                        $newsNode->addChild('ns:news:title', $article['pagetitle']);
+                        //$newsNode->addChild('ns:news:keywords', 'wirtschaft, fusion, akquisition, A, B');
+                        //$newsNode->addChild('ns:news:stock_tickers', 'NASDAQ:A, NASDAQ:B');
+                    }
+                    
                     $images = Moraso_Persistence_View_Media::ofSpecifiedArticle($article['idart']);
 
                     if (!empty($images)) {

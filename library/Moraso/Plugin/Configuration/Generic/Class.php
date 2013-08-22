@@ -46,21 +46,7 @@ class Moraso_Plugin_Configuration_Generic_Controller extends Moraso_Adm_Plugin_C
         $form->title = Aitsu_Translate::translate('Edit Configuration');
         $form->url = $this->view->url(array('paction' => 'edit'));
 
-        /* mapping */
-        $configs = array();
-        $match = array();
-
-        foreach (Aitsu_Util_Dir :: scan(APPLICATION_PATH . '/configs/clients', '*.ini') as $config) {
-            preg_match('@/([^/]+)\\.ini$@m', $config, $match);
-            $configs[] = (object) array(
-                        'value' => $match[1],
-                        'name' => $match[1]
-            );
-        }
-
-        $form->setOptions('config', $configs);
-
-        /* environment */
+/* environment */
         $environments = array('default', 'live', 'prod', 'staging', 'preprod', 'dev');
 
         $envs = array();

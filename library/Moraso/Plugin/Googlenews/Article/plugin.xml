@@ -1,0 +1,12 @@
+<plugin>
+    <id>52168823-15b0-495d-8edf-61317f02f681</id>
+    <name>Google News</name>
+    <author>Christian Kehres</author>
+    <copyright>2013, webtischlerei</copyright>
+    
+    <privileges>
+        <privilege>
+            <identifier>plugin.googlenews.article</identifier>
+        </privilege>
+    </privileges>
+</plugin>

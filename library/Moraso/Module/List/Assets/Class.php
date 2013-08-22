@@ -15,7 +15,7 @@ class Moraso_Module_List_Assets_Class extends Moraso_Module_Abstract
         }
 
         $assets = array();
-        foreach ($selectedAssets as $sourceAsset) {
+        foreach ($selectedAssets as $key => $sourceAsset) {
             $asset = Moraso_Db::simpleFetch('*', '_assets', array('id' => $sourceAsset['id']));
 
             if ($asset['active']) {

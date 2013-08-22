@@ -16,7 +16,7 @@ class Skin_Module_List_Assets_Class extends Moraso_Module_Abstract
 
         $assets = array();
         foreach ($selectedAssets as $key => $id) {
-            $asset = Moraso_Db::simpleFetch('all', '_assets', array('id' => $id));
+            $asset = Moraso_Db::simpleFetch('*', '_assets', array('id' => (int) $id));
 
             if ($asset['active']) {
                 $assets[$key] = $asset;

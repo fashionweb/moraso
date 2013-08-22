@@ -65,8 +65,16 @@ class Moraso_Db extends Aitsu_Db
 
     public static function simpleFetch($select, $from, array $where, $limit = 1, $caching = 0, array $orderBy)
     {
-        if (count($select) === 1) {
-            $select = $select[0];
+        $cols = PHP_INT_MAX;
+
+        if (is_array($select)) {
+            $select = '`' . count($select) > 1 ? implode('`, `', $select) : $select[0]. '`';
+        } else {
+            if ($select !== 'all' && $select !== '*') {
+                $cols = 1;
+            }
+
+            $select = ($select === 'all' || $select === '*') ? '*' : '`' . $select . '`';
         }
 
         $whereClause = array();
@@ -92,26 +100,12 @@ class Moraso_Db extends Aitsu_Db
         } 
         $orderBy = empty($orderClause) ? '', ' ORDER BY ' . implode(', ', $orderClause);
 
+        $query = 'SELECT ' . $select . ' FROM ' . $from . $where . $orderBy . ' LIMIT 0, ' . $limit;
+
         if ($limit === 1) {
-            if (is_array($select)) {
-                return Moraso_Db::fetchRowC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . $where . $orderBy, $whereValues);
-            } 
-
-            if ($select === 'all') {
-                return Moraso_Db::fetchRowC($caching, 'SELECT * FROM ' . $from . $where . $orderBy, $whereValues);
-            }
-            
-            return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . $where . $orderBy, $whereValues);
+            return $cols > 1 ? Moraso_Db::fetchRowC($caching, $query, $whereValues) : Moraso_Db::fetchOneC($caching, $query, $whereValues);     
         } else {
-            if (is_array($select)) {
-                return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . $where . $orderBy, $whereValues);
-            } 
-
-            if ($select === 'all') {
-                return Moraso_Db::fetchAllC($caching, 'SELECT * FROM ' . $from . $where . $orderBy, $whereValues);
-            }
-
-            return Moraso_Db::fetchColC($caching, 'SELECT `' . $select . '` FROM ' . $from . $where . $orderBy, $whereValues);
+            return $cols > 1 ? Moraso_Db::fetchAllC($caching, $query, $whereValues) : Moraso_Db::fetchColC($caching, $query, $whereValues);
         }
     }
 }

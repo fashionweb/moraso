@@ -6,13 +6,6 @@
  */
 class Moraso_Db extends Aitsu_Db
 {
-    /**
-     * Based on Aitsu_Db::filter()
-     * Extended by variable $groups
-     * 
-     * @since 1.2.6-1
-     * @see Aitsu_Db::filter();
-     */
     public static function filter($baseQuery, $limit = null, $offset = null, $filters = null, $orders = null, $groups = null)
     {
         $limit = is_null($limit) || !is_numeric($limit) ? 100 : $limit;
@@ -50,9 +43,6 @@ class Moraso_Db extends Aitsu_Db
         return $return;
     }
 
-    /**
-     * @since 1.14.0-1
-     */
     public static function delete($from, array $where)
     {
         $whereClause = array();
@@ -70,17 +60,17 @@ class Moraso_Db extends Aitsu_Db
             $whereValues[':value_' . $key] = $value;
         }
 
-        Moraso_Db::query('delete from ' . $from . ' where ' . implode(' and ', $whereClause) . '', $whereValues);
+        Moraso_Db::query('DELETE FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
     }
 
-    /**
-     * @since 1.14.0-1
-     */
-    public static function simpleFetch($select, $from, array $where, $limit = 1, $caching = 0)
+    public static function simpleFetch($select, $from, array $where, $limit = 1, $caching = 0, array $orderBy)
     {
+        if (count($select) === 1) {
+            $select = $select[0];
+        }
+
         $whereClause = array();
         $whereValues = array();
-
         foreach ($where as $key => $value) {
             $clause = '=';
 
@@ -92,49 +82,36 @@ class Moraso_Db extends Aitsu_Db
             $whereClause[] = $key . ' ' . $clause . ':value_' . $key;
             $whereValues[':value_' . $key] = $value;
         }
+        $where = empty($whereClause) ? '', ' WHERE ' . implode(' AND ', $whereClause);
 
-        if ($caching === 0) {
-            if ($limit === 1) {
-                if (is_array($select)) {
-                    return Moraso_Db::fetchRow('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                } elseif ($select === 'all') {
-                    return Moraso_Db::fetchRow('SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                }
-
-                return Moraso_Db::fetchOne('SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-            } else {
-                if (!is_array($select)) {
-                    $select = str_split($select);
-                }
-
-                if ($select === 'all') {
-                    return Moraso_Db::fetchAll('SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                } else {
-                    return Moraso_Db::fetchAll('SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                }
+        $orderClause = array();
+        if (!empty($orderBy)) {
+            foreach ($orderBy as $field => $sort) {
+                $orderClause[] = $field . ' ' . $sort;
             }
+        } 
+        $orderBy = empty($orderClause) ? '', ' ORDER BY ' . implode(', ', $orderClause);
+
+        if ($limit === 1) {
+            if (is_array($select)) {
+                return Moraso_Db::fetchRowC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . $where . $orderBy, $whereValues);
+            } 
+
+            if ($select === 'all') {
+                return Moraso_Db::fetchRowC($caching, 'SELECT * FROM ' . $from . $where . $orderBy, $whereValues);
+            }
+            
+            return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . $where . $orderBy, $whereValues);
         } else {
-            if ($limit === 1) {
-                if (is_array($select)) {
-                    return Moraso_Db::fetchRowC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                }
+            if (is_array($select)) {
+                return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . $where . $orderBy, $whereValues);
+            } 
 
-                if ($select === 'all') {
-                    return Moraso_Db::fetchOneC($caching, 'SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                } else {
-                    return Moraso_Db::fetchOneC($caching, 'SELECT `' . $select . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                }
-            } else {
-                if (!is_array($select)) {
-                    $select = str_split($select);
-                }
-
-                if ($select === 'all') {
-                    return Moraso_Db::fetchAllC($caching, 'SELECT * FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                } else {
-                    return Moraso_Db::fetchAllC($caching, 'SELECT `' . implode('`, `', $select) . '` FROM ' . $from . ' WHERE ' . implode(' AND ', $whereClause) . '', $whereValues);
-                }
+            if ($select === 'all') {
+                return Moraso_Db::fetchAllC($caching, 'SELECT * FROM ' . $from . $where . $orderBy, $whereValues);
             }
+
+            return Moraso_Db::fetchColC($caching, 'SELECT `' . $select . '` FROM ' . $from . $where . $orderBy, $whereValues);
         }
     }
 }

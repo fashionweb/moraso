@@ -8,12 +8,12 @@ class Fashionweb_Assets
 {
     public static function getAssets()
     {
-        return Moraso_Db::simpleFetch('all', '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
+        return Moraso_Db::simpleFetch(array('all'), '_assets', array('idclient' => Moraso_Util::getIdClient()), 999, 0, array('created' => 'DESC'));
     }
 
     public static function getAsset($id)
     {
-        return Moraso_Db::simpleFetch('all', '_assets', array('id' => $id), 1);
+        return Moraso_Db::simpleFetch(array('all'), '_assets', array('id' => $id), 1);
     }
     
     public static function deleteAsset($id)
@@ -25,8 +25,8 @@ class Fashionweb_Assets
     {
         return Moraso_Db::fetchAll('' .
             'SELECT ' .
-            '   media.mediaid as mediaid, ' .
-            '   description.name as name ' .
+            '   media.mediaid AS mediaid, ' .
+            '   description.name AS name ' .
             'FROM ' .
             '   _media AS media ' .
             'LEFT JOIN ' .
@@ -40,7 +40,7 @@ class Fashionweb_Assets
                 '	SELECT ' .
                 '           MAX(media.mediaid) ' .
                 '	FROM ' .
-                '           _media as media ' .
+                '           _media AS media ' .
                 '	WHERE ' .
                 '           (idart = :idart OR idart IS NULL)' .
                 '	GROUP BY' .

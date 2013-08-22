@@ -90,7 +90,7 @@ class Moraso_Db extends Aitsu_Db
             $whereClause[] = $key . ' ' . $clause . ':value_' . $key;
             $whereValues[':value_' . $key] = $value;
         }
-        $where = empty($whereClause) ? '', ' WHERE ' . implode(' AND ', $whereClause);
+        $where = empty($whereClause) ? '' : ' WHERE ' . implode(' AND ', $whereClause);
 
         $orderClause = array();
         if (!empty($orderBy)) {
@@ -98,7 +98,7 @@ class Moraso_Db extends Aitsu_Db
                 $orderClause[] = $field . ' ' . $sort;
             }
         } 
-        $orderBy = empty($orderClause) ? '', ' ORDER BY ' . implode(', ', $orderClause);
+        $orderBy = empty($orderClause) ? '' : ' ORDER BY ' . implode(', ', $orderClause);
 
         $query = 'SELECT ' . $select . ' FROM ' . $from . $where . $orderBy . ' LIMIT 0, ' . $limit;
 

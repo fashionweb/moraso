@@ -70,8 +70,8 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     }
 
     protected function _initBackendConfig() {
-
-        Aitsu_Registry::get()->config = Aitsu_Config_Ini::getInstance('backend');
+        
+        Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance();
     }
 
     protected function _initDatabase() {

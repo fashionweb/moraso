@@ -19,6 +19,8 @@ set_include_path(implode(PATH_SEPARATOR, array(
 
 require_once 'Zend/Application.php';
 
+define('ROOT_PATH', realpath(APPLICATION_PATH . '/../'));
+
 try {
     $application = new Zend_Application(APPLICATION_ENV, APPLICATION_PATH . '/configs/admin.ini');
     $application->bootstrap()->run();

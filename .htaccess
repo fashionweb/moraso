@@ -46,7 +46,12 @@ php_value date.timezone "Europe/Berlin"
 </IfModule>
 
 <Files .htaccess>
-	order allow,deny
+    order allow,deny
+	deny from all
+</Files>
+
+<Files config.json>
+    order allow,deny
 	deny from all
 </Files>
 

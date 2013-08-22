@@ -23,7 +23,7 @@ class Fashionweb_Content_Config_Assets extends Aitsu_Content_Config_Abstract
 
         foreach ($assets as $key => $asset) {
             if ($asset['active']) {
-                $assets[$key]['mediaid'] = Moraso_Db::simpleFetch(array('mediaid'), '_assets_have_media', array('idasset' => $asset['id']), 1, 0, array('id' => 'ASC'));
+                $assets[$key]['mediaid'] = Moraso_Db::simpleFetch('mediaid', '_assets_have_media', array('idasset' => $asset['id']), 1, 0, array('id' => 'ASC'));
 
                 $media = Moraso_Db::simpleFetch(array('filename', 'extension'), '_media', array('mediaid' => $assets[$key]['mediaid']), 999);
                 

@@ -5,7 +5,16 @@
  * @copyright (c) 2013, webtischlerei <http://www.webtischlerei.de>
  */
 
-        const MIN_VERS_PHP = '5.3.2';
+const MIN_VERS_PHP = '5.3.2';
+
+if (!is_readable('config.json')) {
+    header('Content-type: text/html; charset=utf-8', true, 423);
+    
+    echo '<h2>Fehler</h2>';
+    echo 'Bitte das Setup starten!<br /><br />In der Konsole "php setup" ausführen und den Anweisungen folgen.';
+    
+    return;
+}
 
 if (version_compare(PHP_VERSION, MIN_VERS_PHP, '<')) {
     header('Content-type: text/html; charset=utf-8', true, 503);

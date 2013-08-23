@@ -27,7 +27,7 @@ class Moraso_Addresses
 
         $address_id = Moraso_Db::put('_addresses', 'address_id', $address);
 
-        $googleData = Google_Maps::getGeoData($name, $street, $house_number, $postal_code, $city, $country);
+        $googleData = Moraso_Google_Maps::getGeoData($name, $street, $house_number, $postal_code, $city, $country);
         $googleData['address_id'] = $address_id;
 
         Moraso_Db::put('_addresses_google_data', $primary, $googleData);

@@ -61,7 +61,7 @@ class Aitsu_Plugin_Editalt_Article_Controller extends Moraso_Adm_Plugin_Controll
         if (empty($data['config'])) {
             $data['config'] = 'default';
         }
-        Aitsu_Registry :: get()->config = Aitsu_Config_Ini :: getInstance('clients/' . $data['config']);
+        Aitsu_Registry :: get()->config = Moraso_Config_Json::getInstance($data['config']);
 
         Aitsu_Registry :: isEdit(true);
         Aitsu_Registry :: isBoxModel(true);

@@ -21,7 +21,7 @@ class Moraso_Config_Json
             'allowModifications' => true
         )); 
                              
-        $user_config = new Zend_Config_Json(ROOT_PATH . '/config.json', $env, array(
+        $user_config = new Zend_Config_Json(ROOT_PATH . '/config.json', 'default', array(
             'allowModifications' => true
         ));
                 

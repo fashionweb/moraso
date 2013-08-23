@@ -97,7 +97,7 @@ class AclController extends Zend_Controller_Action {
                 if (empty($values['password'])) {
                     unset($values['password']);
                 } else {
-                    $hasher = new Openwall_PasswordHash(8, FALSE);
+                    $hasher = new Aitsu_Openwall_PasswordHash(8, FALSE);
                     $values['password'] = $hasher->hashPassword($values['password']);
                 }
                 Aitsu_Persistence_User::factory($id)->load()->setValues($values)->save();
@@ -209,7 +209,7 @@ class AclController extends Zend_Controller_Action {
                 if (empty($values['password'])) {
                     unset($values['password']);
                 } else {
-                    $hasher = new Openwall_PasswordHash(8, FALSE);
+                    $hasher = new Aitsu_Openwall_PasswordHash(8, FALSE);
                     $values['password'] = $hasher->hashPassword($values['password']);
                 }
                 $values['acfrom'] = empty($values['acfrom']) ? date('Y-m-d H:i:s') : $values['acfrom'];

@@ -8,41 +8,14 @@ set_include_path(realpath(dirname(__FILE__) . '/..') . PATH_SEPARATOR . get_incl
 set_include_path(realpath(dirname(__FILE__) . '/../..') . PATH_SEPARATOR . get_include_path());
 require_once 'Zend/Loader/Autoloader' . '.php';
 
-class Moraso_Bootstrap {
-
+class Moraso_Bootstrap
+{
     protected $configured = false;
     public $pageContent = null;
     protected $debug = false;
 
-    protected function _DisableMagicQuotes() {
-
-        if (get_magic_quotes_gpc()) {
-            $process = array(
-                & $_GET,
-                & $_POST,
-                & $_COOKIE,
-                & $_REQUEST
-            );
-
-            while (list ($key, $val) = each($process)) {
-                foreach ($val as $k => $v) {
-                    unset($process[$key][$k]);
-
-                    if (is_array($v)) {
-                        $process[$key][stripslashes($k)] = $v;
-                        $process[] = & $process[$key][stripslashes($k)];
-                    } else {
-                        $process[$key][stripslashes($k)] = stripslashes($v);
-                    }
-                }
-            }
-
-            unset($process);
-        }
-    }
-
-    protected function _ReturnCache() {
-
+    protected function _ReturnCache()
+    {
         if ((isset($_GET['edit']) && $_GET['edit'] == 1) || (isset($_GET['clearcache']) || isset($_GET['profile']))) {
             return;
         }
@@ -51,7 +24,6 @@ class Moraso_Bootstrap {
 
         if ($files !== false) {
             foreach ($files as $file) {
-
                 $match = array();
                 if (preg_match('/\\w{40}\\.([0-9]*).([0-9a-z]*)\\.html/', $file, $match)) {
                     header("Pragma: public");
@@ -70,8 +42,8 @@ class Moraso_Bootstrap {
         }
     }
 
-    protected function _RegisterAutoloader() {
-
+    protected function _RegisterAutoloader()
+    {
         $autoloader = Zend_Loader_Autoloader::getInstance();
         $libPath = realpath(LIBRARY_PATH);
         $libs = scandir($libPath);
@@ -86,8 +58,8 @@ class Moraso_Bootstrap {
         }
     }
 
-    protected function _SetErrorHandler() {
-
+    protected function _SetErrorHandler()
+    {
         set_error_handler(array(
             'Aitsu_Core_Logger',
             'errorHandler'
@@ -95,14 +67,8 @@ class Moraso_Bootstrap {
         );
     }
 
-    protected function _ReadConfiguration() {
-
-        if (substr($_SERVER['REQUEST_URI'], 1, 5) == 'admin' || substr($_SERVER['REQUEST_URI'], 1, 10) == 'skin/admin') {
-            Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance();
-            $this->configured = true;
-            return;
-        }
-
+    protected function _ReadConfiguration()
+    {
         if (isset($_GET['edit']) || isset($_GET['preview'])) {
             Aitsu_Registry::get()->config = Moraso_Config_Json::getInstance();
 
@@ -127,7 +93,6 @@ class Moraso_Bootstrap {
             Moraso_Config::initConfig($ini);
 
             if (isset($_GET['profile']) && $_GET['profile']) {
-
                 $url = Moraso_Db::fetchOne('' .
                                 'select ' .
                                 '   concat(catlang.url, \'/\', artlang.urlname, \'.html\') as url ' .
@@ -154,27 +119,23 @@ class Moraso_Bootstrap {
         $this->configured = true;
     }
 
-    protected function _ExecuteConfiguredPreInits() {
-
+    protected function _ExecuteConfiguredPreInits()
+    {
         Aitsu_Event::raise('frontend.preInit', null);
     }
 
-    protected function _InitializeSession() {
-
+    protected function _InitializeSession()
+    {
         if (!Moraso_Config::get('session.usefilesystem')) {
-            if (Moraso_Config::get('memcached.enable')) {
-                $saveHandler = new Aitsu_Session_MemcachedHandler();
-            } else {
-                Zend_Db_Table_Abstract::setDefaultAdapter(Moraso_Db::getDb());
-                $saveHandler = new Zend_Session_SaveHandler_DbTable(array(
-                    'name' => Moraso_Db::prefix('_aitsu_session'),
-                    'primary' => 'id',
-                    'modifiedColumn' => 'modified',
-                    'dataColumn' => 'data',
-                    'lifetimeColumn' => 'lifetime'
-                ));
-            }
-
+            Zend_Db_Table_Abstract::setDefaultAdapter(Moraso_Db::getDb());
+            $saveHandler = new Zend_Session_SaveHandler_DbTable(array(
+                'name' => Moraso_Db::prefix('_aitsu_session'),
+                'primary' => 'id',
+                'modifiedColumn' => 'modified',
+                'dataColumn' => 'data',
+                'lifetimeColumn' => 'lifetime'
+            ));
+            
             Zend_Session::setSaveHandler($saveHandler);
         }
 
@@ -198,14 +159,14 @@ class Moraso_Bootstrap {
         Aitsu_Registry::get()->session = $this->session;
     }
 
-    protected function _AddUrlToStack() {
-
+    protected function _AddUrlToStack()
+    {
         Aitsu_User_Status::pageStack($_SERVER['REQUEST_URI']);
     }
 
-    protected function _CleanCache() {
-
-        if (!isset($_GET['clearcache'])) {
+    protected function _CleanCache()
+    {
+        if (!isset($_GET['clearcache']) || empty($_GET['clearcache'])) {
             return;
         }
 
@@ -217,28 +178,13 @@ class Moraso_Bootstrap {
             return;
         }
 
-        if (empty($_GET['clearcache'])) {
-            return;
-        }
-
         Aitsu_Cache::getInstance()->clean(array(
             $_GET['clearcache']
         ));
     }
 
-    protected function _SetIniValues() {
-
-        if (!isset(Aitsu_Registry::get()->config->ini)) {
-            return;
-        }
-
-        foreach (Aitsu_Registry::get()->config->ini->toArray() as $entry) {
-            ini_set($entry['key'], $entry['value']);
-        }
-    }
-
-    protected function _HmacAuthentication() {
-
+    protected function _HmacAuthentication()
+    {
         $auth = Aitsu_Util_Request::header('aitsuauth');
 
         if (!$auth) {
@@ -260,10 +206,7 @@ class Moraso_Bootstrap {
         $uri = $_SERVER['REQUEST_URI'];
         $body = file_get_contents('php://input');
 
-        $secret = Moraso_Db::fetchOne('' .
-                        'select password from _acl_user where login = :userid', array(
-                    ':userid' => $auth['userid']
-        ));
+        $secret = Moraso_Db::simpleFetch('password', '_acl_user', array('login' => $auth['userid']));
 
         $checkHash = hash_hmac('sha1', $uri . $body, $secret);
 
@@ -275,8 +218,8 @@ class Moraso_Bootstrap {
         Aitsu_Registry::get()->session->user = Aitsu_Adm_User::getInstance();
     }
 
-    protected function _AuthenticateUser() {
-
+    protected function _AuthenticateUser()
+    {
         if (isset($_REQUEST['logout'])) {
             Aitsu_Registry::get()->session->user = null;
             header('Location: ' . strtok($_SERVER['REQUEST_URI'], '?'));
@@ -313,8 +256,8 @@ class Moraso_Bootstrap {
         Aitsu_Application_Status::setEnv('frontend');
     }
 
-    protected function _SetBackendLang() {
-
+    protected function _SetBackendLang()
+    {
         if (!Aitsu_Registry::isEdit()) {
             return;
         }
@@ -331,13 +274,13 @@ class Moraso_Bootstrap {
         Aitsu_Registry::get()->Zend_Translate = $adapter;
     }
 
-    protected function _ExecuteConfiguredInits() {
-
+    protected function _ExecuteConfiguredInits()
+    {
         Aitsu_Event::raise('frontend.init', null);
     }
 
-    protected function _EvaluateRequest() {
-
+    protected function _EvaluateRequest()
+    {
         if (!isset($_GET['id'])) {
             Aitsu_Bootstrap_EvalRequest::run();
         } else {
@@ -406,32 +349,28 @@ class Moraso_Bootstrap {
         Aitsu_Bootstrap_EvalRequest::setIdartlang(Moraso_Config::get('sys.loginpage'));
     }
 
-    protected function _LockApplicationStatus() {
-
+    protected function _LockApplicationStatus()
+    {
         Aitsu_Application_Status::setEnv('front');
         Aitsu_Application_Status::lock();
     }
 
-    protected function _RenderOutput() {
-
+    protected function _RenderOutput()
+    {
         $this->pageContent = '<script type="application/x-moraso" src="Template:Root">' .
                 'suppressWrapping = true' .
                 '</script>';
     }
 
-    protected function _ExecuteConfiguredTransformations() {
-
+    protected function _ExecuteConfiguredTransformations()
+    {
         Aitsu_Event::raise('frontend.dispatch', array(
             'bootstrap' => $this
         ));
     }
 
-    protected function _ExecuteConfiguredUrlRewriting() {
-
-        if (!Aitsu_Registry::get()->config->rewrite->modrewrite) {
-            return;
-        }
-
+    protected function _ExecuteConfiguredUrlRewriting()
+    {
         $obj = call_user_func(array(
             Aitsu_Registry::get()->config->rewrite->controller,
             'getInstance'
@@ -440,8 +379,8 @@ class Moraso_Bootstrap {
         $this->pageContent = $obj->rewriteOutput($this->pageContent);
     }
 
-    protected function _CacheIntoTheFileSystem() {
-
+    protected function _CacheIntoTheFileSystem()
+    {
         if (!Aitsu_Registry::get()->config->cache->page->enable || Aitsu_Adm_User::getInstance() != null) {
             return;
         }
@@ -449,28 +388,28 @@ class Moraso_Bootstrap {
         Aitsu_Cache_Page::getInstance()->saveFs($this->pageContent);
     }
 
-    protected function _TriggerIndexing() {
-
+    protected function _TriggerIndexing()
+    {
         Aitsu_Event::raise('frontend.indexing', array(
             'bootstrap' => $this
         ));
     }
 
-    protected function _ProfileExecution() {
-
+    protected function _ProfileExecution()
+    {
         $profile = Aitsu_Profiler::get();
         if ($profile !== false) {
             $this->pageContent = $profile;
         }
     }
 
-    protected function _TriggerEnd() {
-
+    protected function _TriggerEnd()
+    {
         Aitsu_Event::raise('frontend.end', null);
     }
 
-    public static function run() {
-
+    public static function run()
+    {
         static $running = false;
 
         if ($running) {
@@ -526,7 +465,7 @@ class Moraso_Bootstrap {
         $expire = Aitsu_Registry::getExpireTime();
 
         if (empty($expire) || Aitsu_Application_Status::isEdit()) {
-            $cacheControl = 'no-cache, must-revalidat';
+            $cacheControl = 'no-cache, must-revalidate';
             $pragma = 'no-cache';
             $expires = 'Mon, 16 Mar 1987 14:35:00';
         } else {
@@ -551,5 +490,4 @@ class Moraso_Bootstrap {
 
         return;
     }
-
 }

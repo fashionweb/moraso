@@ -53,7 +53,7 @@ class Aitsu_Persistence_View_User {
 				':login' => $login
 			));
 
-			$hasher = new Openwall_PasswordHash(8, FALSE);
+			$hasher = new Aitsu_Openwall_PasswordHash(8, FALSE);
 			if ($user) {
 				if ($hasher->checkPassword($password, $user['password'])) {
 					$userid = $user['userid'];

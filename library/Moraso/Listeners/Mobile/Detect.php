@@ -8,7 +8,7 @@ class Moraso_Listeners_Mobile_Detect implements Aitsu_Event_Listener_Interface
 {
     public static function notify(Aitsu_Event_Abstract $event)
     {
-        $detect = new Mobile_Detect();
+        $detect = new Moraso_Mobile_Detect();
 
         Aitsu_Registry::get()->env->mobile->detect->isMobile = (bool) $detect->isMobile();
         Aitsu_Registry::get()->env->mobile->detect->isTablet = (bool) $detect->isTablet();

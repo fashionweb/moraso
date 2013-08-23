@@ -16,7 +16,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 	public static function getName() {
 
-		return Aitsu_Translate :: translate('Synchronize database structure');
+		return Aitsu_Translate::translate('Synchronize database structure');
 	}
 
 	protected function _init() {
@@ -32,7 +32,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 		$this->_xml = new DOMDocument();
 		$this->_xml->loadXML('<database></database>');
-		$xmls = array_merge(Aitsu_Util_Dir :: scan(APPLICATION_PATH, 'database.xml'), Aitsu_Util_Dir :: scan(APPLICATION_LIBPATH, 'database.xml'));
+		$xmls = array_merge(Aitsu_Util_Dir::scan(APPLICATION_PATH, 'database.xml'), Aitsu_Util_Dir::scan(APPLICATION_LIBPATH, 'database.xml'));
 		foreach ($xmls as $xml) {
 			$dom = new DOMDocument();
 			$dom->load($xml);
@@ -60,12 +60,12 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 	protected function _beforeStart() {
 
-		return Aitsu_Translate :: translate('The process may take quite a while. Please be patient.');
+		return Aitsu_Translate::translate('The process may take quite a while. Please be patient.');
 	}
 
 	protected function _beforeRemoveIndexes() {
 
-		return Aitsu_Translate :: translate('Removing indexes. This may take quite a while. Please be patient to allow to remove the indexes.');
+		return Aitsu_Translate::translate('Removing indexes. This may take quite a while. Please be patient to allow to remove the indexes.');
 	}
 
 	protected function _hasNext() {
@@ -91,40 +91,40 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		), array ());
 
 		if (is_object($response)) {
-			return Aitsu_Adm_Script_Response :: factory($response->message, 'warning');
+			return Aitsu_Adm_Script_Response::factory($response->message, 'warning');
 		}
 
-		return Aitsu_Adm_Script_Response :: factory($response);
+		return Aitsu_Adm_Script_Response::factory($response);
 	}
 
 	protected function _removeConstraints() {
 
-		$constraints = Aitsu_Db :: fetchAll('' .
+		$constraints = Moraso_Db::fetchAll('' .
 		'select * from information_schema.table_constraints ' .
 		'where ' .
 		'	table_schema = :schema ' .
 		'	and table_name like :prefix ' .
 		'	and constraint_type = \'FOREIGN KEY\' ', array (
-			':schema' => Aitsu_Config :: get('database.params.dbname'),
-			':prefix' => Aitsu_Config :: get('database.params.tblprefix') . '%'
+			':schema' => Moraso_Config::get('database.params.dbname'),
+			':prefix' => Moraso_Config::get('database.params.tblprefix') . '%'
 		));
 
 		$startTime = time();
 		foreach ($constraints as $constraint) {
-			Aitsu_Db :: query('' .
+			Moraso_Db::query('' .
 			'alter table `' . $constraint['TABLE_NAME'] . '` drop foreign key `' . $constraint['CONSTRAINT_NAME'] . '`');
 
 			if (time() - $startTime > 15) {
-				throw new Aitsu_Adm_Script_Resume_Exception(Aitsu_Translate :: translate('Removement takes very long. The current step needs to be resumed.'));
+				throw new Aitsu_Adm_Script_Resume_Exception(Aitsu_Translate::translate('Removement takes very long. The current step needs to be resumed.'));
 			}
 		}
 
-		return Aitsu_Translate :: translate('Constraints have been removed.');
+		return Aitsu_Translate::translate('Constraints have been removed.');
 	}
 
 	protected function _removeIndexes() {
 
-		$indexes = Aitsu_Db :: fetchAll('' .
+		$indexes = Moraso_Db::fetchAll('' .
 		'select distinct ' .
 		'	table_name, ' .
 		'	index_name ' .
@@ -133,14 +133,14 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		'	table_schema = :schema ' .
 		'	and table_name like :prefix ' .
 		'	and index_name != \'PRIMARY\' ', array (
-			':schema' => Aitsu_Config :: get('database.params.dbname'),
-			':prefix' => Aitsu_Config :: get('database.params.tblprefix') . '%'
+			':schema' => Moraso_Config::get('database.params.dbname'),
+			':prefix' => Moraso_Config::get('database.params.tblprefix') . '%'
 		));
 
 		$startTime = time();
 		foreach ($indexes as $index) {
 			try {
-				Aitsu_Db :: query('' .
+				Moraso_Db::query('' .
 				'alter table `' . $index['table_name'] . '` drop index `' . $index['index_name'] . '`');
 			} catch (Exception $e) {
 				/*
@@ -150,58 +150,58 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 			}
 
 			if (time() - $startTime > 15) {
-				throw new Aitsu_Adm_Script_Resume_Exception(Aitsu_Translate :: translate('Removement takes very long. The current step needs to be resumed.'));
+				throw new Aitsu_Adm_Script_Resume_Exception(Aitsu_Translate::translate('Removement takes very long. The current step needs to be resumed.'));
 			}
 		}
 
-		return Aitsu_Translate :: translate('Indexes have been removed.');
+		return Aitsu_Translate::translate('Indexes have been removed.');
 	}
 
 	protected function _removeViews() {
 
-		$views = Aitsu_Db :: fetchAll('' .
+		$views = Moraso_Db::fetchAll('' .
 		'select * from information_schema.views ' .
 		'where ' .
 		'	table_schema = :schema ' .
 		'	and table_name like :prefix ', array (
-			':schema' => Aitsu_Config :: get('database.params.dbname'),
-			':prefix' => Aitsu_Config :: get('database.params.tblprefix') . '%'
+			':schema' => Moraso_Config::get('database.params.dbname'),
+			':prefix' => Moraso_Config::get('database.params.tblprefix') . '%'
 		));
 
 		try {
 			foreach ($views as $view) {
-				Aitsu_Db :: query('' .
+				Moraso_Db::query('' .
 				'drop view `' . $view['TABLE_NAME'] . '`');
 			}
 		} catch (Exception $e) {
 			return (object) array (
-				'message' => Aitsu_Translate :: translate('Views have not been dropped due to insufficient privileges. If they are unchanged, they still might work properly. However, it is recommended to drop and recreate them using mysql command line interface.')
+				'message' => Aitsu_Translate::translate('Views have not been dropped due to insufficient privileges. If they are unchanged, they still might work properly. However, it is recommended to drop and recreate them using mysql command line interface.')
 			);
 		}
 
-		return Aitsu_Translate :: translate('Views have been removed.');
+		return Aitsu_Translate::translate('Views have been removed.');
 	}
 
 	protected function _removeEmptyTables() {
 
-		$tables = Aitsu_Db :: fetchAll('' .
+		$tables = Moraso_Db::fetchAll('' .
 		'select * from information_schema.tables ' .
 		'where ' .
 		'	table_schema = :schema ' .
 		'	and table_name like :prefix ', array (
-			':schema' => Aitsu_Config :: get('database.params.dbname'),
-			':prefix' => Aitsu_Config :: get('database.params.tblprefix') . '%'
+			':schema' => Moraso_Config::get('database.params.dbname'),
+			':prefix' => Moraso_Config::get('database.params.tblprefix') . '%'
 		));
 
 		foreach ($tables as $table) {
-			if (Aitsu_Db :: fetchOne('' .
+			if (Moraso_Db::fetchOne('' .
 				'select count(*) from ' . $table['TABLE_NAME']) == 0) {
-				Aitsu_Db :: query('' .
+				Moraso_Db::query('' .
 				'drop table `' . $table['TABLE_NAME'] . '`');
 			}
 		}
 
-		return Aitsu_Translate :: translate('Empty tables have been removed.');
+		return Aitsu_Translate::translate('Empty tables have been removed.');
 	}
 
 	protected function _restoreTables() {
@@ -209,13 +209,13 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		$currentIndex = $this->_currentStep - $this->_tableRestoreOffset;
 		$table = $this->_xml->getElementsByTagName('table')->item($currentIndex);
 
-		if (Aitsu_Db :: fetchOne('' .
+		if (Moraso_Db::fetchOne('' .
 			'select count(*) from information_schema.tables ' .
 			'where ' .
 			'	table_schema = :schema ' .
 			'	and table_name = :tablename', array (
-				':schema' => Aitsu_Config :: get('database.params.dbname'),
-				':tablename' => Aitsu_Config :: get('database.params.tblprefix') . $table->attributes->getNamedItem('name')->nodeValue
+				':schema' => Moraso_Config::get('database.params.dbname'),
+				':tablename' => Moraso_Config::get('database.params.tblprefix') . $table->attributes->getNamedItem('name')->nodeValue
 			)) == 0) {
 			$this->_createTable($table);
 		} else {
@@ -226,7 +226,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 		$this->_restoreData($table);
 
-		return sprintf(Aitsu_Translate :: translate('Table %s has been restored.'), $table->attributes->getNamedItem('name')->nodeValue);
+		return sprintf(Aitsu_Translate::translate('Table %s has been restored.'), $table->attributes->getNamedItem('name')->nodeValue);
 	}
 
 	protected function _restoreConstraints() {
@@ -234,7 +234,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		$currentIndex = $this->_currentStep - $this->_constraintRestoreOffset;
 		$table = $this->_xml->getElementsByTagName('table')->item($currentIndex);
 
-		$prefix = Aitsu_Config :: get('database.params.tblprefix');
+		$prefix = Moraso_Config::get('database.params.tblprefix');
 
 		$tableName = $prefix . $table->getAttribute('name');
 		foreach ($table->getElementsByTagName('field') as $field) {
@@ -249,13 +249,13 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 				/*
 				 * Add an index for the specified column.
 				 */
-				Aitsu_Db :: query("alter table $tableName add index `$indexName` (`$columnName`)");
+				Moraso_Db::query("alter table $tableName add index `$indexName` (`$columnName`)");
 
 				if ($constraint->hasAttribute('ondelete') && $constraint->getAttribute('ondelete') == 'set null') {
 					/*
 					 * Set values to null that would case a referential integrity violation.
 					 */
-					Aitsu_Db :: query("" .
+					Moraso_Db::query("" .
 					"update `$tableName` src " .
 					"set src.$columnName = null " .
 					"where src.$columnName not in (" .
@@ -265,7 +265,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 					/*
 					 * Remove entries that would cause a referential integrity violation.
 					 */
-					Aitsu_Db :: query("" .
+					Moraso_Db::query("" .
 					"delete src.* from `$tableName` src " .
 					"where src.$columnName not in (" .
 					"	select tgt.$refColumn from `$refTable` tgt" .
@@ -275,7 +275,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 				/*
 				 * Add the constraint.
 				 */
-				Aitsu_Db :: query("" .
+				Moraso_Db::query("" .
 				"alter table `$tableName` add foreign key (`$columnName`) " .
 				"references `$refTable` (`$refColumn`) " .
 				"on delete $onDelete " .
@@ -283,20 +283,20 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 			}
 		}
 
-		return sprintf(Aitsu_Translate :: translate('Constraints on %s have been restored.'), $tableName);
+		return sprintf(Aitsu_Translate::translate('Constraints on %s have been restored.'), $tableName);
 	}
 
 	protected function _restoreViews() {
 
 		$failures = false;
 
-		$prefix = Aitsu_Config :: get('database.params.tblprefix');
+		$prefix = Moraso_Config::get('database.params.tblprefix');
 
 		foreach ($this->_xml->getElementsByTagName('view') as $view) {
 			$viewName = $prefix . $view->getAttribute('name');
 			$viewSelect = $view->nodeValue;
 			try {
-				Aitsu_Db :: query("create view `$viewName` as $viewSelect");
+				Moraso_Db::query("create view `$viewName` as $viewSelect");
 			} catch (Exception $e) {
 				$failures = true;
 			}
@@ -304,28 +304,28 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 		if ($failures) {
 			return (object) array (
-				'message' => Aitsu_Translate :: translate('Views have not been completely restored due to insufficient privilegies or missing function. You have to add them using the mysql command line interface.')
+				'message' => Aitsu_Translate::translate('Views have not been completely restored due to insufficient privilegies or missing function. You have to add them using the mysql command line interface.')
 			);
 		}
 
-		return Aitsu_Translate :: translate('Views have been restored.');
+		return Aitsu_Translate::translate('Views have been restored.');
 	}
 
 	protected function _restoreFunctions() {
 
 		try {
 			foreach ($this->_xml->getElementsByTagName('function') as $function) {
-				Aitsu_Db :: getDb()->getConnection()->query('drop function if exists ' . $function->getAttribute('name'));
-				Aitsu_Db :: getDb()->getConnection()->query('drop procedure if exists ' . $function->getAttribute('name'));
-				Aitsu_Db :: getDb()->getConnection()->query($function->nodeValue);
+				Moraso_Db::getDb()->getConnection()->query('drop function if exists ' . $function->getAttribute('name'));
+				Moraso_Db::getDb()->getConnection()->query('drop procedure if exists ' . $function->getAttribute('name'));
+				Moraso_Db::getDb()->getConnection()->query($function->nodeValue);
 			}
 		} catch (Exception $e) {
 			return (object) array (
-				'message' => Aitsu_Translate :: translate('Functions have not been restored due to insufficient privilegies. You have to add them using the mysql command line interface.')
+				'message' => Aitsu_Translate::translate('Functions have not been restored due to insufficient privilegies. You have to add them using the mysql command line interface.')
 			);
 		}
 
-		return Aitsu_Translate :: translate('Functions have been restored.');
+		return Aitsu_Translate::translate('Functions have been restored.');
 	}
 
 	protected function _restoreTriggers() {
@@ -333,28 +333,28 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		try {
 			foreach ($this->_xml->getElementsByTagName('trigger') as $trigger) {
 				try {
-					Aitsu_Db :: getDb()->getConnection()->query('drop trigger ' . $trigger->getAttribute('trigger'));
+					Moraso_Db::getDb()->getConnection()->query('drop trigger ' . $trigger->getAttribute('trigger'));
 				} catch (Exception $e) {
 					/*
 					 * Do nothing. If the trigger does not exist, an exception is thrown and
 					 * catched.
 					 */
 				}
-				Aitsu_Db :: getDb()->getConnection()->query(Aitsu_Db :: prefix($trigger->nodeValue));
+				Moraso_Db::getDb()->getConnection()->query(Moraso_Db::prefix($trigger->nodeValue));
 			}
 		} catch (Exception $e) {
 			trigger_error($e->getMessage());
 			return (object) array (
-				'message' => Aitsu_Translate :: translate('Triggers have not been restored due to insufficient privilegies. You have to add them using the mysql command line interface.')
+				'message' => Aitsu_Translate::translate('Triggers have not been restored due to insufficient privilegies. You have to add them using the mysql command line interface.')
 			);
 		}
 
-		return Aitsu_Translate :: translate('Triggers have been restored.');
+		return Aitsu_Translate::translate('Triggers have been restored.');
 	}
 
 	protected function _createTable($node) {
 
-		$statement = 'CREATE TABLE `' . Aitsu_Config :: get('database.params.tblprefix') . $node->attributes->getNamedItem('name')->nodeValue . '` (';
+		$statement = 'CREATE TABLE `' . Moraso_Config::get('database.params.tblprefix') . $node->attributes->getNamedItem('name')->nodeValue . '` (';
 
 		$defaultExpressions = array (
 			'current_timestamp'
@@ -395,24 +395,24 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 		$statement .= ' COMMENT=\'Since ' . $node->getAttribute('since') . '\'';
 
-		Aitsu_Db :: query($statement);
+		Moraso_Db::query($statement);
 	}
 
 	protected function _restoreIndexes($table) {
 
-		$tableName = Aitsu_Config :: get('database.params.tblprefix') . $table->getAttribute('name');
+		$tableName = Moraso_Config::get('database.params.tblprefix') . $table->getAttribute('name');
 
 		foreach ($table->getElementsByTagName('index') as $index) {
 			$type = $index->hasAttribute('type') ? $index->getAttribute('type') : 'index';
 			$name = $index->hasAttribute('name') ? '`' . $index->getAttribute('name') . '`' : '';
 			$columns = $index->getAttribute('columns');
-			Aitsu_Db :: query("alter table $tableName add $type $name ($columns)");
+			Moraso_Db::query("alter table $tableName add $type $name ($columns)");
 		}
 	}
 
 	protected function _restoreData($table) {
 
-		$tableName = Aitsu_Config :: get('database.params.tblprefix') . $table->getAttribute('name');
+		$tableName = Moraso_Config::get('database.params.tblprefix') . $table->getAttribute('name');
 
 		foreach ($table->getElementsByTagName('dataset') as $dataset) {
 			$use = $dataset->getAttribute('use');
@@ -420,7 +420,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 				/*
 				 * We have to quit if the table is not empty.
 				 */
-				if (Aitsu_Db :: fetchOne('select * from ' . $tableName) > 0) {
+				if (Moraso_Db::fetchOne('select * from ' . $tableName) > 0) {
 					return;
 				}
 			}
@@ -428,7 +428,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 				/*
 				 * We have to delete the content of the table.
 				 */
-				Aitsu_Db :: query('delete from ' . $tableName);
+				Moraso_Db::query('delete from ' . $tableName);
 			}
 			foreach ($dataset->getElementsByTagName('record') as $record) {
 				$fields = array ();
@@ -440,7 +440,7 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 					$valRef[] = ':' . $field;
 					$values[':' . $field] = $value->nodeValue;
 				}
-				Aitsu_Db :: query('' .
+				Moraso_Db::query('' .
 				'replace into ' . $tableName . ' (' . implode(', ', $fields) . ') values (' . implode(', ', $valRef) . ')', $values);
 			}
 		}
@@ -448,18 +448,18 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 
 	protected function _reconstructTable($table) {
 
-		$schema = Aitsu_Config :: get('database.params.dbname');
-		$backupTable = Aitsu_Config :: get('database.params.tblprefix') . 'backup_table';
-		$tableName = Aitsu_Config :: get('database.params.tblprefix') . $table->getAttribute('name');
+		$schema = Moraso_Config::get('database.params.dbname');
+		$backupTable = Moraso_Config::get('database.params.tblprefix') . 'backup_table';
+		$tableName = Moraso_Config::get('database.params.tblprefix') . $table->getAttribute('name');
 
-		Aitsu_Db :: query('drop table if exists ' . $backupTable);
-		Aitsu_Db :: query('rename table ' . $tableName . ' to ' . $backupTable);
+		Moraso_Db::query('drop table if exists ' . $backupTable);
+		Moraso_Db::query('rename table ' . $tableName . ' to ' . $backupTable);
 		$this->_createTable($table);
 
 		/*
 		 * Identify the field intersection to be used to move data to the new structure.
 		 */
-		$intersection = Aitsu_Db :: fetchCol('' .
+		$intersection = Moraso_Db::fetchCol('' .
 		'select ' .
 		'	concat(\'`\', newtable.column_name, \'`\') ' .
 		'from information_schema.columns newtable, information_schema.columns oldtable ' .
@@ -477,11 +477,11 @@ class Adm_Script_Synchronize_Database_Structure extends Aitsu_Adm_Script_Abstrac
 		/*
 		 * Move data from backup table to the new structure.
 		 */
-		Aitsu_Db :: query("" .
+		Moraso_Db::query("" .
 		"insert into $tableName (" . implode(', ', $intersection) . ") " .
 		"select " . implode(', ', $intersection) . " from $backupTable ");
 
-		Aitsu_Db :: query('drop table ' . $backupTable);
+		Moraso_Db::query('drop table ' . $backupTable);
 	}
 
 }

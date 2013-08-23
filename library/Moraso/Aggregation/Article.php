@@ -248,7 +248,7 @@ class Moraso_Aggregation_Article implements Iterator, Countable {
             $orderBy .= implode(', ', $orderByAddOns);
         }
 
-        $results = Aitsu_Db :: fetchAll("" .
+        $results = Moraso_Db :: fetchAll("" .
                         "select straight_join " .
                         "	artlang.idart idart, " .
                         "	artlang.idartlang idartlang, " .
@@ -265,8 +265,6 @@ class Moraso_Aggregation_Article implements Iterator, Countable {
                         "	artlang.pubuntil pubuntil, " .
                         "	artlang.mainimage mainimage, " .
                         "	meta.date as metadate, " .
-                        "	coord.lat lat, " .
-                        "	coord.lng lng, " .
                         "	if(artlang.redirect = 1 and substr(artlang.redirect_url, 1, 4) = 'http', artlang.redirect_url, null) redirect " .
                         "	{$selects} " .
                         "from _art_lang artlang " .
@@ -274,8 +272,6 @@ class Moraso_Aggregation_Article implements Iterator, Countable {
                         "left join _art_meta as meta on meta.idartlang = artlang.idartlang " .
                         "left join _cat_art catart on artlang.idart = catart.idart " .
                         "left join _cat_lang catlang on catart.idcat = catlang.idcat AND catlang.idlang = :idlang " .
-                        "left join _art_geolocation artcoord on artlang.idartlang = artcoord.idartlang " .
-                        "left join _google_geolocation coord on artcoord.idlocation = coord.id " .
                         "{$this->_tagJoin}" .
                         "where " .
                         "	artlang.online = 1 " .
